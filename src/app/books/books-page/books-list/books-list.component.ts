@@ -14,6 +14,8 @@ export class BooksListComponent implements OnInit {
   constructor() {
     this.books.push(new Book('bla', 'bla', 6));
     this.books.push(new Book('blubb', 'blubb', 42));
+    this.books.push(new Book('hans', 'hans', 7));
+    this.books.push(new Book('peter', 'peter', 14));
   }
 
   select(book: Book): void {

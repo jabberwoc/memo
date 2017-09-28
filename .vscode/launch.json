@@ -26,10 +26,10 @@
         "--enable-logging",
         "--remote-debugging-port=9222"
       ],
-      "webRoot": "${workspaceRoot}",
+      "webRoot": "${workspaceRoot}"
       // "userDataDir": "${workspaceRoot}/.vscode/chrome",
       // "trace": "verbose",
-      "sourceMaps": false
+      // "sourceMaps": false
       // "sourceMapPathOverrides": {
       //   "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
       //   "webpack:///./src/*": "${workspaceRoot}/src/*"
