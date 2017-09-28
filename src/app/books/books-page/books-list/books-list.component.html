@@ -1,0 +1,16 @@
+<div class="books-wrapper">
+  <ul id="notebookList" class="tiled" *ngIf="books.length > 0">
+    <li class="book-item" *ngFor="let b of books" (click)="select(b)">
+      <div class="book-content">
+        <div class="book-title" [ngClass]="{ 'active': b === selectedBook }">
+          <span class="book-title-name">
+              {{b.name}}
+            <span class="book-title-count">{{b.count}}</span>
+          </span>
+        </div>
+        <div class="book-detail" [ngClass]="{ 'active': b !== selectedBook }">
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

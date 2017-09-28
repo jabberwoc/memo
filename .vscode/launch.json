@@ -1,16 +1,45 @@
 {
-        "version": "0.2.0",
-        "configurations": [
-          {
-            "name": "Debug Main Process",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-            "windows": {
-              "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
-            },
-            "program": "${workspaceRoot}/main.js",
-            "protocol": "auto"
-          }
-        ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "program": "${workspaceRoot}/main.js",
+      "protocol": "inspector"
+    },
+    {
+      "name": "Debug Renderer Process",
+      "type": "chrome",
+      "request": "launch",
+      "port": 9222,
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "runtimeArgs": [
+        "${workspaceRoot}/main.js",
+        "--enable-logging",
+        "--remote-debugging-port=9222"
+      ],
+      "webRoot": "${workspaceRoot}",
+      // "userDataDir": "${workspaceRoot}/.vscode/chrome",
+      // "trace": "verbose",
+      "sourceMaps": false
+      // "sourceMapPathOverrides": {
+      //   "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+      //   "webpack:///./src/*": "${workspaceRoot}/src/*"
+      // }
+    },
+    {
+      "name": "Attach to Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222
     }
+  ]
+}

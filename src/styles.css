@@ -1,1 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+html, body, section {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.dark-themed {
+  color: #eee;
+}
+
+.light-themed {
+  color: #444;
+}
+
+.plain-btn {
+  font-size: 1.5em;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.plain-btn span {
+  cursor: inherit;
+}
+
+.btn-add:hover {
+  color: lightgreen;
+}
+
+.btn-delete:hover {
+  color: lightcoral;
+}
+
+.btn-section:hover {
+  color: slategray;
+}

@@ -1,0 +1,88 @@
+/* .books-wrapper {
+  position: absolute;
+  top: 4em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  overflow-y: auto;
+} */
+
+.tiled {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-auto-rows: 200px;
+  grid-gap: 2%;
+  margin: 20px auto;
+  width: 80%;
+  padding: 0;
+}
+
+.tiled > li {
+  position: relative;
+  width: 200px;
+  height: 150px;
+  border: 1px solid slategray;
+  border-radius: .3em;
+  margin: 10px;
+  color: white;
+  cursor: pointer;
+  background: slategray;
+  list-style-type: none;
+  overflow: hidden;
+  text-align: center;
+}
+
+.tiled > li.ui-selected {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.tiled > li .btn-delete {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: #444;
+}
+
+.tiled > li > .btn-delete:hover {
+  color: white;
+}
+
+
+/* .tiled > li.ui-selected .btn-delete {
+  line-height: 50px;
+  bottom: initial;
+  transition: all linear .2s;
+} */
+
+
+/* .tiled > li .detail-list {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  font-size: 1em;
+  color: #666;
+  list-style-type: none;
+  background: lightgray;
+  visibility: collapse;
+  text-align: center;
+} */
+
+.tiled > li .list-group-item {
+  padding: 5px 10px;
+  font-size: 1em;
+  color: #888;
+  float: left;
+  border: 0;
+}
+
+.detail-list .detail-selected {
+  color: white;
+}
+
+.tiled > li.ui-selected .detail-list {
+  /*top: 50px;
+ left: 0;
+ transition: all linear .2s;*/
+  visibility: visible;
+}

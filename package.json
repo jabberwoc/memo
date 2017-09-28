@@ -9,9 +9,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron": "electron .",
+    "electron": "electron . --enable-logging --remote-debugging-port=9222",
     "start": "npm run build && npm run electron",
-    "dev": "ng serve & npm run electron"
+    "dev": "npm run electron & ng serve"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +27,7 @@
     "core-js": "^2.4.1",
     "dotenv": "^4.0.0",
     "electron-reload": "^1.2.2",
+    "electron-settings": "^3.1.2",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"
   },
