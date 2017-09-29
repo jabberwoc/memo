@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Book } from '../../../entities/book';
 
+
 @Component({
   selector: 'app-books-list',
   templateUrl: './books-list.component.html',
@@ -21,6 +22,11 @@ export class BooksListComponent implements OnInit {
   select(book: Book): void {
     this.selectedBook = book;
     console.log(this.selectedBook.name + ' selected.');
+  }
+
+  open(book: Book): void {
+    // TODO
+    console.log('open book: ' + book);
   }
 
   ngOnInit() {
