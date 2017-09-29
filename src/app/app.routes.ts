@@ -21,7 +21,7 @@ export const APP_ROUTES: Routes = [
     component: NotesPageComponent
   },
   {
-    path: 'notes/:bookId/:noteId',
+    path: 'notes/:bookId/:noteId/:noteName',
     component: NotesPageComponent
   },
   {

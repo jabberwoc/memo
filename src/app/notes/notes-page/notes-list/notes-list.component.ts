@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../../data/data.service';
+import { Book } from '../../../entities/book';
 
 @Component({
   selector: 'app-notes-list',
@@ -9,19 +10,13 @@ import { DataService } from '../../../data/data.service';
 })
 export class NotesListComponent implements OnInit {
 
+  @Input() book: Book;
+
   constructor(
-    private route: ActivatedRoute,
     private dataService: DataService
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      p => {
-        // this.id = p['id'];
-        // this.showDetails = p['showDetails'];
-        // this.load();
-      }
-    );
   }
 
 }
