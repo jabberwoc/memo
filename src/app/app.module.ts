@@ -8,12 +8,17 @@ import { BooksListComponent } from './books/books-page/books-list/books-list.com
 import { NgxElectronModule } from 'ngx-electron';
 import { RouterModule } from '@angular/router';
 import { APP_ROUTES } from './app.routes';
+import { DataService } from './data/data.service';
+import { NotesPageComponent } from './notes/notes-page/notes-page.component';
+import { NotesListComponent } from './notes/notes-page/notes-list/notes-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BooksPageComponent,
-    BooksListComponent
+    BooksListComponent,
+    NotesPageComponent,
+    NotesListComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +26,9 @@ import { APP_ROUTES } from './app.routes';
     RouterModule.forRoot(APP_ROUTES)
     // NgbModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    DataService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
