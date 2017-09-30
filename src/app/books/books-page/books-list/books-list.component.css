@@ -76,13 +76,81 @@
   border: 0;
 }
 
-.detail-list .detail-selected {
+.detail-list .selected {
   color: white;
 }
 
-.tiled > li.ui-selected .detail-list {
+.tiled > li.selected .detail-list {
   /*top: 50px;
  left: 0;
  transition: all linear .2s;*/
   visibility: visible;
+}
+
+.book-title-count {
+  margin: 5px;
+  padding: 0 2px;
+  background: slategray;
+  border: 1px solid slategray;
+  border-radius: .3em;
+  color: white;
+  cursor: inherit;
+  /* background: blue; */
+  display: block;
+}
+
+.book-title-name {
+  cursor: inherit;
+  /* background: green; */
+  font-size: 1.2em;
+  line-height: 1.2em;
+}
+
+.book-title {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0%, -50%);
+  vertical-align: center;
+  cursor: pointer;
+  border-radius: .3em;
+  /* background: lightslategray; */
+  font-size: 1.2em;
+  width: 100%;
+  /* width: 100%;
+  height: 100%; */
+}
+
+.book-detail {
+  /* position: absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0; */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: lightgray;
+  border-radius: .3em;
+  text-align: left;
+}
+
+.book-detail > ul {
+  list-style-type: none;
+  margin: 5px;
+  padding: 0 5px;
+}
+
+.book-content {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
+  /* width: 80%;
+  height: 80%; */
+  margin: 10px;
+  border-radius: .3em;
+  /* background: red; */
+  background: lightslategray;
 }

@@ -39,7 +39,12 @@
       "name": "Attach to Renderer",
       "type": "chrome",
       "request": "attach",
-      "port": 9222
+      "port": 9222,
+      // "sourceMaps": true,
+      // "sourceMapPathOverrides": {
+      //   "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+      //   "webpack:///./src/*": "${workspaceRoot}/src/*"
+      // }
     }
   ]
 }
