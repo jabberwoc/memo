@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "build": "ng build --prod --aot --base-href",
+    "build": "ng build --base-href",
+    "build-prod": "ng build --prod --aot --base-href",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -45,6 +46,7 @@
     "codelyzer": "~3.1.1",
     "electron": "^1.7.8",
     "electron-packager": "^9.1.0",
+    "electron-rebuild": "^1.6.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",

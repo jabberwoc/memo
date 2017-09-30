@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
+import { ElectronService } from 'ngx-electron';
 // const PouchDB = require('pouchdb'),
 const path = require('path');
 
@@ -10,16 +11,20 @@ export class PouchDbService {
   private database: any;
   private listener: EventEmitter<any> = new EventEmitter();
 
-  public constructor() {
+  public constructor(private electronService: ElectronService) {
     if (!this.isInstantiated) {
-      // PouchDB.debug.enable('*');
-      // const dbPath = path.join(__dirname, 'db');
-      // console.log('dbPath: ' + dbPath);
 
-      // const db = new PouchDB(dbPath, { auto_compaction: true });
-      const db = new PouchDB('hans', { auto_compaction: true });
-      this.database = db;
+      this.database = electronService.remote.getGlobal('shared').db;
       console.log('database: ' + this.database);
+
+      // // PouchDB.debug.enable('*');
+      // // const dbPath = path.join(__dirname, 'db');
+      // // console.log('dbPath: ' + dbPath);
+
+      // // const db = new PouchDB(dbPath, { auto_compaction: true });
+      // const db = new PouchDB('memo', { auto_compaction: true });
+      // this.database = db;
+      // console.log('database: ' + this.database);
       this.isInstantiated = true;
     }
   }
@@ -33,6 +38,7 @@ export class PouchDbService {
   }
 
   public put(id: string, document: any) {
+    // console.log('put: ' + id);
     document._id = id;
     return this.get(id).then(result => {
       document._rev = result._rev;

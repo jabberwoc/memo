@@ -4,6 +4,14 @@ require('dotenv').config();
 // Reload file requires rebuild
 // require('electron-reload')(__dirname);
 
+const PouchDB = require('pouchdb')
+// PouchDB.debug.enable('*')
+const dbPath = require('path').join(__dirname, 'db'),
+  db = new PouchDB(dbPath, { auto_compaction: true });
+global.shared = {
+  db: db
+}
+
 let win = null;
 
 function createWindow() {
@@ -12,7 +20,7 @@ function createWindow() {
   win = new BrowserWindow({ width: 1000, height: 600 });
   const winBounds = settings.get('winBounds')
   if (winBounds) {
-      win.setBounds(winBounds)
+    win.setBounds(winBounds)
   }
 
   // Specify entry point
