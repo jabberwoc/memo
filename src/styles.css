@@ -1,3 +1,9 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+md-dialog-container {
+  margin: auto;
+}
+
 html, body, section {
   height: 100%;
   margin: 0;
@@ -11,6 +17,9 @@ html, body, section {
 .light-themed {
   color: #444;
 }
+
+
+/* buttons */
 
 .plain-btn {
   font-size: 1.5em;
@@ -34,3 +43,55 @@ html, body, section {
 .btn-section:hover {
   color: slategray;
 }
+
+
+/* icons */
+
+
+/* .icon {
+  margin-right: 5px;
+  margin-left: 5px;
+  font-size: 2em;
+ text-align: center;
+}
+
+.icon:before {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.icon-plus:before {
+  content: '+';
+} */
+
+[data-icon]:before {
+  font-family: icons;
+  font-weight: bold;
+  content: attr(data-icon);
+  speak: none;
+}
+
+/* .mat-dialog-container {
+  width: auto;
+  height: auto;
+} */
+/*
+md-dialog-container {
+  width: auto;
+  height: auto;
+  position: fixed;
+  left: 10%;
+  top: 10%;
+  right: 10%;
+  background-color: white;
+  z-index: 100000;
+} */
+
+/* md-dialog {
+  height: auto;
+  vertical-align: central;
+  align-items: center;
+} */

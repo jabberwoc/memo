@@ -3,9 +3,7 @@
     <div class="pane">
       <header class="nb-header">
         <h1><span class="icon icon-book"></span> {{pageTitle}}</h1>
-        <button id="createNotebook" class="btn-nb-add">
-                <span class="icon icon-plus"></span>
-            </button>
+        <button id="createNotebook" class="btn-nb-add" data-icon="+" (click)="addBook()"></button>
       </header>
 
       <app-books-list></app-books-list>
