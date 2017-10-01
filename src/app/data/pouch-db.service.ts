@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
 import { ElectronService } from 'ngx-electron';
+import { Book } from '../entities/book';
 // const PouchDB = require('pouchdb'),
 const path = require('path');
 
@@ -14,17 +15,24 @@ export class PouchDbService {
   public constructor(private electronService: ElectronService) {
     if (!this.isInstantiated) {
 
-      this.database = electronService.remote.getGlobal('shared').db;
-      console.log('database: ' + this.database);
+      if (electronService.isElectronApp) {
+        this.database = electronService.remote.getGlobal('shared').db;
+        console.log('database setup from electron app');
 
-      // // PouchDB.debug.enable('*');
-      // // const dbPath = path.join(__dirname, 'db');
-      // // console.log('dbPath: ' + dbPath);
+      } else {
+        const books = [
+          new Book('1', 'bla', 6),
+          new Book('2', 'blubb', 42),
+          new Book('3', 'hans', 7),
+          new Book('4', 'peter', 14)
+        ];
 
-      // // const db = new PouchDB(dbPath, { auto_compaction: true });
-      // const db = new PouchDB('memo', { auto_compaction: true });
-      // this.database = db;
-      // console.log('database: ' + this.database);
+        // const db = new PouchDB(dbPath, { auto_compaction: true });
+        this.database = new PouchDB('memo', { auto_compaction: true });
+        books.forEach(book => this.put(book.id, { name: book.name, count: book.count }));
+
+        console.log('database setup in browser');
+      }
       this.isInstantiated = true;
     }
   }

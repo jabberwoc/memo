@@ -19,10 +19,11 @@ export class BooksListComponent implements OnInit {
     private route: ActivatedRoute,
     private dataService: DataService
   ) {
-    this.books.push(new Book('1', 'bla', 6));
-    this.books.push(new Book('2', 'blubb', 42));
-    this.books.push(new Book('3', 'hans', 7));
-    this.books.push(new Book('4', 'peter', 14));
+    // this.books.push(new Book('1', 'bla', 6));
+    // this.books.push(new Book('2', 'blubb', 42));
+    // this.books.push(new Book('3', 'hans', 7));
+    // this.books.push(new Book('4', 'peter', 14));
+    this.loadBooks();
   }
 
   select(book: Book): void {
@@ -35,6 +36,13 @@ export class BooksListComponent implements OnInit {
     console.log('opening book: ' + book);
     this.router.navigate(['notes', book.id, { name: book.name }]);
     // this.router.navigate(['books/', { bookId: book.id }]);
+  }
+
+  loadBooks(): void {
+    this.dataService.getBooks()
+      .then(books => {
+        this.books = books;
+      });
   }
 
   ngOnInit() {
