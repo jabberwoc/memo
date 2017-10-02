@@ -10,7 +10,7 @@ import { DialogComponent } from './dialog/dialog.component';
 export class BooksPageComponent implements OnInit {
 
   pageTitle = 'books';
-
+  name: string;
   constructor(private dialog: MdDialog) { }
 
   addBook(): void {
@@ -19,6 +19,7 @@ export class BooksPageComponent implements OnInit {
       // position: {top: '50%', left: '50%'},
       // height: '400px',
       // width: '600px'
+      data: { name: this.name }
     });
 
     // TODO

@@ -1,12 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { MdDialogRef } from '@angular/material';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MdDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-dialog',
-  template: `
-  <h2>Hi! I am modal dialog!</h2>
-  <button md-raised-button (click)="dialogRef.close()">Close dialog</button>`
+  templateUrl: './dialog.component.html'
 })
 export class DialogComponent {
-  constructor(public dialogRef: MdDialogRef<DialogComponent>) { }
+
+
+  constructor(public dialogRef: MdDialogRef<DialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  // TODO
+  confirm() {
+    // this.dialogRef.close(this.name);
+  }
+
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+
 }

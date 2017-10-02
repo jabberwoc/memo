@@ -13,9 +13,10 @@ import { DataService } from './data/data.service';
 import { NotesPageComponent } from './notes/notes-page/notes-page.component';
 import { NotesListComponent } from './notes/notes-page/notes-list/notes-list.component';
 import { PouchDbService } from './data/pouch-db.service';
-import { MdDialogModule } from '@angular/material';
+import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
 import { DialogComponent } from './books/books-page/dialog/dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NgxElectronModule,
     RouterModule.forRoot(APP_ROUTES, { useHash: true }),
     MdDialogModule,
-    BrowserAnimationsModule
+    MdButtonModule,
+    MdInputModule,
+    BrowserAnimationsModule,
+    FormsModule
     // NgbModule.forRoot()
   ],
   entryComponents: [
