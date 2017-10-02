@@ -11,12 +11,6 @@ export class DialogComponent {
   constructor(public dialogRef: MdDialogRef<DialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  // TODO
-  confirm() {
-    // this.dialogRef.close(this.name);
-  }
-
-
   onCancel(): void {
     this.dialogRef.close();
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialog } from '@angular/material';
 import { DialogComponent } from './dialog/dialog.component';
+import { DataService } from '../../data/data.service';
 
 @Component({
   selector: 'app-books-page',
@@ -10,34 +11,28 @@ import { DialogComponent } from './dialog/dialog.component';
 export class BooksPageComponent implements OnInit {
 
   pageTitle = 'books';
-  name: string;
-  constructor(private dialog: MdDialog) { }
+
+  constructor(private dialog: MdDialog, private dataService: DataService) { }
 
   addBook(): void {
 
-    const dialogRef = this.dialog.open(DialogComponent, {
-      // position: {top: '50%', left: '50%'},
-      // height: '400px',
-      // width: '600px'
-      data: { name: this.name }
+    const dialogRef = this.dialog.open(DialogComponent);
+
+    dialogRef.afterClosed().subscribe((result: string) => {
+      if (result) {
+        console.log('creating new book: ' + result);
+
+        // TODO
+        // return data.createNotebook(name).then(book => {
+        //     if (book) {
+        //         addNotebookListItem(book, true)
+        //         selectNotebook(book.id)
+        //     }
+        // })
+
+
+      }
     });
-
-    // TODO
-    // smalltalk.prompt('New book', 'Enter name:', 'New notebook')
-    // .then(function (name) {
-    //     if (!name) {
-    //         smalltalk.alert('Error', 'Name was empty!');
-    //     }
-
-    // TODO
-    // return data.createNotebook(name).then(book => {
-    //     if (book) {
-    //         addNotebookListItem(book, true)
-    //         selectNotebook(book.id)
-    //     }
-    // })
-
-    // }).catch(err => console.log(err))
   }
 
   ngOnInit() {
