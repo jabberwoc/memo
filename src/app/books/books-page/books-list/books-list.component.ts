@@ -29,7 +29,7 @@ export class BooksListComponent implements OnInit {
 
   open(book: Book): void {
     // TODO
-    console.log('opening book: ' + book);
+    console.log('opening book: ' + book.id + ', name: ' + book.name);
     this.router.navigate(['notes', book.id, { name: book.name }]);
     // this.router.navigate(['books/', { bookId: book.id }]);
   }

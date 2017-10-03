@@ -20,17 +20,7 @@ export class PouchDbService {
         console.log('database setup from electron app');
 
       } else {
-        const books = [
-          new Book('book/1', 'bla', 6),
-          new Book('book/2', 'blubb', 42),
-          new Book('book/3', 'hans', 7),
-          new Book('book/4', 'peter', 14)
-        ];
-
-        // const db = new PouchDB(dbPath, { auto_compaction: true });
         this.database = new PouchDB('memo', { auto_compaction: true });
-        books.forEach(book => this.put(book.id, { name: book.name, count: book.count }));
-
         console.log('database setup in browser');
       }
       this.isInstantiated = true;

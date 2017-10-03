@@ -16,6 +16,7 @@ export class NotesPageComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe((params => {
+      console.log('params: + ' + params);
       this.book = new Book(params.get('bookId'), params.get('name'), 0);
       console.log('selected book: ' + this.book.id + ', name: ' + this.book.name);
     }));

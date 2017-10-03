@@ -3,6 +3,7 @@ import { PouchDbService } from './pouch-db.service';
 import { Book } from '../entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
+import { ElectronService } from 'ngx-electron';
 
 
 @Injectable()
@@ -11,7 +12,25 @@ export class DataService {
   noteUri = docUri.route('note/:book/(:note)');
   bookUri = docUri.route('book/(:book)');
 
-  constructor(private pouchDbService: PouchDbService) { }
+  constructor(private electronService: ElectronService,
+    private pouchDbService: PouchDbService) {
+    this.setup();
+  }
+
+  setup(): void {
+    if (!this.electronService.isElectronApp) {
+
+      const books = [
+        new Book('1', 'bla', 6),
+        new Book('2', 'blubb', 42),
+        new Book('3', 'hans', 7),
+        new Book('4', 'peter', 14)
+      ];
+
+      books.forEach(book => this.pouchDbService.put(this.bookUri({ book: book.id }),
+        { id: book.id, name: book.name, count: book.count }));
+    }
+  }
 
   getBooks(): Promise<Array<Book>> {
     const pattern = this.bookUri();
