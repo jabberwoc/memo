@@ -21,10 +21,10 @@ export class PouchDbService {
 
       } else {
         const books = [
-          new Book('1', 'bla', 6),
-          new Book('2', 'blubb', 42),
-          new Book('3', 'hans', 7),
-          new Book('4', 'peter', 14)
+          new Book('book/1', 'bla', 6),
+          new Book('book/2', 'blubb', 42),
+          new Book('book/3', 'hans', 7),
+          new Book('book/4', 'peter', 14)
         ];
 
         // const db = new PouchDB(dbPath, { auto_compaction: true });
@@ -37,8 +37,12 @@ export class PouchDbService {
     }
   }
 
-  public fetch() {
-    return this.database.allDocs({ include_docs: true });
+  public all(start: string, end: string, includeDocs: boolean) {
+    return this.database.allDocs({
+      startkey: start,
+      endkey: end,
+      include_docs: includeDocs
+    });
   }
 
   public get(id: string) {
@@ -62,15 +66,23 @@ export class PouchDbService {
     });
   }
 
+  public remove(id: string) {
+    return this.database.get(id)
+      .then(doc => {
+        return this.database.remove(doc);
+      });
+  }
+
   public sync(remote: string) {
-    let remoteDatabase = new PouchDB(remote);
-    this.database.sync(remoteDatabase, {
-      live: true
-    }).on('change', change => {
-      this.listener.emit(change);
-    }).on('error', error => {
-      console.error(JSON.stringify(error));
-    });
+    // TODO
+    // let remoteDatabase = new PouchDB(remote);
+    // this.database.sync(remoteDatabase, {
+    //   live: true
+    // }).on('change', change => {
+    //   this.listener.emit(change);
+    // }).on('error', error => {
+    //   console.error(JSON.stringify(error));
+    // });
   }
 
   public getChangeListener() {

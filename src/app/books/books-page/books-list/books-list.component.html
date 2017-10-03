@@ -11,6 +11,7 @@
         </div>
         <div class="book-detail"  *ngIf="b === selectedBook" [ngClass]="{ 'selected': b !== selectedBook }">
         </div>
+        <button (click)="deleteBook(b)"></button>
       </div>
     </li>
   </ul>

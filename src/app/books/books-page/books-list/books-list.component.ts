@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Book } from '../../../entities/book';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../../../data/data.service';
@@ -11,20 +11,16 @@ import { DataService } from '../../../data/data.service';
 })
 export class BooksListComponent implements OnInit {
 
-  books: Array<Book> = [];
+  @Input() books: Array<Book> = [];
+  @Output() deleteRequest = new EventEmitter<Book>();
+
   selectedBook: Book;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService
-  ) {
-    // this.books.push(new Book('1', 'bla', 6));
-    // this.books.push(new Book('2', 'blubb', 42));
-    // this.books.push(new Book('3', 'hans', 7));
-    // this.books.push(new Book('4', 'peter', 14));
-    this.loadBooks();
-  }
+  ) { }
 
   select(book: Book): void {
     this.selectedBook = book;
@@ -38,11 +34,8 @@ export class BooksListComponent implements OnInit {
     // this.router.navigate(['books/', { bookId: book.id }]);
   }
 
-  loadBooks(): void {
-    this.dataService.getBooks()
-      .then(books => {
-        this.books = books;
-      });
+  deleteBook(book: Book) {
+    this.deleteRequest.next(book);
   }
 
   ngOnInit() {
