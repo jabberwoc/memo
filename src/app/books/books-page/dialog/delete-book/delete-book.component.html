@@ -1,0 +1,11 @@
+<h2 md-dialog-title>delete book</h2>
+
+<div md-dialog-content>
+  <p>This will delete <strong>{{data.name}}</strong> and all its associated notes.</p>
+  <p>Really delete?</p>
+</div>
+
+<div md-dialog-actions>
+  <button md-button (click)="onCancel()" tabindex="-1">No</button>
+  <button md-button (click)="dialogRef.close(true)" tabindex="2">Yes</button>
+</div>

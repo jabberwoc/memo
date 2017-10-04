@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialog } from '@angular/material';
-import { DialogComponent } from './dialog/dialog.component';
 import { DataService } from '../../data/data.service';
 import { Book } from '../../entities/book';
+import { AddBookComponent } from './dialog/add-book/add-book.component';
+import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
 
 @Component({
   selector: 'app-books-page',
@@ -21,7 +22,7 @@ export class BooksPageComponent implements OnInit {
 
   addBook(): void {
 
-    const dialogRef = this.dialog.open(DialogComponent);
+    const dialogRef = this.dialog.open(AddBookComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
@@ -51,16 +52,22 @@ export class BooksPageComponent implements OnInit {
     const index = this.books.indexOf(book);
     console.log('requested delete book: ' + book);
 
-    // TODO dialog
-    this.dataService.deleteBook(book)
-      .then(ok => {
-        if (ok) {
-          console.log('book: [' + book.id + '] ' + book.name);
-          this.books.splice(index, 1);
-        } else {
-          console.log('error deleting book: ' + ok);
-        }
-      });
+    // confirm
+    const dialogRef = this.dialog.open(DeleteBookComponent, { data: { name: book.name } });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.dataService.deleteBook(book)
+          .then(ok => {
+            if (ok) {
+              console.log('book: [' + book.id + '] ' + book.name);
+              this.books.splice(index, 1);
+            } else {
+              console.log('error deleting book: ' + ok);
+            }
+          });
+      }
+    });
   }
 
   ngOnInit() {

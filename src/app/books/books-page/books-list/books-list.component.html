@@ -3,15 +3,15 @@
     <li class="book-item" [ngClass]="{ 'selected': b === selectedBook }" *ngFor="let b of books" (click)="select(b)" >
       <button class="btn btn-lg btn-outline-primary" (click)="open(b)">open</button>
       <div class="book-content">
-        <div class="book-title" *ngIf="b !== selectedBook" [ngClass]="{ 'selected': b === selectedBook }">
+        <div class="book-title" [ngClass]="{ 'selected': b === selectedBook }">
           <span class="book-title-name">
               {{b.name}}
             <span class="book-title-count">{{b.count}}</span>
           </span>
         </div>
-        <div class="book-detail"  *ngIf="b === selectedBook" [ngClass]="{ 'selected': b !== selectedBook }">
-        </div>
-        <button (click)="deleteBook(b)"></button>
+        <!-- <div class="book-detail"  *ngIf="b === selectedBook" [ngClass]="{ 'selected': b !== selectedBook }">
+        </div> -->
+        <button md-button (click)="deleteBook(b)">x</button>
       </div>
     </li>
   </ul>

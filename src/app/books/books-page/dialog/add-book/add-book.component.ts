@@ -3,12 +3,12 @@ import { MdDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: './dialog.component.html'
+  templateUrl: './add-book.component.html'
 })
-export class DialogComponent {
+export class AddBookComponent {
 
 
-  constructor(public dialogRef: MdDialogRef<DialogComponent>,
+  constructor(public dialogRef: MdDialogRef<AddBookComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCancel(): void {

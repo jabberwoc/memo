@@ -14,9 +14,10 @@ import { NotesPageComponent } from './notes/notes-page/notes-page.component';
 import { NotesListComponent } from './notes/notes-page/notes-list/notes-list.component';
 import { PouchDbService } from './data/pouch-db.service';
 import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
-import { DialogComponent } from './books/books-page/dialog/dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { AddBookComponent } from './books/books-page/dialog/add-book/add-book.component';
+import { DeleteBookComponent } from './books/books-page/dialog/delete-book/delete-book.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { FormsModule } from '@angular/forms';
     BooksListComponent,
     NotesPageComponent,
     NotesListComponent,
-    DialogComponent
+    AddBookComponent,
+    DeleteBookComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,8 @@ import { FormsModule } from '@angular/forms';
     // NgbModule.forRoot()
   ],
   entryComponents: [
-    DialogComponent
+    AddBookComponent,
+    DeleteBookComponent
   ],
   providers: [
     DataService, PouchDbService
