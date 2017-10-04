@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MdDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  selector: 'app-dialog',
+  selector: 'app-add-book',
   templateUrl: './add-book.component.html'
 })
 export class AddBookComponent {

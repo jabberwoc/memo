@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Book } from '../../entities/book';
 import 'rxjs/add/operator/switchMap';
+import { DataService } from '../../data/data.service';
+import { Note } from '../../entities/note';
 
 @Component({
   selector: 'app-notes-page',
@@ -11,23 +13,32 @@ import 'rxjs/add/operator/switchMap';
 export class NotesPageComponent implements OnInit {
 
   book: Book;
+  notes: Array<Note> = [];
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+    private dataService: DataService) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params => {
       console.log('params: + ' + params);
-      this.book = new Book(params.get('bookId'), params.get('name'), 0);
-      console.log('selected book: ' + this.book.id + ', name: ' + this.book.name);
-    }));
 
-    // this.route.params.subscribe(
-    //   p => {
-    //     // TODO load note
-    //     this.book = new Book(p.id, p.name, 0);
-    //     console.log('selected book: ' + this.book.id + ', name: ' + this.book.name);
-    //   }
-    // );
+      this.book = new Book(params.get('bookId'), params.get('name'), 0);
+
+      this.dataService.getBook(params.get('bookId'))
+        .then(book => {
+          this.book = book;
+          console.log('selected book: ' + this.book.name + '... loading notes..');
+          this.loadNotes(this.book.id);
+        });
+
+    }));
   }
 
+  loadNotes(bookId: string): void {
+    this.dataService.getNotes(bookId)
+      .then(notes => {
+        this.notes = notes;
+        console.log(notes);
+      });
+  }
 }

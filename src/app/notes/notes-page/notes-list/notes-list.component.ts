@@ -1,7 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DataService } from '../../../data/data.service';
-import { Book } from '../../../entities/book';
+import { Note } from '../../../entities/note';
 
 @Component({
   selector: 'app-notes-list',
@@ -10,13 +9,21 @@ import { Book } from '../../../entities/book';
 })
 export class NotesListComponent implements OnInit {
 
-  @Input() book: Book;
+  @Input() bookTitle: string;
+  @Input() notes: Array<Note> = [];
+  @Output() deleteRequest = new EventEmitter<Note>();
 
-  constructor(
-    private dataService: DataService
-  ) { }
+  selectedNote: Note;
+
+  constructor() { }
 
   ngOnInit() {
+  }
+
+
+  select(note: Note): void {
+    this.selectedNote = note;
+    console.log(this.selectedNote.name + ' selected.');
   }
 
 }

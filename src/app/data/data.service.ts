@@ -4,6 +4,7 @@ import { Book } from '../entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
 import { ElectronService } from 'ngx-electron';
+import { Note } from '../entities/note';
 
 
 @Injectable()
@@ -29,6 +30,17 @@ export class DataService {
 
       books.forEach(book => this.pouchDbService.put(this.bookUri({ book: book.id }),
         { id: book.id, name: book.name, count: book.count }));
+
+      const notes = [
+        new Note('note1', 'note 1', '1', 'test', ''),
+        new Note('note2', 'note 2', '1', 'test', ''),
+        new Note('note3', 'note 3', '1', 'test', ''),
+        new Note('note4', 'note 4', '1', 'test', '')
+      ];
+
+      notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),
+        { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified }));
+
     }
   }
 
@@ -37,6 +49,13 @@ export class DataService {
     return this.pouchDbService.all(pattern, pattern + '\uffff', true)
       .then(result => {
         return result.rows.map(row => new Book(row.doc.id, row.doc.name, row.doc.count));
+      });
+  }
+
+  getBook(id: string): Promise<Book> {
+    return this.pouchDbService.get(this.bookUri({ book: id }))
+      .then(book => {
+        return new Book(book.id, book.name, book.count);
       });
   }
 
@@ -73,6 +92,17 @@ export class DataService {
       .catch(err => {
         console.log(err);
         return false;
+      });
+  }
+
+  getNotes(bookId: string): Promise<Array<Note>> {
+    const pattern = this.noteUri({ book: bookId });
+    return this.pouchDbService.all(pattern, pattern + '\uffff', true)
+      .then(result => {
+        return result.rows.map(row => {
+          const note = row.doc;
+          return new Note(note.id, note.name, note.notebook, note.note, note.modified);
+        });
       });
   }
 }
