@@ -1,0 +1,114 @@
+#editor {
+  display: none;
+}
+
+.pane {
+  overflow: hidden;
+}
+
+.pane {
+  border: 0;
+}
+
+.sidebar {
+  background: #444;
+}
+
+#notebookHeader {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #444;
+  margin: 0;
+  padding: 0;
+  /*width: 220px;*/
+}
+
+#notebookHeader .title {
+  color: #eee;
+  font-size: 1.5em;
+  /* 18px*/
+  /*margin: auto auto;*/
+}
+
+#notebookHeader .btn-group {
+  float: right;
+}
+
+#noteSearch {
+  padding: 10px;
+}
+
+.editor-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: lightgray;
+  /*background-image: linear-gradient(180deg, slategray, lightgray);*/
+  display: none;
+}
+
+.placeholder-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #eee;
+}
+
+.placeholder-content > .text {
+  font-size: 4em;
+}
+
+.placeholder-content > .add-note {
+  cursor: pointer;
+  border: 2px solid;
+  border-radius: .1em;
+  font-size: 6em;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
+  display: block;
+  margin: .4em auto 0 auto;
+}
+
+.placeholder-content > .add-note span {
+  cursor: pointer;
+}
+
+.placeholder-content > .add-note:hover {
+  background: slategray;
+  color: white;
+}
+
+.media-body {
+  display: block;
+}
+
+
+.loader {
+  display: inline-block;
+  border: 2px solid slategray;
+  border-top: 2px solid #ddd;
+  animation: spin 2s linear infinite;
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+  margin: auto;
+  margin-left: 5px;
+  opacity: 0;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}

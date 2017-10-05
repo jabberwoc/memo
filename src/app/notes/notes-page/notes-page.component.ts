@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
 import 'rxjs/add/operator/switchMap';
 import { DataService } from '../../data/data.service';
@@ -15,7 +15,8 @@ export class NotesPageComponent implements OnInit {
   book: Book;
   notes: Array<Note> = [];
 
-  constructor(private route: ActivatedRoute,
+  constructor(private router: Router,
+    private route: ActivatedRoute,
     private dataService: DataService) { }
 
   ngOnInit() {
@@ -40,5 +41,10 @@ export class NotesPageComponent implements OnInit {
         this.notes = notes;
         console.log(notes);
       });
+  }
+
+  closeBook(): void {
+    console.log('closing book: ' + this.book.id + ', name: ' + this.book.name);
+    this.router.navigate(['books', this.book.id]);
   }
 }

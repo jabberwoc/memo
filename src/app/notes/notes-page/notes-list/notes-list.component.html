@@ -1,53 +1,11 @@
-<!-- <h1>notes</h1>
-<p>{{book.name}}</p> -->
-
-<section id="notes-section">
-
-  <div class="pane-group">
-    <div class="pane pane-sm sidebar">
-
-      <header id="notebookHeader">
-        <button id="notebooksButton" class="plain-btn dark-themed btn-section">
-                          <span class="icon icon-book"></span>
-                          </button>
-        <span id='bookTitle' class="title dark-themed">{{bookTitle}}</span>
-        <div class="loader"></div>
-
-
-
-        <div class="btn-group">
-          <button class="add-note plain-btn btn-add dark-themed">
-                            <span class="icon icon-list-add"></span>
-                        </button>
-        </div>
-
-        <div id="noteSearch">
-          <input class="form-control search-box" type="text" placeholder="Search">
-        </div>
-      </header>
-      <ul id="noteList" class="list-group">
-        <li class="list-group-item" [ngClass]="{ 'selected': n === selectedNote }" *ngFor="let n of notes" (click)="select(n)">
-          <button class="icon icon-trash note-icon plain-btn btn-delete"></button>
-          <h4 class="note-name">{{n.name}}</h4>
-          <p class="list-group-item-text note-modified">
-            {{n.modified}}
-            <!-- {{moment(n.modified).fromNow()}} -->
-          </p>
-          <p class="list-group-item-text note-excerpt">{{n.content || '...'}}</p>
-        </li>
-      </ul>
-
-    </div>
-    <div id="wrapper" class="pane">
-      <textarea id="editor"></textarea>
-      <div class="editor-placeholder">
-        <div class="placeholder-content">
-          <span class="text">add note</span>
-          <button class="add-note plain-btn btn-add">
-                            <span class="icon icon-plus"></span>
-                        </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<ul id="noteList" class="list-group">
+  <li class="list-group-item" *ngFor="let n of notes" (click)="select(n)" [ngClass]="{ 'selected': n === selectedNote }">
+    <button class="icon icon-trash note-icon plain-btn btn-delete"></button>
+    <h4 class="note-name">{{n.name}}</h4>
+    <p class="list-group-item-text note-modified">
+      {{n.modified}}
+      <!-- {{moment(n.modified).fromNow()}} -->
+    </p>
+    <p class="list-group-item-text note-excerpt">{{n.content || '...'}}</p>
+  </li>
+</ul>

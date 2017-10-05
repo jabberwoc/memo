@@ -37,6 +37,7 @@
     "electron-settings": "^3.1.2",
     "ngx-electron": "^1.0.3",
     "path": "^0.12.7",
+    "photonkit": "^0.1.2",
     "pouchdb": "^6.3.4",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"

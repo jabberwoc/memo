@@ -32,10 +32,10 @@ export class DataService {
         { id: book.id, name: book.name, count: book.count }));
 
       const notes = [
-        new Note('note1', 'note 1', '1', 'test', ''),
-        new Note('note2', 'note 2', '1', 'test', ''),
-        new Note('note3', 'note 3', '1', 'test', ''),
-        new Note('note4', 'note 4', '1', 'test', '')
+        new Note('note1', 'note 1', '1', 'test', 'sdsdsd'),
+        new Note('note2', 'note 2', '1', 'test', 'bla'),
+        new Note('note3', 'note 3', '1', 'test', 'blubb'),
+        new Note('note4', 'note 4', '1', 'test', '...')
       ];
 
       notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),

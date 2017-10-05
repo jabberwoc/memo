@@ -20,10 +20,8 @@ export class NotesListComponent implements OnInit {
   ngOnInit() {
   }
 
-
   select(note: Note): void {
     this.selectedNote = note;
     console.log(this.selectedNote.name + ' selected.');
   }
-
 }

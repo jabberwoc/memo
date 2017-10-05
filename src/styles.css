@@ -1,4 +1,6 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "../node_modules/photonkit/dist/css/photon.css";
+
 html, body, section {
   height: 100%;
   margin: 0;
@@ -38,14 +40,15 @@ html, body, section {
 .btn-section:hover {
   color: slategray;
 }
-
+/*
 .pane-group {
   position: absolute;
   bottom: 0;
   display: flex;
 }
 
-/* TODO: window */
+
+
 .pane-group, .window {
   top: 0;
   left: 0;
@@ -65,17 +68,6 @@ html, body, section {
   border-left: 1px solid #ddd;
 }
 
-.pane-sm {
-  max-width: 220px;
-  min-width: 150px;
-}
-
-.list-group {
-  width: 100%;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
 
 .list-group-item:first-child {
   border-top: 0;
@@ -99,21 +91,12 @@ html, body, section {
 .list-group *, .nav-group-item, h1, h2, h3, h4, h5, h6, label, td, th {
   white-space: nowrap;
   text-overflow: ellipsis;
-}
+} */
 
 .sidebar {
   background: #444;
   /* border-right: 1px solid #ddd; */
 }
-
-.icon:before, .tab-item {
-  position: relative;
-}
-
-.sidebar {
-  background-color: #f5f5f4;
-}
-
 
 /* icons */
 

@@ -1,1 +1,41 @@
-<app-notes-list [notes]="notes" [bookTitle]="book.name"></app-notes-list>
+<section id="notes-section">
+
+  <div class="pane-group">
+    <div class="pane pane-sm sidebar">
+
+      <header id="notebookHeader">
+
+        <button id="notebooksButton" class="plain-btn dark-themed btn-section" (click)="closeBook()">
+            <!-- <i class="fa fa-book fa-fw" aria-hidden="true"></i> -->
+            <span class="icon icon-book"></span>
+              </button>
+        <span id="bookTitle" class="title dark-themed">{{book.name}}</span>
+        <div class="loader"></div>
+
+        <div class="btn-group">
+          <button class="add-note plain-btn btn-add dark-themed">
+              <span class="icon icon-list-add"></span>
+                          </button>
+        </div>
+
+        <div id="noteSearch">
+          <input class="form-control search-box" type="text" placeholder="Search">
+        </div>
+      </header>
+
+      <app-notes-list [notes]="notes" [bookTitle]="book.name"></app-notes-list>
+
+    </div>
+    <div id="wrapper" class="pane">
+      <textarea id="editor"></textarea>
+      <div class="editor-placeholder">
+        <div class="placeholder-content">
+          <span class="text">add note</span>
+          <button class="add-note plain-btn btn-add">
+                            <span class="icon icon-plus"></span>
+                        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
