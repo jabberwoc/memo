@@ -32,10 +32,10 @@ export class DataService {
         { id: book.id, name: book.name, count: book.count }));
 
       const notes = [
-        new Note('note1', 'note 1', '1', 'test', 'sdsdsd'),
-        new Note('note2', 'note 2', '1', 'test', 'bla'),
-        new Note('note3', 'note 3', '1', 'test', 'blubb'),
-        new Note('note4', 'note 4', '1', 'test', '...')
+        new Note('note1', 'note 1', '1', 'sdsdsd', new Date().toJSON()),
+        new Note('note2', 'note 2', '1', 'bla', new Date().toJSON()),
+        new Note('note3', 'note 3', '1', 'blubb', new Date().toJSON()),
+        new Note('note4', 'note 4', '1', '...', new Date().toJSON())
       ];
 
       notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),
@@ -101,8 +101,15 @@ export class DataService {
       .then(result => {
         return result.rows.map(row => {
           const note = row.doc;
-          return new Note(note.id, note.name, note.notebook, note.note, note.modified);
+          return new Note(note.id, note.name, note.book, note.content, note.modified);
         });
       });
+  }
+
+  createNote(note: Note): Promise<boolean> {
+    note.id = cuid();
+    const id = this.noteUri({ book: note.book, note: note.id });
+    note.modified = new Date().toJSON();
+    return this.pouchDbService.put(id, { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified });
   }
 }

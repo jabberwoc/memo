@@ -3,7 +3,7 @@
     <button class="icon icon-trash note-icon plain-btn btn-delete"></button>
     <h4 class="note-name">{{n.name}}</h4>
     <p class="list-group-item-text note-modified">
-      {{n.modified}}
+      {{n.modified | amTimeAgo}}
       <!-- {{moment(n.modified).fromNow()}} -->
     </p>
     <p class="list-group-item-text note-excerpt">{{n.content || '...'}}</p>

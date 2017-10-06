@@ -1,6 +1,5 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "../node_modules/photonkit/dist/css/photon.css";
-
 html, body, section {
   height: 100%;
   margin: 0;
@@ -40,6 +39,18 @@ html, body, section {
 .btn-section:hover {
   color: slategray;
 }
+
+button:focus {
+  outline: 0;
+}
+
+.form-control:focus {
+  border-color: #99aabb;
+  background: #eee;
+  box-shadow: 0 0 0 0;
+}
+
+
 /*
 .pane-group {
   position: absolute;
@@ -97,6 +108,7 @@ html, body, section {
   background: #444;
   /* border-right: 1px solid #ddd; */
 }
+
 
 /* icons */
 

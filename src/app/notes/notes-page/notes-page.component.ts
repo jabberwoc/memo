@@ -4,6 +4,8 @@ import { Book } from '../../entities/book';
 import 'rxjs/add/operator/switchMap';
 import { DataService } from '../../data/data.service';
 import { Note } from '../../entities/note';
+import { MdDialog } from '@angular/material';
+import { AddNoteComponent } from './dialog/add-note/add-note.component';
 
 @Component({
   selector: 'app-notes-page',
@@ -17,6 +19,7 @@ export class NotesPageComponent implements OnInit {
 
   constructor(private router: Router,
     private route: ActivatedRoute,
+    private dialog: MdDialog,
     private dataService: DataService) { }
 
   ngOnInit() {
@@ -41,6 +44,28 @@ export class NotesPageComponent implements OnInit {
         this.notes = notes;
         console.log(notes);
       });
+  }
+
+  addNote(): void {
+
+    const dialogRef = this.dialog.open(AddNoteComponent);
+
+    dialogRef.afterClosed().subscribe((name: string) => {
+      if (name) {
+        const newNote = new Note(null, name, this.book.id, '', null);
+        this.dataService.createNote(newNote)
+          .then(ok => {
+            if (ok) {
+              console.log('created new note: [' + newNote.id + '] ' + name);
+              this.notes.push(newNote);
+
+              // TODO update book
+            } else {
+              console.log('error creating book: ' + ok);
+            }
+          });
+      }
+    });
   }
 
   closeBook(): void {
