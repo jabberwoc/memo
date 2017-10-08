@@ -1,0 +1,45 @@
+.editor-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: lightgray;
+  /*background-image: linear-gradient(180deg, slategray, lightgray);*/
+  /* display: none; */
+}
+
+.placeholder-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #eee;
+}
+
+.placeholder-content > .text {
+  font-size: 4em;
+}
+
+.placeholder-content > .add-note {
+  cursor: pointer;
+  border: 2px solid;
+  border-radius: .1em;
+  font-size: 6em;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
+  display: block;
+  margin: .4em auto 0 auto;
+}
+
+.placeholder-content > .add-note span {
+  cursor: pointer;
+}
+
+.placeholder-content > .add-note:hover {
+  background: slategray;
+  color: white;
+}

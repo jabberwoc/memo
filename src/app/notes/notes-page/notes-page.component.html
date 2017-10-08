@@ -28,8 +28,8 @@
 
     </div>
     <div id="wrapper" class="pane">
-        <!-- [title]="selectedNote?.name" -->
-      <app-editor [selectedNote]="selectedNote"></app-editor>
+      <!-- [title]="selectedNote?.name" -->
+      <app-editor [selectedNote]="selectedNote" (requestAddNote)=addNote()></app-editor>
     </div>
   </div>
 </section>

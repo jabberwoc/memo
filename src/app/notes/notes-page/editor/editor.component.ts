@@ -10,22 +10,21 @@ declare var tinymce: any;
 })
 
 export class EditorComponent implements AfterViewInit, OnDestroy {
-
+  @Output() requestAddNote = new EventEmitter();
 
   @ViewChild('noteTitle')
   private noteTitle: ElementRef;
 
-  // @Input() elementId: string;
-  // @Input() title = 'hans';
-  elementId = 'editor';
   @Input() content: string;
   @Output() onEditorReady = new EventEmitter<any>();
 
   @Input() selectedNote: Note;
 
+  elementId = 'editor';
   editor: any;
   editorReady = false;
   titleEditMode = false;
+  toolbarVisible = true;
 
   constructor(private renderer: Renderer2) { }
 
@@ -135,7 +134,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   setup(editor): void {
-
+    this.editor = editor;
     editor.on('init', () => this.editorOnInit());
     // editor.on('keyup', this.onKeyup);
   }
@@ -143,8 +142,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   onTitleKeydown(e): void {
     if (e.keyCode === 37 || e.keyCode === 39) { // left/right arrow
       e.stopPropagation();
-    }
-    else if (e.keyCode === 13) { // enter
+    } else if (e.keyCode === 13) { // enter
       this.setTitleEditMode(false);
     }
   }
@@ -154,23 +152,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     this.editorReady = true;
     this.onEditorReady.emit(true);
+    this.resizeEditor();
   }
 
   addEditorTitle(): void {
-    // const editorArea = $('.mce-edit-area');
     const editorArea = document.getElementsByClassName('mce-edit-area')[0];
-    // const header = this.renderer.createElement('div');
-    // header.setAttribute('id', 'note-header');
 
     editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
-
-    // this.renderer.appendChild(editorArea, header);
-    // const header = $('<div/>')
-    //   .attr('id', 'note-header');
-    // const title = $('<h1/>')
-    //   .addClass('note-title')
-    //   .attr('data-mce-tabstop', 'true')
-    //   .appendTo(header)
 
     // title.keypress(function (e) {
     //   if (e.which == 13) { // enter
@@ -190,13 +178,22 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         this.noteTitle.nativeElement.firstElementChild.focus();
       }, 0);
     }
-
-    // title.unfocus();
-    // title.setAttribute('contenteditable', !title.getAttribute('contenteditable'));
-    // console.log('note title editable: ' + title.getAttribute('contenteditable'));
   }
 
   resizeEditor(): void {
+    const wrapperHeight = document.getElementById('wrapper').offsetHeight;
+    const noteHeaderHeight = document.getElementById('note-title').offsetHeight;
+
+    let toolbarGrpHeight = 0;
+    // TODO
+    if (this.toolbarVisible) {
+      toolbarGrpHeight = document.getElementsByClassName('mce-toolbar-grp')[0].clientHeight;
+    }
+
+    const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight;
+
+    this.resize(targetHeight);
+
     // // wrapper height
     // const wrapperHeight = $('#wrapper').height()
     // const noteHeaderHeight = $('#note-header').height()
@@ -209,5 +206,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight
 
     // this.editor.resize(targetHeight);
+  }
+
+  onAddNote(): void {
+    this.requestAddNote.next();
   }
 }
