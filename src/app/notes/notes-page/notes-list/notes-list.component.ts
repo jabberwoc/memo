@@ -13,15 +13,16 @@ export class NotesListComponent implements OnInit {
   @Input() notes: Array<Note> = [];
   @Output() deleteRequest = new EventEmitter<Note>();
 
-  selectedNote: Note;
+  @Input() selectedNote: Note;
+  @Output() selectedNoteChange = new EventEmitter<Note>();
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   select(note: Note): void {
     this.selectedNote = note;
     console.log(this.selectedNote.name + ' selected.');
+    this.selectedNoteChange.next(this.selectedNote);
   }
 }

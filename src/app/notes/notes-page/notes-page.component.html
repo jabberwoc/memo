@@ -23,12 +23,13 @@
         </div>
       </header>
 
-      <app-notes-list [notes]="notes" [bookTitle]="book.name"></app-notes-list>
+      <app-notes-list [notes]="notes" [(selectedNote)]="selectedNote" [bookTitle]="book.name">
+      </app-notes-list>
 
     </div>
     <div id="wrapper" class="pane">
-        <!-- [title]="test" -->
-      <app-editor ></app-editor>
+        <!-- [title]="selectedNote?.name" -->
+      <app-editor [selectedNote]="selectedNote"></app-editor>
     </div>
   </div>
 </section>

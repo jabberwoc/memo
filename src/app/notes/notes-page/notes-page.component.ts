@@ -17,6 +17,16 @@ export class NotesPageComponent implements OnInit {
   book: Book;
   notes: Array<Note> = [];
 
+  private _selectedNote: Note;
+
+  set selectedNote(note: Note) {
+    this._selectedNote = (note);
+  }
+
+  get selectedNote(): Note { return this._selectedNote; }
+
+  // selectedNote: Note;
+
   constructor(private router: Router,
     private route: ActivatedRoute,
     private dialog: MdDialog,

@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Note } from '../../../entities/note';
 
 declare var tinymce: any;
 
@@ -15,10 +16,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private noteTitle: ElementRef;
 
   // @Input() elementId: string;
-  @Input() title = 'hans';
+  // @Input() title = 'hans';
   elementId = 'editor';
   @Input() content: string;
   @Output() onEditorReady = new EventEmitter<any>();
+
+  @Input() selectedNote: Note;
 
   editor: any;
   editorReady = false;
@@ -191,5 +194,20 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // title.unfocus();
     // title.setAttribute('contenteditable', !title.getAttribute('contenteditable'));
     // console.log('note title editable: ' + title.getAttribute('contenteditable'));
+  }
+
+  resizeEditor(): void {
+    // // wrapper height
+    // const wrapperHeight = $('#wrapper').height()
+    // const noteHeaderHeight = $('#note-header').height()
+    // let toolbarGrpHeight = 0
+    // if ($('.mce-toolbar-grp').is(":visible")) {
+    //   toolbarGrpHeight = $('.mce-toolbar-grp').outerHeight()
+    // }
+
+    // // extra 9 is for margin added between the toolbars
+    // const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight
+
+    // this.editor.resize(targetHeight);
   }
 }

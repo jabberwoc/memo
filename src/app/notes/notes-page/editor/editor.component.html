@@ -5,7 +5,7 @@
   attr.contenteditable="{{titleEditMode}}"
   (dblclick)="setTitleEditMode(true)"
   (keydown)="onTitleKeydown($event)"
-  [ngClass]="{'editable': titleEditMode }">{{title}}</h1>
+  [ngClass]="{'editable': titleEditMode }">{{selectedNote?.name}}</h1>
 </div>
 
 <textarea id="{{ elementId }}"></textarea>
