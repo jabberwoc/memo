@@ -183,7 +183,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.titleEditMode = isEditable;
 
     if (this.titleEditMode) {
-      this.noteTitle.nativeElement.firstElementChild.focus();
+      setTimeout(() => {
+        this.noteTitle.nativeElement.firstElementChild.focus();
+      }, 0);
     }
 
     // title.unfocus();
