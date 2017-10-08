@@ -142,7 +142,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       e.stopPropagation();
     }
     else if (e.keyCode === 13) { // enter
-      this.toggleNoteTitleEdit();
+      this.setTitleEditMode(false);
     }
   }
 
@@ -177,21 +177,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // })
   }
 
-  onNoteTitleEdit(event): void {
-    this.titleEditMode = true;
-    // this.noteTitle.nativeElement.firstElementChild.classList.add('editable');
-    // this.noteTitle.nativeElement.firstElementChild.setAttribute('contenteditable', true);
 
-    // prevent onkeyup ?
-    // this.noteTitle.nativeElement.firstElementChild.
-
-    this.noteTitle.nativeElement.firstElementChild.focus();
-    // this.renderer.addClass(this.noteTitle.nativeElement, 'editable');
-  }
-
-  toggleNoteTitleEdit(): void {
+  setTitleEditMode(isEditable: boolean): void {
     // const title = this.noteTitle.nativeElement.firstElementChild;
-    this.titleEditMode = false;
+    this.titleEditMode = isEditable;
+
+    if (this.titleEditMode) {
+      this.noteTitle.nativeElement.firstElementChild.focus();
+    }
+
     // title.unfocus();
     // title.setAttribute('contenteditable', !title.getAttribute('contenteditable'));
     // console.log('note title editable: ' + title.getAttribute('contenteditable'));

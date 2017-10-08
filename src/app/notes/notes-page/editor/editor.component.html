@@ -3,7 +3,7 @@
     <!-- contentEditable="{{ titleEditMode }}" -->
   <h1 class="note-title-header" data-mce-tabstop="true"
   attr.contenteditable="{{titleEditMode}}"
-  (dblclick)="onNoteTitleEdit($event)"
+  (dblclick)="setTitleEditMode(true)"
   (keydown)="onTitleKeydown($event)"
   [ngClass]="{'editable': titleEditMode }">{{title}}</h1>
 </div>
