@@ -1,0 +1,19 @@
+<div id="note-title" [hidden]="!editorReady" #noteTitle>
+    <!-- [style.border]="someProperty ? '5px solid yellow' : 'none'" -->
+    <!-- contentEditable="{{ titleEditMode }}" -->
+  <h1 class="note-title-header" data-mce-tabstop="true"
+  attr.contenteditable="{{titleEditMode}}"
+  (dblclick)="onNoteTitleEdit($event)"
+  (keydown)="onTitleKeydown($event)"
+  [ngClass]="{'editable': titleEditMode }">{{title}}</h1>
+</div>
+
+<textarea id="{{ elementId }}"></textarea>
+<div class="editor-placeholder">
+  <div class="placeholder-content">
+    <span class="text">add note</span>
+    <button class="add-note plain-btn btn-add">
+      <span class="icon icon-plus"></span>
+    </button>
+  </div>
+</div>

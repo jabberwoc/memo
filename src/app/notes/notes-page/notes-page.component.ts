@@ -47,7 +47,7 @@ export class NotesPageComponent implements OnInit {
   }
 
   addNote(): void {
-
+    // TODO ngx-modialog
     const dialogRef = this.dialog.open(AddNoteComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {

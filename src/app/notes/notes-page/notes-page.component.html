@@ -6,16 +6,16 @@
       <header id="notebookHeader">
 
         <button id="notebooksButton" class="plain-btn dark-themed btn-section" (click)="closeBook()">
-            <!-- <i class="fa fa-book fa-fw" aria-hidden="true"></i> -->
-            <span class="icon icon-book"></span>
-              </button>
+          <!-- <i class="fa fa-book fa-fw" aria-hidden="true"></i> -->
+          <span class="icon icon-book"></span>
+        </button>
         <span id="bookTitle" class="title dark-themed">{{book.name}}</span>
         <div class="loader"></div>
 
         <div class="btn-group">
           <button class="add-note plain-btn btn-add dark-themed" (click)="addNote()">
-              <span class="icon icon-list-add"></span>
-                          </button>
+            <span class="icon icon-list-add"></span>
+          </button>
         </div>
 
         <div id="noteSearch">
@@ -27,15 +27,8 @@
 
     </div>
     <div id="wrapper" class="pane">
-      <textarea id="editor"></textarea>
-      <div class="editor-placeholder">
-        <div class="placeholder-content">
-          <span class="text">add note</span>
-          <button class="add-note plain-btn btn-add">
-                            <span class="icon icon-plus"></span>
-                        </button>
-        </div>
-      </div>
+        <!-- [title]="test" -->
+      <app-editor ></app-editor>
     </div>
   </div>
 </section>

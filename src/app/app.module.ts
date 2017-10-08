@@ -21,6 +21,7 @@ import { AddBookComponent } from './books/books-page/dialog/add-book/add-book.co
 import { DeleteBookComponent } from './books/books-page/dialog/delete-book/delete-book.component';
 import { AddNoteComponent } from './notes/notes-page/dialog/add-note/add-note.component';
 import { MomentModule } from 'angular2-moment';
+import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { MomentModule } from 'angular2-moment';
     NotesListComponent,
     AddBookComponent,
     DeleteBookComponent,
-    AddNoteComponent
+    AddNoteComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

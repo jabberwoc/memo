@@ -1,5 +1,7 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "../node_modules/photonkit/dist/css/photon.css";
+@import "assets/styles/editor.css";
+
 html, body, section {
   height: 100%;
   margin: 0;
