@@ -10,15 +10,40 @@ declare var tinymce: any;
 })
 
 export class EditorComponent implements AfterViewInit, OnDestroy {
-  @Output() requestAddNote = new EventEmitter();
+
+  @Output() addNote = new EventEmitter();
+  @Output() noteChanged = new EventEmitter();
 
   @ViewChild('noteTitle')
   private noteTitle: ElementRef;
 
-  @Input() content: string;
   @Output() onEditorReady = new EventEmitter<any>();
 
-  @Input() selectedNote: Note;
+  private contentValue: string;
+  get content() {
+    return this.contentValue;
+  }
+  @Input()
+  set content(value: string) {
+    this.contentValue = value;
+    if (this.contentValue) {
+      this.setContent(this.contentValue);
+    }
+  }
+  @Output() contentChange = new EventEmitter<string>();
+
+  private selectedNoteValue: Note;
+  get selectedNote(): Note {
+    return this.selectedNoteValue;
+  }
+  @Input()
+  set selectedNote(value: Note) {
+    this.selectedNoteValue = value;
+    // if (this.selectedNoteValue) {
+    //   this.setContent(this.selectedNoteValue.content);
+    // }
+  }
+  @Output() selectedNoteChange = new EventEmitter<Note>();
 
   elementId = 'editor';
   editor: any;
@@ -136,7 +161,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   setup(editor): void {
     this.editor = editor;
     editor.on('init', () => this.editorOnInit());
+    editor.on('change', () => this.editorOnChange());
     // editor.on('keyup', this.onKeyup);
+  }
+
+  setContent(content: string): void {
+    if (this.editorReady) {
+      this.editor.setContent(content);
+      this.editor.undoManager.clear();
+    } else {
+      (document.getElementById('editor') as HTMLTextAreaElement).value = content;
+    }
   }
 
   onTitleKeydown(e): void {
@@ -153,6 +188,20 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.editorReady = true;
     this.onEditorReady.emit(true);
     this.resizeEditor();
+  }
+
+  editorOnChange(): void {
+    const content = this.editor.getContent();
+    // if (this.selectedNoteValue.content !== content) {
+    //   this.selectedNoteValue.content = content;
+
+    //   this.selectedNoteChange.emit(this.selectedNoteValue);
+    //   // this.selectedNote = this.selectedNoteValue;
+    // }
+
+    if (content !== this.content) {
+      this.content = content;
+    }
   }
 
   addEditorTitle(): void {
@@ -209,6 +258,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   onAddNote(): void {
-    this.requestAddNote.next();
+    this.addNote.next();
   }
 }

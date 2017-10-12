@@ -23,13 +23,12 @@
         </div>
       </header>
 
-      <app-notes-list [notes]="notes" [(selectedNote)]="selectedNote" [bookTitle]="book.name">
+      <app-notes-list [notes]="notes | async" [selectedNote]="selectedNote | async" (selectNote)="selectNote($event)" [bookTitle]="book.name">
       </app-notes-list>
 
     </div>
     <div id="wrapper" class="pane">
-      <!-- [title]="selectedNote?.name" -->
-      <app-editor [selectedNote]="selectedNote" (requestAddNote)=addNote()></app-editor>
+      <app-editor [selectedNote]="selectedNote | async" (changeNote)="changeNote($event)" (addNote)=addNote($event)></app-editor>
     </div>
   </div>
 </section>

@@ -1,36 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
-import 'rxjs/add/operator/switchMap';
+// import 'rxjs/add/operator/switchMap';
 import { DataService } from '../../data/data.service';
 import { Note } from '../../entities/note';
 import { MdDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
+import { NoteStore, CREATE_NOTE, UPDATE_NOTE, SELECT_NOTE, ADD_NOTES } from '../../store/note-store';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-notes-page',
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css']
 })
-export class NotesPageComponent implements OnInit {
+export class NotesPageComponent implements OnInit, OnDestroy {
 
+  subscription: any;
   book: Book;
-  notes: Array<Note> = [];
-
-  private _selectedNote: Note;
-
-  set selectedNote(note: Note) {
-    this._selectedNote = (note);
-  }
-
-  get selectedNote(): Note { return this._selectedNote; }
-
-  // selectedNote: Note;
+  notes: Observable<Array<Note>>;
+  selectedNote: Observable<Note>;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private dialog: MdDialog,
-    private dataService: DataService) { }
+    private dataService: DataService,
+    private store: Store<NoteStore>) {
+    this.notes = this.store.select(_ => _.notes);
+    this.selectedNote = this.store.select(_ => _.selectedNote);
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params => {
@@ -48,10 +47,18 @@ export class NotesPageComponent implements OnInit {
     }));
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId)
       .then(notes => {
-        this.notes = notes;
+        this.store.dispatch({
+          type: ADD_NOTES, payload: notes
+        });
+
+        // this.notes = notes;
         console.log(notes);
       });
   }
@@ -67,7 +74,10 @@ export class NotesPageComponent implements OnInit {
           .then(ok => {
             if (ok) {
               console.log('created new note: [' + newNote.id + '] ' + name);
-              this.notes.push(newNote);
+              // this.notes.push(newNote);
+              this.store.dispatch({
+                type: CREATE_NOTE, payload: newNote
+              });
 
               // TODO update book
             } else {
@@ -81,5 +91,15 @@ export class NotesPageComponent implements OnInit {
   closeBook(): void {
     console.log('closing book: ' + this.book.id + ', name: ' + this.book.name);
     this.router.navigate(['books', this.book.id]);
+  }
+
+  changeNote(id: string) {
+    this.store.dispatch({ type: UPDATE_NOTE, payload: id });
+    // TODO save
+  }
+
+  selectNote(note: Note) {
+    this.store.dispatch({ type: SELECT_NOTE, payload: note });
+    // TODO save
   }
 }

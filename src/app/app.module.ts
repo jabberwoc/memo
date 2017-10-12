@@ -23,6 +23,9 @@ import { AddNoteComponent } from './notes/notes-page/dialog/add-note/add-note.co
 import { MomentModule } from 'angular2-moment';
 import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
+import { StoreModule } from '@ngrx/store';
+import { notes, selectedNote } from './store/note-store';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,9 +47,10 @@ import { EditorComponent } from './notes/notes-page/editor/editor.component';
     MdInputModule,
     BrowserAnimationsModule,
     FormsModule,
-    MomentModule
+    MomentModule,
     // AngularFontAwesomeModule
     // NgbModule.forRoot()
+    StoreModule.forRoot({ notes, selectedNote }),
   ],
   entryComponents: [
     AddBookComponent,
