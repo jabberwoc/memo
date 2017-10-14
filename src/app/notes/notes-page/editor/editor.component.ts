@@ -1,4 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output,
+  ViewChild, ElementRef, Renderer2, NgZone
+} from '@angular/core';
 import { Note } from '../../../entities/note';
 
 declare var tinymce: any;
@@ -19,18 +22,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @Output() onEditorReady = new EventEmitter<any>();
 
-  private contentValue: string;
-  get content() {
-    return this.contentValue;
-  }
-  @Input()
-  set content(value: string) {
-    this.contentValue = value;
-    if (this.contentValue) {
-      this.setContent(this.contentValue);
-    }
-  }
-  @Output() contentChange = new EventEmitter<string>();
+  @Output() changeNote = new EventEmitter<Note>();
 
   private selectedNoteValue: Note;
   get selectedNote(): Note {
@@ -39,11 +31,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @Input()
   set selectedNote(value: Note) {
     this.selectedNoteValue = value;
-    // if (this.selectedNoteValue) {
-    //   this.setContent(this.selectedNoteValue.content);
-    // }
+    if (this.selectedNoteValue) {
+      this.setContent(this.selectedNoteValue.content);
+    }
   }
-  @Output() selectedNoteChange = new EventEmitter<Note>();
 
   elementId = 'editor';
   editor: any;
@@ -51,7 +42,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   titleEditMode = false;
   toolbarVisible = true;
 
-  constructor(private renderer: Renderer2) { }
+  constructor(private renderer: Renderer2, private ngZone: NgZone) { }
 
 
   ngAfterViewInit() {
@@ -167,8 +158,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   setContent(content: string): void {
     if (this.editorReady) {
-      this.editor.setContent(content);
-      this.editor.undoManager.clear();
+      if (content !== this.editor.getContent()) {
+
+        this.editor.setContent(content);
+        // TODO on note change only
+        this.editor.undoManager.clear();
+      }
     } else {
       (document.getElementById('editor') as HTMLTextAreaElement).value = content;
     }
@@ -186,7 +181,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addEditorTitle();
 
     this.editorReady = true;
-    this.onEditorReady.emit(true);
+    this.onEditorReady.next(true);
     this.resizeEditor();
   }
 
@@ -199,8 +194,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     //   // this.selectedNote = this.selectedNoteValue;
     // }
 
-    if (content !== this.content) {
-      this.content = content;
+    if (content !== this.selectedNote.content) {
+      // this.content = content;
+      // TODO event
+
+      this.selectedNote.content = content;
+      console.log('zone:' + NgZone.isInAngularZone());
+      this.ngZone.run(() =>
+        this.changeNote.next(this.selectedNote));
     }
   }
 

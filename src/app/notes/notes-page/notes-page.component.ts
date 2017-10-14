@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
-// import 'rxjs/add/operator/switchMap';
 import { DataService } from '../../data/data.service';
 import { Note } from '../../entities/note';
 import { MdDialog } from '@angular/material';
@@ -9,6 +8,7 @@ import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { NoteStore, CREATE_NOTE, UPDATE_NOTE, SELECT_NOTE, ADD_NOTES } from '../../store/note-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/Rx';
 
 @Component({
   selector: 'app-notes-page',
@@ -21,6 +21,7 @@ export class NotesPageComponent implements OnInit, OnDestroy {
   book: Book;
   notes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
+  selectedNoteId: Observable<string>;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -28,7 +29,18 @@ export class NotesPageComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private store: Store<NoteStore>) {
     this.notes = this.store.select(_ => _.notes);
-    this.selectedNote = this.store.select(_ => _.selectedNote);
+    this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
+    this.selectedNote = Observable.combineLatest(this.notes, this.selectedNoteId,
+      (notes, selectedId) => {
+        return notes.find(_ => _.id === selectedId) || null;
+      });
+    this.notes.subscribe((n) => this.onNoteChanged(n));
+    // this.selectedNote = this.store.select(_ => _.selectedNote);
+    // this.selectedNote.subscribe(_ => this.onNoteChanged(_));
+  }
+
+  onNoteChanged(note: Array<Note>) {
+    console.log(note);
   }
 
   ngOnInit() {
@@ -93,13 +105,13 @@ export class NotesPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['books', this.book.id]);
   }
 
-  changeNote(id: string) {
-    this.store.dispatch({ type: UPDATE_NOTE, payload: id });
+  changeNote(note: Note) {
+    this.store.dispatch({ type: UPDATE_NOTE, payload: note });
     // TODO save
   }
 
-  selectNote(note: Note) {
-    this.store.dispatch({ type: SELECT_NOTE, payload: note });
+  selectNote(id: string) {
+    this.store.dispatch({ type: SELECT_NOTE, payload: id });
     // TODO save
   }
 }

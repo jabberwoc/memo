@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../../entities/note';
 
@@ -7,22 +7,27 @@ import { Note } from '../../../entities/note';
   templateUrl: './notes-list.component.html',
   styleUrls: ['./notes-list.component.css']
 })
-export class NotesListComponent implements OnInit {
+export class NotesListComponent implements OnInit, OnChanges {
 
   @Input() bookTitle: string;
-  @Input() notes: Array<Note> = [];
-  @Output() deleteRequest = new EventEmitter<Note>();
+  @Input() notes: Array<Note>;
+  @Input() selectedNoteId: string;
 
-  @Input() selectedNote: Note;
-  @Output() selectNote = new EventEmitter<Note>();
+  @Output() selectNote = new EventEmitter<string>();
+  @Output() deleteRequest = new EventEmitter<Note>();
 
   constructor() { }
 
   ngOnInit() { }
 
-  select(note: Note): void {
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    // changes.prop contains the old and the new value...
+  }
+
+  select(id: string): void {
     // this.selectedNote = note;
     // console.log(this.selectedNote.name + ' selected.');
-    this.selectNote.next(note);
+    this.selectNote.next(id);
   }
 }

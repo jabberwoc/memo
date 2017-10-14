@@ -2,7 +2,7 @@ import { Note } from '../entities/note';
 
 export interface NoteStore {
   notes: Array<Note>;
-  selectedNote: Note;
+  selectedNoteId: string;
 }
 
 
@@ -11,6 +11,19 @@ export const CREATE_NOTE = 'CREATE_NOTE';
 export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const SELECT_NOTE = 'SELECT_NOTE';
+
+const noteReducer = (state, type, payload) => {
+  switch (type) {
+    case UPDATE_NOTE:
+      if (state.id === payload.id) {
+        return Object.assign({}, state, { name: payload.name, content: payload.content });
+      }
+      return state;
+
+    default:
+      return state;
+  }
+};
 
 export function notes(state: Array<Note> = [], { type, payload }) {
   switch (type) {
@@ -21,9 +34,11 @@ export function notes(state: Array<Note> = [], { type, payload }) {
     case UPDATE_NOTE:
       return state.map(note => {
         // TODO
-        return note.id === payload.id ? Object.assign({}, note, payload) : note;
+        return noteReducer(note, type, payload);
+        // return note.id === payload.id ? Object.assign({}, note, payload) : note;
       });
     case DELETE_NOTE:
+      // TODO scan?
       return state.filter(note => {
         return note.id !== payload.id;
       });
@@ -32,10 +47,12 @@ export function notes(state: Array<Note> = [], { type, payload }) {
   }
 }
 
-export function selectedNote(state: Note = null, { type, payload }) {
+export function selectedNoteId(state: string = null, { type, payload }) {
   switch (type) {
     case SELECT_NOTE:
       return payload;
+    // case UPDATE_NOTE:
+    //   return state.id === payload.id ? Object.assign({}, state, payload) : state;
     default:
       return state;
   }
