@@ -12,19 +12,6 @@ export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const SELECT_NOTE = 'SELECT_NOTE';
 
-const noteReducer = (state, type, payload) => {
-  switch (type) {
-    case UPDATE_NOTE:
-      if (state.id === payload.id) {
-        return Object.assign({}, state, { name: payload.name, content: payload.content });
-      }
-      return state;
-
-    default:
-      return state;
-  }
-};
-
 export function notes(state: Array<Note> = [], { type, payload }) {
   switch (type) {
     case ADD_NOTES:
@@ -33,9 +20,7 @@ export function notes(state: Array<Note> = [], { type, payload }) {
       return [...state, payload];
     case UPDATE_NOTE:
       return state.map(note => {
-        // TODO
-        return noteReducer(note, type, payload);
-        // return note.id === payload.id ? Object.assign({}, note, payload) : note;
+        return note.id === payload.id ? Object.assign({}, note, payload) : note;
       });
     case DELETE_NOTE:
       // TODO scan?
@@ -51,8 +36,6 @@ export function selectedNoteId(state: string = null, { type, payload }) {
   switch (type) {
     case SELECT_NOTE:
       return payload;
-    // case UPDATE_NOTE:
-    //   return state.id === payload.id ? Object.assign({}, state, payload) : state;
     default:
       return state;
   }
