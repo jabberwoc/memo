@@ -3,6 +3,7 @@ import {
   ViewChild, ElementRef, Renderer2, NgZone
 } from '@angular/core';
 import { Note } from '../../../entities/note';
+import { Subject } from 'rxjs/Subject';
 
 declare var tinymce: any;
 
@@ -21,7 +22,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private noteTitle: ElementRef;
 
   @Output() onEditorReady = new EventEmitter<any>();
-
   @Output() changeNote = new EventEmitter<Note>();
 
   private selectedNoteValue: Note;
@@ -41,8 +41,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editorReady = false;
   titleEditMode = false;
   toolbarVisible = true;
+  debouncer: Subject<Note> = new Subject<Note>();
 
-  constructor(private renderer: Renderer2, private ngZone: NgZone) { }
+  constructor(private renderer: Renderer2, private ngZone: NgZone) {
+    this.debouncer
+    .debounceTime(300)
+    .subscribe((n) => this.changeNote.emit(n));
+   }
 
 
   ngAfterViewInit() {
@@ -187,21 +192,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   editorOnChange(): void {
     const content = this.editor.getContent();
-    // if (this.selectedNoteValue.content !== content) {
-    //   this.selectedNoteValue.content = content;
-
-    //   this.selectedNoteChange.emit(this.selectedNoteValue);
-    //   // this.selectedNote = this.selectedNoteValue;
-    // }
 
     if (content !== this.selectedNote.content) {
-      // this.content = content;
-      // TODO event
-
       this.selectedNote.content = content;
-      console.log('zone:' + NgZone.isInAngularZone());
+      // run through zone
       this.ngZone.run(() =>
-        this.changeNote.next(this.selectedNote));
+        this.debouncer.next(this.selectedNote));
     }
   }
 
