@@ -25,8 +25,8 @@ import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
 import { StoreModule } from '@ngrx/store';
 import { notes, selectedNoteId } from './store/note-store';
-import { BooksModule } from './books/books/books.module';
-import { NotesModule } from './notes/notes/notes.module';
+import { BooksModule } from './books/books.module';
+import { NotesModule } from './notes/notes.module';
 
 @NgModule({
   declarations: [

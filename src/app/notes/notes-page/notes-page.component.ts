@@ -15,9 +15,8 @@ import 'rxjs/Rx';
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css']
 })
-export class NotesPageComponent implements OnInit, OnDestroy {
+export class NotesPageComponent implements OnInit {
 
-  subscription: any;
   book: Book;
   notes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
@@ -57,10 +56,6 @@ export class NotesPageComponent implements OnInit, OnDestroy {
         });
 
     }));
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   loadNotes(bookId: string): void {

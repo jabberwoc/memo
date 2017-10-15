@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotesPageComponent } from '../notes-page/notes-page.component';
-import { NotesListComponent } from '../notes-page/notes-list/notes-list.component';
-import { EditorComponent } from '../notes-page/editor/editor.component';
+import { NotesPageComponent } from './notes-page/notes-page.component';
+import { NotesListComponent } from './notes-page/notes-list/notes-list.component';
+import { EditorComponent } from './notes-page/editor/editor.component';
 import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MomentModule } from 'angular2-moment';
 import { FormsModule } from '@angular/forms';
-import { AddNoteComponent } from '../notes-page/dialog/add-note/add-note.component';
+import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.component';
 
 @NgModule({
   imports: [
