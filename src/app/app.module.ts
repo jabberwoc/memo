@@ -4,8 +4,8 @@ import { NgModule } from '@angular/core';
 // import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 import { AppComponent } from './app.component';
-import { BooksPageComponent } from './books/books-page/books-page.component';
-import { BooksListComponent } from './books/books-page/books-list/books-list.component';
+// import { BooksPageComponent } from './books/books-page/books-page.component';
+// import { BooksListComponent } from './books/books-page/books-list/books-list.component';
 import { NgxElectronModule } from 'ngx-electron';
 import { RouterModule } from '@angular/router';
 import { APP_ROUTES } from './app.routes';
@@ -25,29 +25,19 @@ import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
 import { StoreModule } from '@ngrx/store';
 import { notes, selectedNoteId } from './store/note-store';
+import { BooksModule } from './books/books/books.module';
+import { NotesModule } from './notes/notes/notes.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    BooksPageComponent,
-    BooksListComponent,
-    NotesPageComponent,
-    NotesListComponent,
-    AddBookComponent,
-    DeleteBookComponent,
-    AddNoteComponent,
-    EditorComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
     NgxElectronModule,
     RouterModule.forRoot(APP_ROUTES, { useHash: true }),
-    MdDialogModule,
-    MdButtonModule,
-    MdInputModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    MomentModule,
+    BooksModule,
+    NotesModule,
     // AngularFontAwesomeModule
     // NgbModule.forRoot()
     StoreModule.forRoot({ notes, selectedNoteId }),
