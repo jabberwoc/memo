@@ -16,8 +16,8 @@ import 'rxjs/Rx';
   styleUrls: ['./notes-page.component.css'],
   animations: [
     trigger('saveState', [
-      state('inactive', style({opacity: 0})),
-      state('active', style({opactiy: 1})),
+      state('inactive', style({ opacity: 0 })),
+      state('active', style({ opactiy: 1 })),
       // transition('inactive => active', animate('1000ms ease-in')),
       transition('active => inactive', animate(1000, style({ opacity: 0 })))
     ])
@@ -106,14 +106,24 @@ export class NotesPageComponent implements OnInit {
     this.router.navigate(['books', this.book.id]);
   }
 
-  changeNote(note: Note) {
+  updateNote(note: Note) {
     // TODO save
     this.saveState = LoadingState.ACTIVE;
+    this.dataService.updateNote(note)
+      .then(ok => {
+        if (ok) {
+          console.log('note updated: [' + note.id + '] ' + note.name);
+          this.store.dispatch({ type: UPDATE_NOTE, payload: note });
+          this.saveState = LoadingState.INACTIVE;
 
-    this.store.dispatch({ type: UPDATE_NOTE, payload: note });
+        } else {
+          console.log('error updating note: ' + ok);
+        }
+      });
 
-    setTimeout(() => this.saveState = LoadingState.INACTIVE, 2000);
-
+    // this.saveState = LoadingState.ACTIVE;
+    // this.store.dispatch({ type: UPDATE_NOTE, payload: note });
+    // setTimeout(() => this.saveState = LoadingState.INACTIVE, 2000);
   }
 
   selectNote(id: string) {

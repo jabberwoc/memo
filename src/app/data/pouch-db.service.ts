@@ -40,7 +40,6 @@ export class PouchDbService {
   }
 
   public put(id: string, document: any) {
-    // console.log('put: ' + id);
     document._id = id;
     return this.get(id).then(result => {
       document._rev = result._rev;

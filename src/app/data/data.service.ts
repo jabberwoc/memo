@@ -112,4 +112,10 @@ export class DataService {
     note.modified = new Date().toJSON();
     return this.pouchDbService.put(id, { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified });
   }
+
+  updateNote(note: Note): Promise<boolean> {
+    const id = this.noteUri({ book: note.book, note: note.id });
+    note.modified = new Date().toJSON();
+    return this.pouchDbService.put(id, { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified });
+  }
 }

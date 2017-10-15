@@ -28,7 +28,7 @@
 
     </div>
     <div id="wrapper" class="pane">
-      <app-editor [selectedNote]="selectedNote | async" (changeNote)="changeNote($event)" (addNote)=addNote($event)></app-editor>
+      <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote($event)></app-editor>
     </div>
   </div>
 </section>
