@@ -45,9 +45,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private ngZone: NgZone) {
     this.debouncer
-    .debounceTime(300)
-    .subscribe((n) => this.changeNote.emit(n));
-   }
+      .debounceTime(300)
+      .subscribe((n) => this.changeNote.emit(n));
+  }
 
 
   ngAfterViewInit() {
@@ -57,6 +57,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     tinymce.remove(this.editor);
+  }
+
+  saveNote(): void {
+    const debounceNext = () => this.debouncer.next(this.selectedNote);
+
+    if (NgZone.isInAngularZone()) {
+      debounceNext();
+    } else {
+      this.ngZone.run(() =>
+        debounceNext());
+    }
   }
 
 
@@ -120,10 +131,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // just in case, and visually hide it. And do not forget do remove it
     // once you do not need it anymore.
 
-    input.onchange = function (e) {
-      // TODO
-      // const file = e.target.files[0];
-      const file = null;
+    input.onchange = function (e: any) {
+      const file = e.target.files[0];
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -175,10 +184,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   onTitleKeydown(e): void {
-    if (e.keyCode === 37 || e.keyCode === 39) { // left/right arrow
+    if (e.keyCode === 37 || e.keyCode === 39) { // left / right arrow
       e.stopPropagation();
     } else if (e.keyCode === 13) { // enter
       this.setTitleEditMode(false);
+
+      // TODO set title
+      // this.selectedNote.name = ???
+      this.saveNote();
+
     }
   }
 
@@ -197,7 +211,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       this.selectedNote.content = content;
       // run through zone
       this.ngZone.run(() =>
-        this.debouncer.next(this.selectedNote));
+        this.saveNote());
     }
   }
 

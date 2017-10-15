@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, trigger, state, style, transition, animate } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
 import { DataService } from '../../data/data.service';
@@ -13,14 +13,27 @@ import 'rxjs/Rx';
 @Component({
   selector: 'app-notes-page',
   templateUrl: './notes-page.component.html',
-  styleUrls: ['./notes-page.component.css']
+  styleUrls: ['./notes-page.component.css'],
+  animations: [
+    trigger('saveState', [
+      state('inactive', style({opacity: 0})),
+      state('active', style({opactiy: 1})),
+      // transition('inactive => active', animate('1000ms ease-in')),
+      transition('active => inactive', animate(1000, style({ opacity: 0 })))
+    ])
+  ]
 })
+
 export class NotesPageComponent implements OnInit {
 
   book: Book;
   notes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
   selectedNoteId: Observable<string>;
+
+  // ACTIVE_STATE = 'active';
+  // INACTIVE_STATE = 'inactive';
+  saveState = LoadingState.INACTIVE;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -33,13 +46,6 @@ export class NotesPageComponent implements OnInit {
       (notes, selectedId) => {
         return notes.find(_ => _.id === selectedId) || null;
       });
-    this.notes.subscribe((n) => this.onNoteChanged(n));
-    // this.selectedNote = this.store.select(_ => _.selectedNote);
-    // this.selectedNote.subscribe(_ => this.onNoteChanged(_));
-  }
-
-  onNoteChanged(note: Array<Note>) {
-    console.log(note);
   }
 
   ngOnInit() {
@@ -101,12 +107,21 @@ export class NotesPageComponent implements OnInit {
   }
 
   changeNote(note: Note) {
-    this.store.dispatch({ type: UPDATE_NOTE, payload: note });
     // TODO save
+    this.saveState = LoadingState.ACTIVE;
+
+    this.store.dispatch({ type: UPDATE_NOTE, payload: note });
+
+    setTimeout(() => this.saveState = LoadingState.INACTIVE, 2000);
+
   }
 
   selectNote(id: string) {
     this.store.dispatch({ type: SELECT_NOTE, payload: id });
-    // TODO save
   }
+}
+
+export class LoadingState {
+  static ACTIVE = 'active';
+  static INACTIVE = 'inactive';
 }

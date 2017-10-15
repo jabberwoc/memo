@@ -10,7 +10,7 @@
           <span class="icon icon-book"></span>
         </button>
         <span id="bookTitle" class="title dark-themed">{{book.name}}</span>
-        <div class="loader"></div>
+        <div class="loader" [@saveState]="saveState"></div>
 
         <div class="btn-group">
           <button class="add-note plain-btn btn-add dark-themed" (click)="addNote()">
