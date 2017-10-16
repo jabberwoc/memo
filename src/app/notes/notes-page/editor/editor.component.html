@@ -1,8 +1,11 @@
-<div id="note-title" [hidden]="!editorReady" #noteTitle>
-  <!-- [style.border]="someProperty ? '5px solid yellow' : 'none'" -->
-  <!-- contentEditable="{{ titleEditMode }}" -->
-  <h1 class="note-title-header" data-mce-tabstop="true" attr.contenteditable="{{titleEditMode}}" (dblclick)="setTitleEditMode(true)"
-    (keydown)="onTitleKeydown($event)" [ngClass]="{'editable': titleEditMode }">{{selectedNote?.name}}</h1>
+<div id="note-title" [hidden]="!editorReady" [ngClass]="{'edit-mode': titleEditMode }" #noteTitle>
+  <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="name">
+    {{ selectedNote?.name }}</label>
+  <form [formGroup]="titleForm" novalidate>
+    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
+    type="text" formControlName="title">
+  </form>
+
 </div>
 
 <textarea id="{{ elementId }}"></textarea>

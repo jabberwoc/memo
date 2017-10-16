@@ -73,20 +73,29 @@ i.mce-i-todoList:before {
   border: 0;
 }
 
-.mce-container .note-title-header {
-  padding: 8px;
+.mce-container .note-title {
   height: 1em;
   font-size: xx-large;
+  width: 100%;
+  box-sizing: border-box;
+  color: inherit;
+}
+
+#note-title {
+  padding: 8px;
   color: slategray;
 }
 
-
-#note-title .readonly {
-  background: white;
-  color: slategray;
+.edit-mode {
+  background: slategray !important;
+  color: white !important;
 }
 
-#note-title .editable {
-  background: slategray;
-  color: white;
+.edit-mode form {
+  color: inherit;
 }
+
+.ng-invalid {
+  background: lightcoral !important;
+}
+

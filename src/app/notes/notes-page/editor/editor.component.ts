@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { Note } from '../../../entities/note';
 import { Subject } from 'rxjs/Subject';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 declare var tinymce: any;
 
@@ -42,13 +43,22 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   titleEditMode = false;
   toolbarVisible = true;
   debouncer: Subject<Note> = new Subject<Note>();
+  titleForm: FormGroup;
+  // titleEditForm: FormControl = new FormControl('name', [Validators.required]);
+  // get name(): FormControl { return this.titleEditForm; }
 
-  constructor(private renderer: Renderer2, private ngZone: NgZone) {
+  constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
+    this.createTitleForm();
     this.debouncer
       .debounceTime(300)
       .subscribe((n) => this.changeNote.emit(n));
   }
 
+  createTitleForm() {
+    this.titleForm = this.fb.group({ // <-- the parent FormGroup
+      title: ['', Validators.required]
+    });
+  }
 
   ngAfterViewInit() {
 
@@ -183,16 +193,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onTitleKeydown(e): void {
-    if (e.keyCode === 37 || e.keyCode === 39) { // left / right arrow
-      e.stopPropagation();
-    } else if (e.keyCode === 13) { // enter
-      this.setTitleEditMode(false);
+  onTitleEditComplete() {
+    this.setTitleEditMode(false);
+    const titleValue = this.titleForm.value.title;
 
-      // TODO set title
-      // this.selectedNote.name = ???
+    if (this.titleForm.status === 'VALID' && titleValue !== this.selectedNote.name) {
+      this.selectedNote.name = titleValue;
       this.saveNote();
-
     }
   }
 
@@ -228,15 +235,19 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // })
   }
 
-
   setTitleEditMode(isEditable: boolean): void {
     // const title = this.noteTitle.nativeElement.firstElementChild;
     this.titleEditMode = isEditable;
 
     if (this.titleEditMode) {
-      setTimeout(() => {
-        this.noteTitle.nativeElement.firstElementChild.focus();
-      }, 0);
+      this.titleForm.patchValue({
+        title: this.selectedNote.name
+      });
+
+      // TODO: focus
+      // setTimeout(() => {
+      //   this.noteTitle.nativeElement.firstElementChild.focus();
+      // }, 0);
     }
   }
 

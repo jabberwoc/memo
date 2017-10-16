@@ -6,7 +6,7 @@ import { EditorComponent } from './notes-page/editor/editor.component';
 import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MomentModule } from 'angular2-moment';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.component';
 
 @NgModule({
@@ -17,6 +17,7 @@ import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.componen
     MdInputModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     MomentModule
   ],
   declarations: [
@@ -28,7 +29,9 @@ import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.componen
   exports: [
     NotesPageComponent,
     NotesListComponent,
-    EditorComponent
+    EditorComponent,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class NotesModule { }

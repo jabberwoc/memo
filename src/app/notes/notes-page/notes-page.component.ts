@@ -120,10 +120,6 @@ export class NotesPageComponent implements OnInit {
           console.log('error updating note: ' + ok);
         }
       });
-
-    // this.saveState = LoadingState.ACTIVE;
-    // this.store.dispatch({ type: UPDATE_NOTE, payload: note });
-    // setTimeout(() => this.saveState = LoadingState.INACTIVE, 2000);
   }
 
   selectNote(id: string) {

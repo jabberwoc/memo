@@ -16,7 +16,7 @@ import { NotesListComponent } from './notes/notes-page/notes-list/notes-list.com
 import { PouchDbService } from './data/pouch-db.service';
 import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddBookComponent } from './books/books-page/dialog/add-book/add-book.component';
 import { DeleteBookComponent } from './books/books-page/dialog/delete-book/delete-book.component';
 import { AddNoteComponent } from './notes/notes-page/dialog/add-note/add-note.component';
