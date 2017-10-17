@@ -34,7 +34,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.selectedNoteValue = value;
     if (this.selectedNoteValue) {
       this.setContent(this.selectedNoteValue.content);
-      // this.titleForm.value.title = this.selectedNoteValue.name;
+
       this.titleForm.setValue({
         title: this.selectedNote.name
       });
@@ -210,11 +210,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editorOnInit(): void {
     this.addEditorTitle();
 
-    this.editorReady = true;
-    this.onEditorReady.next(true);
-
     setTimeout(() => {
+      this.editorReady = true;
       this.resizeEditor();
+      this.onEditorReady.next(true);
     }, 0);
   }
 
