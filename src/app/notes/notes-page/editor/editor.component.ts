@@ -38,8 +38,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       this.titleForm.setValue({
         title: this.selectedNote.name
       });
-
-      this.resizeEditor();
     }
   }
 
@@ -188,7 +186,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         this.editor.undoManager.clear();
       }
     } else {
-      (document.getElementById('editor') as HTMLTextAreaElement).value = content;
+      // (document.getElementById('editor') as HTMLTextAreaElement).value = content;
     }
   }
 
@@ -265,7 +263,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // TODO
     if (this.toolbarVisible) {
       const elements = document.getElementsByClassName('mce-toolbar-grp');
-      toolbarGrpHeight = elements[0].clientHeight;
+      if (elements) {
+        toolbarGrpHeight = elements[0].clientHeight;
+      }
     }
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight;

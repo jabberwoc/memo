@@ -31,8 +31,6 @@ export class NotesPageComponent implements OnInit {
   selectedNote: Observable<Note>;
   selectedNoteId: Observable<string>;
 
-  // ACTIVE_STATE = 'active';
-  // INACTIVE_STATE = 'inactive';
   saveState = LoadingState.INACTIVE;
 
   constructor(private router: Router,
