@@ -19,29 +19,29 @@ export class DataService {
   }
 
   setup(): void {
-    if (!this.electronService.isElectronApp) {
+    // if (!this.electronService.isElectronApp) {
 
-      const books = [
-        new Book('1', 'bla', 6),
-        new Book('2', 'blubb', 42),
-        new Book('3', 'hans', 7),
-        new Book('4', 'peter', 14)
-      ];
+    //   const books = [
+    //     new Book('1', 'bla', 6),
+    //     new Book('2', 'blubb', 42),
+    //     new Book('3', 'hans', 7),
+    //     new Book('4', 'peter', 14)
+    //   ];
 
-      books.forEach(book => this.pouchDbService.put(this.bookUri({ book: book.id }),
-        { id: book.id, name: book.name, count: book.count }));
+    //   books.forEach(book => this.pouchDbService.put(this.bookUri({ book: book.id }),
+    //     { id: book.id, name: book.name, count: book.count }));
 
-      const notes = [
-        new Note('note1', 'note 1', '1', 'sdsdsd', new Date().toJSON()),
-        new Note('note2', 'note 2', '1', 'bla', new Date().toJSON()),
-        new Note('note3', 'note 3', '1', 'blubb', new Date().toJSON()),
-        new Note('note4', 'note 4', '1', '...', new Date().toJSON())
-      ];
+    //   const notes = [
+    //     new Note('note1', 'note 1', '1', 'sdsdsd', new Date().toJSON()),
+    //     new Note('note2', 'note 2', '1', 'bla', new Date().toJSON()),
+    //     new Note('note3', 'note 3', '1', 'blubb', new Date().toJSON()),
+    //     new Note('note4', 'note 4', '1', '...', new Date().toJSON())
+    //   ];
 
-      notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),
-        { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified }));
+    //   notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),
+    //     { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified }));
 
-    }
+    // }
   }
 
   getBooks(): Promise<Array<Book>> {

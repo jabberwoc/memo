@@ -34,6 +34,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.selectedNoteValue = value;
     if (this.selectedNoteValue) {
       this.setContent(this.selectedNoteValue.content);
+      // this.titleForm.value.title = this.selectedNoteValue.name;
+      this.titleForm.setValue({
+        title: this.selectedNote.name
+      });
     }
   }
 
@@ -168,7 +172,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   resize(height): void {
     if (this.editorReady) {
       // if (this.editor) {
-      this.editor.theme.resizeTo('100%', height);
+      this.editor.theme.resizeTo('100%', '100%');
       // }
     }
   }
@@ -197,9 +201,16 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.setTitleEditMode(false);
     const titleValue = this.titleForm.value.title;
 
-    if (this.titleForm.status === 'VALID' && titleValue !== this.selectedNote.name) {
-      this.selectedNote.name = titleValue;
-      this.saveNote();
+    if (this.titleForm.status === 'VALID') {
+      if (titleValue !== this.selectedNote.name) {
+        this.selectedNote.name = titleValue;
+        this.saveNote();
+      }
+    } else {
+      // reset title
+      this.titleForm.setValue({
+        title: this.selectedNote.name
+      });
     }
   }
 
@@ -240,14 +251,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.titleEditMode = isEditable;
 
     if (this.titleEditMode) {
-      this.titleForm.patchValue({
-        title: this.selectedNote.name
-      });
 
-      // TODO: focus
-      // setTimeout(() => {
-      //   this.noteTitle.nativeElement.firstElementChild.focus();
-      // }, 0);
+      // focus
+      setTimeout(() => {
+        this.noteTitle.nativeElement.getElementsByTagName('input')[0].focus();
+      }, 0);
     }
   }
 
@@ -258,12 +266,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     let toolbarGrpHeight = 0;
     // TODO
     if (this.toolbarVisible) {
-      toolbarGrpHeight = document.getElementsByClassName('mce-toolbar-grp')[0].clientHeight;
+      const elements = document.getElementsByClassName('mce-toolbar-grp');
+      toolbarGrpHeight = elements[0].clientHeight;
     }
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight;
 
-    this.resize(targetHeight);
+    this.resize(wrapperHeight);
 
     // // wrapper height
     // const wrapperHeight = $('#wrapper').height()

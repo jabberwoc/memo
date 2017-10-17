@@ -95,7 +95,11 @@ i.mce-i-todoList:before {
   color: inherit;
 }
 
-.ng-invalid {
+.validation-error {
   background: lightcoral !important;
 }
 
+#tinymce {
+  background: green;
+  height: 100%;
+}
