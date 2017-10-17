@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output,
-  ViewChild, ElementRef, Renderer2, NgZone
+  ViewChild, ElementRef, Renderer2, NgZone, HostListener
 } from '@angular/core';
 import { Note } from '../../../entities/note';
 import { Subject } from 'rxjs/Subject';
@@ -38,6 +38,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       this.titleForm.setValue({
         title: this.selectedNote.name
       });
+
+      this.resizeEditor();
     }
   }
 
@@ -83,7 +85,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         debounceNext());
     }
   }
-
 
   initEditor(): void {
     // TODO
@@ -139,12 +140,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
-    // Note: In modern browsers input[type="file"] is functional without
-    // even adding it to the DOM, but that might not be the case in some older
-    // or quirky browsers like IE, so you might want to add it to the DOM
-    // just in case, and visually hide it. And do not forget do remove it
-    // once you do not need it anymore.
-
     input.onchange = function (e: any) {
       const file = e.target.files[0];
 
@@ -172,7 +167,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   resize(height): void {
     if (this.editorReady) {
       // if (this.editor) {
-      this.editor.theme.resizeTo('100%', '100%');
+      this.editor.theme.resizeTo('100%', height);
       // }
     }
   }
@@ -219,7 +214,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     this.editorReady = true;
     this.onEditorReady.next(true);
-    this.resizeEditor();
+
+    setTimeout(() => {
+      this.resizeEditor();
+    }, 0);
   }
 
   editorOnChange(): void {
@@ -247,7 +245,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   setTitleEditMode(isEditable: boolean): void {
-    // const title = this.noteTitle.nativeElement.firstElementChild;
     this.titleEditMode = isEditable;
 
     if (this.titleEditMode) {
@@ -259,6 +256,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  @HostListener('window:resize', ['$event'])
   resizeEditor(): void {
     const wrapperHeight = document.getElementById('wrapper').offsetHeight;
     const noteHeaderHeight = document.getElementById('note-title').offsetHeight;
@@ -272,20 +270,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight;
 
-    this.resize(wrapperHeight);
-
-    // // wrapper height
-    // const wrapperHeight = $('#wrapper').height()
-    // const noteHeaderHeight = $('#note-header').height()
-    // let toolbarGrpHeight = 0
-    // if ($('.mce-toolbar-grp').is(":visible")) {
-    //   toolbarGrpHeight = $('.mce-toolbar-grp').outerHeight()
-    // }
-
-    // // extra 9 is for margin added between the toolbars
-    // const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight
-
-    // this.editor.resize(targetHeight);
+    this.resize(targetHeight);
   }
 
   onAddNote(): void {
