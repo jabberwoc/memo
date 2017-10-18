@@ -5,6 +5,7 @@ import {
 import { Note } from '../../../entities/note';
 import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import * as _ from 'lodash';
 
 declare var tinymce: any;
 
@@ -31,6 +32,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
   @Input()
   set selectedNote(value: Note) {
+    if (_.isEqual(value, this.selectedNoteValue)) {
+      return;
+    }
+
     this.selectedNoteValue = value;
     if (this.selectedNoteValue) {
       this.setContent(this.selectedNoteValue.content);
@@ -179,12 +184,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   setContent(content: string): void {
     if (this.editorReady) {
-      if (content !== this.editor.getContent()) {
+      // if (content !== this.editor.getContent()) {
 
         this.editor.setContent(content);
         // TODO on note change only
         this.editor.undoManager.clear();
-      }
+      // }
     } else {
       // (document.getElementById('editor') as HTMLTextAreaElement).value = content;
     }
@@ -222,9 +227,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     if (content !== this.selectedNote.content) {
       this.selectedNote.content = content;
-      // run through zone
-      this.ngZone.run(() =>
-        this.saveNote());
+
+      this.saveNote();
     }
   }
 

@@ -1,4 +1,5 @@
 import { Note } from '../entities/note';
+import { Action } from '@ngrx/store';
 
 export interface NoteStore {
   notes: Array<Note>;
@@ -12,6 +13,11 @@ export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const SELECT_NOTE = 'SELECT_NOTE';
 
+export class UpdateNoteAction implements Action {
+  readonly type: string = UPDATE_NOTE;
+  constructor(public payload: Note) { }
+}
+
 export function notes(state: Array<Note> = [], { type, payload }) {
   switch (type) {
     case ADD_NOTES:
@@ -20,7 +26,8 @@ export function notes(state: Array<Note> = [], { type, payload }) {
       return [...state, payload];
     case UPDATE_NOTE:
       return state.map(note => {
-        return note.id === payload.id ? Object.assign({}, note, payload) : note;
+        return note.id === payload.id ? new Note(payload.id, payload.name,
+          payload.book, payload.content, payload.modified) : note;
       });
     case DELETE_NOTE:
       // TODO scan?
