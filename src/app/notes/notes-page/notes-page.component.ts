@@ -39,7 +39,7 @@ export class NotesPageComponent implements OnInit {
     private dialog: MdDialog,
     private dataService: DataService,
     private store: Store<MemoStore>) {
-    this.notes = this.store.select(_ => _.notes);
+    this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
     this.selectedNote = Observable.combineLatest(this.notes, this.selectedNoteId,
       (notes, selectedId) => {

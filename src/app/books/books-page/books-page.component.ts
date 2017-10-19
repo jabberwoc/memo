@@ -23,7 +23,7 @@ export class BooksPageComponent implements OnInit {
   constructor(private dialog: MdDialog,
     private dataService: DataService,
     private store: Store<MemoStore>) {
-    this.books = this.store.select(_ => _.books);
+    this.books = this.store.select(_ => _.books).map(_ => _.sort(Book.modifiedComparer));
   }
 
 

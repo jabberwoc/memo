@@ -12,4 +12,10 @@ export class Note {
     this.content = content;
     this.modified = modified;
   }
+
+  public static modifiedComparer(a: Note, b: Note) {
+    if (a.modified > b.modified) { return -1; }
+    if (a.modified < b.modified) { return 1; }
+    return 0;
+  }
 }
