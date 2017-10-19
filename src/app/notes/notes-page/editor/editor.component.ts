@@ -127,7 +127,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       automatic_uploads: true,
       file_picker_types: 'image',
       file_picker_callback: this.filePickerCallback,
-      setup: (ed) => this.setup(ed),
+      setup: (ed) => this.setupEditor(ed),
       custom_shortcuts: false
     });
   }
@@ -169,14 +169,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  setup(editor): void {
+  setupEditor(editor): void {
     this.editor = editor;
     editor.on('init', () => this.editorOnInit());
     editor.on('change', () => this.editorOnChange());
     editor.on('postRender', () => this.editorOnPostRender());
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
-    // editor.on('keyup', this.onKeyup);
+    editor.on('keyup', (e) => this.editorOnKeyup(e));
   }
 
   setContent(content: string): void {
@@ -237,6 +237,18 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   editorOnBlur(): void {
     this.toggleToolbars(false);
+  }
+
+  editorOnKeyup(e: any): void {
+    // if ((e.ctrlKey) && (e.keyCode === this.vKey)) {
+    //   // paste from keyboard do nothing. let paste event handle it
+    //   return;
+    // } else if ((e.ctrlKey) && (e.keyCode === this.xKey)) {
+    //   // cut from keyboard do nothing. let cut event handle it
+    //   return;
+    // }
+
+    this.saveNote();
   }
 
   toggleToolbars(show: boolean) {
