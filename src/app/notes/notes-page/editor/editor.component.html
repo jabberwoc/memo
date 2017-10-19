@@ -1,4 +1,4 @@
-<div id="note-title" [hidden]="!editorReady" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }"
+<div id="note-title" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }"
   #noteTitle>
   <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
     {{ selectedNote?.name }}</label>

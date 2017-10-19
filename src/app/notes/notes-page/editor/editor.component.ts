@@ -18,13 +18,10 @@ declare var tinymce: any;
 export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @Output() addNote = new EventEmitter();
-  @Output() noteChanged = new EventEmitter();
+  @Output() changeNote = new EventEmitter<Note>();
 
   @ViewChild('noteTitle')
   private noteTitle: ElementRef;
-
-  @Output() onEditorReady = new EventEmitter<any>();
-  @Output() changeNote = new EventEmitter<Note>();
 
   private selectedNoteValue: Note;
   get selectedNote(): Note {
@@ -46,31 +43,30 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+
   elementId = 'editor';
   editor: any;
   editorReady = false;
   titleEditMode = false;
-  toolbarVisible = true;
+  titleElementHeight = 0;
+  toolbarVisible = false;
   debouncer: Subject<Note> = new Subject<Note>();
   titleForm: FormGroup;
-  // titleEditForm: FormControl = new FormControl('name', [Validators.required]);
-  // get name(): FormControl { return this.titleEditForm; }
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
     this.debouncer
       .debounceTime(300)
-      .subscribe((n) => this.changeNote.emit(n));
+      .subscribe((n) => this.changeNote.next(n));
   }
 
   createTitleForm() {
-    this.titleForm = this.fb.group({ // <-- the parent FormGroup
+    this.titleForm = this.fb.group({
       title: ['', Validators.required]
     });
   }
 
   ngAfterViewInit() {
-
     this.initEditor();
   }
 
@@ -169,9 +165,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   resize(height): void {
     if (this.editorReady) {
-      // if (this.editor) {
       this.editor.theme.resizeTo('100%', height);
-      // }
     }
   }
 
@@ -179,19 +173,20 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.editor = editor;
     editor.on('init', () => this.editorOnInit());
     editor.on('change', () => this.editorOnChange());
+    editor.on('postRender', () => this.editorOnPostRender());
+    editor.on('focus', () => this.editorOnFocus());
+    editor.on('blur', () => this.editorOnBlur());
     // editor.on('keyup', this.onKeyup);
   }
 
   setContent(content: string): void {
     if (this.editorReady) {
-      // if (content !== this.editor.getContent()) {
 
-        this.editor.setContent(content);
-        // TODO on note change only
-        this.editor.undoManager.clear();
+      this.editor.setContent(content);
+      this.editor.undoManager.clear();
       // }
     } else {
-      // (document.getElementById('editor') as HTMLTextAreaElement).value = content;
+      (document.getElementById('editor') as HTMLTextAreaElement).value = content;
     }
   }
 
@@ -218,7 +213,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.editorReady = true;
       this.resizeEditor();
-      this.onEditorReady.next(true);
+      // this.editorVisible.next(true);
     }, 0);
   }
 
@@ -232,17 +227,36 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  editorOnPostRender(): void {
+    this.toggleToolbars(false);
+  }
+
+  editorOnFocus(): void {
+    this.toggleToolbars(true);
+  }
+
+  editorOnBlur(): void {
+    this.toggleToolbars(false);
+  }
+
+  toggleToolbars(show: boolean) {
+    Array.from(<HTMLCollectionOf<HTMLElement>>document.getElementsByClassName('mce-toolbar-grp'))
+      .forEach((_) => {
+        if (show) {
+          _.style.display = 'block';
+        } else {
+          _.style.display = 'none';
+        }
+      });
+
+    this.toolbarVisible = show;
+    this.resizeEditor();
+  }
+
   addEditorTitle(): void {
     const editorArea = document.getElementsByClassName('mce-edit-area')[0];
 
     editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
-
-    // title.keypress(function (e) {
-    //   if (e.which == 13) { // enter
-    //     $(e.target).blur()
-    //     e.preventDefault()
-    //   }
-    // })
   }
 
   setTitleEditMode(isEditable: boolean): void {
@@ -259,19 +273,23 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   resizeEditor(): void {
-    const wrapperHeight = document.getElementById('wrapper').offsetHeight;
-    const noteHeaderHeight = document.getElementById('note-title').offsetHeight;
 
-    let toolbarGrpHeight = 0;
-    // TODO
-    if (this.toolbarVisible) {
-      const elements = document.getElementsByClassName('mce-toolbar-grp');
-      if (elements) {
-        toolbarGrpHeight = elements[0].clientHeight;
-      }
+    if (!this.editorReady) {
+      return;
     }
 
-    const targetHeight = wrapperHeight - toolbarGrpHeight - noteHeaderHeight;
+    const wrapperHeight = document.getElementById('wrapper').offsetHeight;
+    if (!this.titleElementHeight) {
+      this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
+    }
+
+    let toolbarGrpHeight = 0;
+    const elements = document.getElementsByClassName('mce-toolbar-grp');
+    if (elements) {
+      toolbarGrpHeight = elements[0].clientHeight;
+    }
+
+    const targetHeight = wrapperHeight - toolbarGrpHeight - this.titleElementHeight;
 
     this.resize(targetHeight);
   }
