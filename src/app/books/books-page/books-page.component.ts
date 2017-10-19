@@ -4,6 +4,10 @@ import { DataService } from '../../data/data.service';
 import { Book } from '../../entities/book';
 import { AddBookComponent } from './dialog/add-book/add-book.component';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
+import { Store } from '@ngrx/store';
+import { MemoStore } from '../../store/memo-store';
+import { Observable } from 'rxjs/Observable';
+import { AddBookAction, AddBooksAction, DeleteBookAction } from '../../store/actions';
 
 @Component({
   selector: 'app-books-page',
@@ -14,10 +18,13 @@ export class BooksPageComponent implements OnInit {
 
   pageTitle = 'books';
 
-  books: Array<Book> = [];
+  books: Observable<Array<Book>>;
 
   constructor(private dialog: MdDialog,
-    private dataService: DataService) { }
+    private dataService: DataService,
+    private store: Store<MemoStore>) {
+    this.books = this.store.select(_ => _.books);
+  }
 
 
   addBook(): void {
@@ -26,12 +33,12 @@ export class BooksPageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
-        const newBook = new Book('', name, 0);
+        const newBook = new Book(null, name, 0, null);
         this.dataService.createBook(newBook)
           .then(ok => {
             if (ok) {
               console.log('created new book: [' + newBook.id + '] ' + name);
-              this.books.push(newBook);
+              this.store.dispatch(new AddBookAction(newBook));
             } else {
               console.log('error creating book: ' + ok);
             }
@@ -43,13 +50,11 @@ export class BooksPageComponent implements OnInit {
   loadBooks(): void {
     this.dataService.getBooks()
       .then(books => {
-        this.books = books;
-        console.log(books);
+        this.store.dispatch(new AddBooksAction(books));
       });
   }
 
   deleteBook(book: Book): void {
-    const index = this.books.indexOf(book);
     console.log('requested delete book: ' + book);
 
     // confirm
@@ -61,7 +66,8 @@ export class BooksPageComponent implements OnInit {
           .then(ok => {
             if (ok) {
               console.log('book: [' + book.id + '] ' + book.name);
-              this.books.splice(index, 1);
+              this.store.dispatch(new DeleteBookAction(book.id));
+
             } else {
               console.log('error deleting book: ' + ok);
             }
@@ -71,11 +77,6 @@ export class BooksPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.books.push(new Book('1', 'bla', 6));
-    // this.books.push(new Book('2', 'blubb', 42));
-    // this.books.push(new Book('3', 'hans', 7));
-    // this.books.push(new Book('4', 'peter', 14));
-
     this.loadBooks();
   }
 

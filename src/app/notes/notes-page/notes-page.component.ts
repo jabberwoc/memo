@@ -5,10 +5,11 @@ import { DataService } from '../../data/data.service';
 import { Note } from '../../entities/note';
 import { MdDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
-import { NoteStore, CREATE_NOTE, UPDATE_NOTE, SELECT_NOTE, ADD_NOTES } from '../../store/note-store';
+import { MemoStore } from '../../store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
+import { AddNotesAction, AddNoteAction, UpdateBookAction, UpdateNoteAction, SelectNoteAction } from '../../store/actions';
 
 @Component({
   selector: 'app-notes-page',
@@ -37,7 +38,7 @@ export class NotesPageComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MdDialog,
     private dataService: DataService,
-    private store: Store<NoteStore>) {
+    private store: Store<MemoStore>) {
     this.notes = this.store.select(_ => _.notes);
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
     this.selectedNote = Observable.combineLatest(this.notes, this.selectedNoteId,
@@ -50,7 +51,7 @@ export class NotesPageComponent implements OnInit {
     this.route.paramMap.subscribe((params => {
       console.log('params: + ' + params);
 
-      this.book = new Book(params.get('bookId'), params.get('name'), 0);
+      this.book = new Book(params.get('bookId'), params.get('name'), 0, null);
 
       this.dataService.getBook(params.get('bookId'))
         .then(book => {
@@ -65,11 +66,8 @@ export class NotesPageComponent implements OnInit {
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId)
       .then(notes => {
-        this.store.dispatch({
-          type: ADD_NOTES, payload: notes
-        });
+        this.store.dispatch(new AddNotesAction(notes));
 
-        // this.notes = notes;
         console.log(notes);
       });
   }
@@ -85,14 +83,20 @@ export class NotesPageComponent implements OnInit {
           .then(ok => {
             if (ok) {
               console.log('created new note: [' + newNote.id + '] ' + name);
-              // this.notes.push(newNote);
-              this.store.dispatch({
-                type: CREATE_NOTE, payload: newNote
+              this.store.dispatch(new AddNoteAction(newNote));
+
+              // update book count
+              this.book.count++;
+              this.dataService.updateBook(this.book).then(done => {
+                if (done) {
+                  this.store.dispatch(new UpdateBookAction(this.book));
+                } else {
+                  console.log('error creating book');
+                }
               });
 
-              // TODO update book
             } else {
-              console.log('error creating book: ' + ok);
+              console.log('error creating note');
             }
           });
       }
@@ -111,7 +115,7 @@ export class NotesPageComponent implements OnInit {
       .then(ok => {
         if (ok) {
           console.log('note updated: [' + note.id + '] ' + note.name);
-          this.store.dispatch({ type: UPDATE_NOTE, payload: note });
+          this.store.dispatch(new UpdateNoteAction(note));
           this.saveState = LoadingState.INACTIVE;
 
         } else {
@@ -121,7 +125,7 @@ export class NotesPageComponent implements OnInit {
   }
 
   selectNote(id: string) {
-    this.store.dispatch({ type: SELECT_NOTE, payload: id });
+    this.store.dispatch(new SelectNoteAction(id));
   }
 }
 

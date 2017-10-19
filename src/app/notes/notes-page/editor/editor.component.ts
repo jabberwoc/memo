@@ -184,9 +184,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       this.editor.setContent(content);
       this.editor.undoManager.clear();
-      // }
     } else {
-      (document.getElementById('editor') as HTMLTextAreaElement).value = content;
+      const textArea = document.getElementById('editor') as HTMLTextAreaElement;
+      if (textArea) {
+        textArea.value = content;
+      }
     }
   }
 
@@ -212,8 +214,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     setTimeout(() => {
       this.editorReady = true;
+
+      if (this.selectedNote) {
+        this.setContent(this.selectedNote.content);
+      }
+
       this.resizeEditor();
-      // this.editorVisible.next(true);
     }, 0);
   }
 
@@ -248,7 +254,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     //   return;
     // }
 
-    this.saveNote();
+    this.editorOnChange();
   }
 
   toggleToolbars(show: boolean) {

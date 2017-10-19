@@ -11,7 +11,7 @@ import { DataService } from '../../../data/data.service';
 })
 export class BooksListComponent implements OnInit {
 
-  @Input() books: Array<Book> = [];
+  @Input() books: Array<Book>;
   @Output() deleteRequest = new EventEmitter<Book>();
 
   selectedBook: Book;

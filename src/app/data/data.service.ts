@@ -48,21 +48,22 @@ export class DataService {
     const pattern = this.bookUri();
     return this.pouchDbService.all(pattern, pattern + '\uffff', true)
       .then(result => {
-        return result.rows.map(row => new Book(row.doc.id, row.doc.name, row.doc.count));
+        return result.rows.map(row => new Book(row.doc.id, row.doc.name, row.doc.count, row.doc.modified));
       });
   }
 
   getBook(id: string): Promise<Book> {
     return this.pouchDbService.get(this.bookUri({ book: id }))
       .then(book => {
-        return new Book(book.id, book.name, book.count);
+        return new Book(book.id, book.name, book.count, book.modified);
       });
   }
 
   createBook(book: Book): Promise<boolean> {
     book.id = cuid();
     const id = this.bookUri({ book: book.id });
-    return this.pouchDbService.put(id, { id: book.id, name: book.name, count: book.count });
+    book.modified = new Date().toJSON();
+    return this.pouchDbService.put(id, { id: book.id, name: book.name, count: book.count, modified: book.modified });
   }
 
   deleteBook(book: Book): Promise<boolean> {
@@ -117,5 +118,11 @@ export class DataService {
     const id = this.noteUri({ book: note.book, note: note.id });
     note.modified = new Date().toJSON();
     return this.pouchDbService.put(id, { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified });
+  }
+
+  updateBook(book: Book): Promise<boolean> {
+    const id = this.bookUri({ book: book.id });
+    book.modified = new Date().toJSON();
+    return this.pouchDbService.put(id, { id: book.id, name: book.name, count: book.count, modified: book.modified });
   }
 }

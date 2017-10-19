@@ -6,7 +6,7 @@
         <button id="createNotebook" class="btn-nb-add" data-icon="+" (click)="addBook()"></button>
       </header>
 
-      <app-books-list [books]="books" (deleteRequest)="deleteBook($event)"></app-books-list>
+      <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)"></app-books-list>
 
     </div>
   </div>

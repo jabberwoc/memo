@@ -24,7 +24,7 @@ import { MomentModule } from 'angular2-moment';
 import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
 import { StoreModule } from '@ngrx/store';
-import { notes, selectedNoteId } from './store/note-store';
+import { notes, selectedNoteId, books } from './store/memo-store';
 import { BooksModule } from './books/books.module';
 import { NotesModule } from './notes/notes.module';
 
@@ -40,7 +40,7 @@ import { NotesModule } from './notes/notes.module';
     NotesModule,
     // AngularFontAwesomeModule
     // NgbModule.forRoot()
-    StoreModule.forRoot({ notes, selectedNoteId }),
+    StoreModule.forRoot({ notes, selectedNoteId, books }),
   ],
   entryComponents: [
     AddBookComponent,
