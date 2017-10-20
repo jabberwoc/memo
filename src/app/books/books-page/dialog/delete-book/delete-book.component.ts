@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MdDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-delete-book',
@@ -7,12 +7,12 @@ import { MdDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./delete-book.component.css']
 })
 export class DeleteBookComponent {
-
-  constructor(public dialogRef: MdDialogRef<DeleteBookComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(
+    public dialogRef: MatDialogRef<DeleteBookComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   onCancel(): void {
     this.dialogRef.close();
   }
-
 }

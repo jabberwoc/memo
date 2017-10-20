@@ -12,7 +12,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
 import { DataService } from '../../data/data.service';
 import { Note } from '../../entities/note';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../../store/memo-store';
 import { Store } from '@ngrx/store';
@@ -26,6 +26,7 @@ import {
   SelectNoteAction
 } from '../../store/actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+// import { Modal } from 'ngx-modialog/plugins/bootstrap';
 
 @Component({
   selector: 'app-notes-page',
@@ -71,8 +72,9 @@ export class NotesPageComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MdDialog,
+    private dialog: MatDialog,
     private dataService: DataService,
+    // public modal: Modal,
     private store: Store<MemoStore>
   ) {
     this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
@@ -142,6 +144,13 @@ export class NotesPageComponent implements OnInit {
         });
       }
     });
+  }
+
+  delteNote(note: Note): void {
+    // this.modal
+    //   .alert()
+    //   .message('Angular 2 Modal')
+    //   .open();
   }
 
   closeBook(): void {

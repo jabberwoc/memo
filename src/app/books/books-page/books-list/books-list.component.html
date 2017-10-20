@@ -1,11 +1,11 @@
 <div class="books-wrapper">
   <ul id="notebookList" class="tiled" *ngIf="books.length > 0">
-    <li class="book-item" [ngClass]="{ 'selected': b === selectedBook }" *ngFor="let b of books" (click)="select(b)" >
+    <li class="book-item" [ngClass]="{ 'selected': b === selectedBook }" *ngFor="let b of books" (click)="select(b)">
       <button class="btn btn-lg btn-outline-primary" (click)="open(b)">open</button>
       <div class="book-content">
         <div class="book-title" [ngClass]="{ 'selected': b === selectedBook }">
           <span class="book-title-name">
-              {{b.name}}
+            {{b.name}}
             <span class="book-title-count">{{b.count}}</span>
           </span>
         </div>

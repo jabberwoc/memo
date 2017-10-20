@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NotesPageComponent } from './notes-page/notes-page.component';
 import { NotesListComponent } from './notes-page/notes-list/notes-list.component';
 import { EditorComponent } from './notes-page/editor/editor.component';
-import { MdDialogModule, MdButtonModule, MdInputModule } from '@angular/material';
+import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MomentModule } from 'angular2-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,9 +13,9 @@ import { TextPipe } from './notes-page/pipe/text.pipe';
 @NgModule({
   imports: [
     CommonModule,
-    MdDialogModule,
-    MdButtonModule,
-    MdInputModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
@@ -33,7 +33,7 @@ import { TextPipe } from './notes-page/pipe/text.pipe';
     NotesListComponent,
     EditorComponent,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ]
 })
-export class NotesModule { }
+export class NotesModule {}
