@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MomentModule } from 'angular2-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.component';
+import { TextPipe } from './notes-page/pipe/text.pipe';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.componen
     NotesPageComponent,
     NotesListComponent,
     EditorComponent,
-    AddNoteComponent
+    AddNoteComponent,
+    TextPipe
   ],
   exports: [
     NotesPageComponent,

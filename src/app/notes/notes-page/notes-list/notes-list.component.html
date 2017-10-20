@@ -5,6 +5,6 @@
     <p class="list-group-item-text note-modified">
       {{n.modified | amTimeAgo}}
     </p>
-    <p class="list-group-item-text note-excerpt">{{(n.content) || '...'}}</p>
+    <p class="list-group-item-text note-excerpt">{{(n.content) | text}}</p>
   </li>
 </ul>

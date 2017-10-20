@@ -1,6 +1,16 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output,
-  ViewChild, ElementRef, Renderer2, NgZone, HostListener
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  NgZone,
+  HostListener
 } from '@angular/core';
 import { Note } from '../../../entities/note';
 import { Subject } from 'rxjs/Subject';
@@ -14,14 +24,11 @@ declare var tinymce: any;
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
-
 export class EditorComponent implements AfterViewInit, OnDestroy {
-
   @Output() addNote = new EventEmitter();
   @Output() changeNote = new EventEmitter<Note>();
 
-  @ViewChild('noteTitle')
-  private noteTitle: ElementRef;
+  @ViewChild('noteTitle') private noteTitle: ElementRef;
 
   private selectedNoteValue: Note;
   get selectedNote(): Note {
@@ -43,7 +50,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-
   elementId = 'editor';
   editor: any;
   editorReady = false;
@@ -55,9 +61,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
-    this.debouncer
-      .debounceTime(300)
-      .subscribe((n) => this.changeNote.next(n));
+    this.debouncer.debounceTime(300).subscribe(n => this.changeNote.next(n));
   }
 
   createTitleForm() {
@@ -80,8 +84,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     if (NgZone.isInAngularZone()) {
       debounceNext();
     } else {
-      this.ngZone.run(() =>
-        debounceNext());
+      this.ngZone.run(() => debounceNext());
     }
   }
 
@@ -116,10 +119,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         'insertdatetime nonbreaking save table contextmenu',
         'paste textcolor colorpicker textpattern imagetools codesample code noneditable'
       ],
-      toolbar: 'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | '
-      + 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | '
-      + 'todoList bullist numlist outdent indent | link image print | codesample | '
-      + 'fullscreen code',
+      toolbar:
+        'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | ' +
+        'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | ' +
+        'todoList bullist numlist outdent indent | link image print | codesample | ' +
+        'fullscreen code',
       image_advtab: true,
       image_title: true,
       link_context_toolbar: true,
@@ -127,11 +131,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       automatic_uploads: true,
       file_picker_types: 'image',
       file_picker_callback: this.filePickerCallback,
-      setup: (ed) => this.setupEditor(ed),
+      setup: ed => this.setupEditor(ed),
       custom_shortcuts: false
     });
   }
-
 
   // TODO
   filePickerCallback(cb, value, meta): void {
@@ -139,16 +142,16 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
-    input.onchange = function (e: any) {
+    input.onchange = function(e: any) {
       const file = e.target.files[0];
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = function () {
+      reader.onload = function() {
         // Note: Now we need to register the blob in TinyMCEs image blob
         // registry. In the next release this part hopefully won't be
         // necessary, as we are looking to handle it internally.
-        const id = 'blobid' + (new Date()).getTime();
+        const id = 'blobid' + new Date().getTime();
         const blobCache = tinymce.activeEditor.editorUpload.blobCache;
         const base64 = reader.result.split(',')[1];
         const blobInfo = blobCache.create(id, file, base64);
@@ -160,7 +163,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     };
 
     input.click();
-
   }
 
   resize(height): void {
@@ -176,12 +178,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('postRender', () => this.editorOnPostRender());
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
-    editor.on('keyup', (e) => this.editorOnKeyup(e));
+    editor.on('keyup', e => this.editorOnKeyup(e));
   }
 
   setContent(content: string): void {
     if (this.editorReady) {
-
       this.editor.setContent(content);
       this.editor.undoManager.clear();
     } else {
@@ -260,14 +261,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleToolbars(show: boolean) {
-    Array.from(<HTMLCollectionOf<HTMLElement>>document.getElementsByClassName('mce-toolbar-grp'))
-      .forEach((_) => {
-        if (show) {
-          _.style.display = 'block';
-        } else {
-          _.style.display = 'none';
-        }
-      });
+    Array.from(<HTMLCollectionOf<HTMLElement>>document.getElementsByClassName(
+      'mce-toolbar-grp'
+    )).forEach(_ => {
+      if (show) {
+        _.style.display = 'block';
+      } else {
+        _.style.display = 'none';
+      }
+    });
 
     this.toolbarVisible = show;
     this.resizeEditor();
@@ -283,7 +285,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.titleEditMode = isEditable;
 
     if (this.titleEditMode) {
-
       // focus
       setTimeout(() => {
         this.noteTitle.nativeElement.getElementsByTagName('input')[0].focus();
@@ -293,7 +294,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   resizeEditor(): void {
-
     if (!this.editorReady) {
       return;
     }

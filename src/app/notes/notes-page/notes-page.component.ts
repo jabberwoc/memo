@@ -33,10 +33,28 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
   styleUrls: ['./notes-page.component.css'],
   animations: [
     trigger('saveState', [
-      state('inactive', style({ opacity: 0 })),
-      state('active', style({ opactiy: 1 })),
+      state(
+        'inactive',
+        style({
+          opacity: 0
+        })
+      ),
+      state(
+        'active',
+        style({
+          opactiy: 1
+        })
+      ),
       // transition('inactive => active', animate('1000ms ease-in')),
-      transition('active => inactive', animate(1000, style({ opacity: 0 })))
+      transition(
+        'active => inactive',
+        animate(
+          1000,
+          style({
+            opacity: 0
+          })
+        )
+      )
     ])
   ]
 })
@@ -57,15 +75,11 @@ export class NotesPageComponent implements OnInit {
     private dataService: DataService,
     private store: Store<MemoStore>
   ) {
-    this.notes = this.store
-    .select(_ => _.notes)
-    .map(_ => _.sort(Note.modifiedComparer));
-    this.filteredNotes = this.notes.combineLatest(
-      this.noteFilter,
-      (notes, filter) =>
-        notes.filter(n => {
-          return filter ? n.name.indexOf(filter) !== -1 : true;
-        })
+    this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
+    this.filteredNotes = this.notes.combineLatest(this.noteFilter, (notes, filter) =>
+      notes.filter(n => {
+        return filter ? n.name.indexOf(filter) !== -1 : true;
+      })
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
     this.selectedNote = Observable.combineLatest(
@@ -76,8 +90,7 @@ export class NotesPageComponent implements OnInit {
       }
     );
 
-    this.noteFilter.subscribe(filter =>
-      console.log(filter));
+    this.noteFilter.subscribe(filter => console.log(filter));
   }
 
   ngOnInit() {
