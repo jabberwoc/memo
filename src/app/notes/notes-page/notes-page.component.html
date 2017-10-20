@@ -19,7 +19,7 @@
         </div>
 
         <div id="noteSearch">
-          <input class="form-control search-box" type="text" placeholder="Search">
+          <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="noteFilter.next($event)">
         </div>
       </header>
 

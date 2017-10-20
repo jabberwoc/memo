@@ -254,7 +254,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     //   return;
     // }
 
-    this.editorOnChange();
+    if (this.selectedNote) {
+      this.editorOnChange();
+    }
   }
 
   toggleToolbars(show: boolean) {

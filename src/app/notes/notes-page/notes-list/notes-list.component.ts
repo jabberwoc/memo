@@ -21,8 +21,6 @@ export class NotesListComponent implements OnInit {
   ngOnInit() { }
 
   select(id: string): void {
-    // this.selectedNote = note;
-    // console.log(this.selectedNote.name + ' selected.');
     this.selectNote.next(id);
   }
 }

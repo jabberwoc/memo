@@ -1,4 +1,13 @@
-import { Component, OnInit, OnDestroy, trigger, state, style, transition, animate } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
 import { DataService } from '../../data/data.service';
@@ -9,7 +18,14 @@ import { MemoStore } from '../../store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
-import { AddNotesAction, AddNoteAction, UpdateBookAction, UpdateNoteAction, SelectNoteAction } from '../../store/actions';
+import {
+  AddNotesAction,
+  AddNoteAction,
+  UpdateBookAction,
+  UpdateNoteAction,
+  SelectNoteAction
+} from '../../store/actions';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'app-notes-page',
@@ -24,52 +40,65 @@ import { AddNotesAction, AddNoteAction, UpdateBookAction, UpdateNoteAction, Sele
     ])
   ]
 })
-
 export class NotesPageComponent implements OnInit {
-
   book: Book;
   notes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
   selectedNoteId: Observable<string>;
+  noteFilter = new BehaviorSubject<string>(null);
 
   saveState = LoadingState.INACTIVE;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private dialog: MdDialog,
     private dataService: DataService,
-    private store: Store<MemoStore>) {
-    this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
+    private store: Store<MemoStore>
+  ) {
+    this.notes = this.store
+    .select(_ => _.notes)
+    .map(_ => _.sort(Note.modifiedComparer))
+    .combineLatest(
+      this.noteFilter,
+      (notes, filter) =>
+        notes.filter(n => {
+          return filter ? n.name.indexOf(filter) !== -1 : true;
+        })
+    );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
-    this.selectedNote = Observable.combineLatest(this.notes, this.selectedNoteId,
+    this.selectedNote = Observable.combineLatest(
+      this.notes,
+      this.selectedNoteId,
       (notes, selectedId) => {
         return notes.find(_ => _.id === selectedId) || null;
-      });
+      }
+    );
+
+    this.noteFilter.subscribe(filter =>
+      console.log(filter));
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params => {
+    this.route.paramMap.subscribe(params => {
       console.log('params: + ' + params);
 
       this.book = new Book(params.get('bookId'), params.get('name'), 0, null);
 
-      this.dataService.getBook(params.get('bookId'))
-        .then(book => {
-          this.book = book;
-          console.log('selected book: ' + this.book.name + '... loading notes..');
-          this.loadNotes(this.book.id);
-        });
-
-    }));
+      this.dataService.getBook(params.get('bookId')).then(book => {
+        this.book = book;
+        console.log('selected book: ' + this.book.name + '... loading notes..');
+        this.loadNotes(this.book.id);
+      });
+    });
   }
 
   loadNotes(bookId: string): void {
-    this.dataService.getNotes(bookId)
-      .then(notes => {
-        this.store.dispatch(new AddNotesAction(notes));
+    this.dataService.getNotes(bookId).then(notes => {
+      this.store.dispatch(new AddNotesAction(notes));
 
-        console.log(notes);
-      });
+      console.log(notes);
+    });
   }
 
   addNote(): void {
@@ -79,26 +108,24 @@ export class NotesPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
         const newNote = new Note(null, name, this.book.id, '', null);
-        this.dataService.createNote(newNote)
-          .then(ok => {
-            if (ok) {
-              console.log('created new note: [' + newNote.id + '] ' + name);
-              this.store.dispatch(new AddNoteAction(newNote));
+        this.dataService.createNote(newNote).then(ok => {
+          if (ok) {
+            console.log('created new note: [' + newNote.id + '] ' + name);
+            this.store.dispatch(new AddNoteAction(newNote));
 
-              // update book count
-              this.book.count++;
-              this.dataService.updateBook(this.book).then(done => {
-                if (done) {
-                  this.store.dispatch(new UpdateBookAction(this.book));
-                } else {
-                  console.log('error creating book');
-                }
-              });
-
-            } else {
-              console.log('error creating note');
-            }
-          });
+            // update book count
+            this.book.count++;
+            this.dataService.updateBook(this.book).then(done => {
+              if (done) {
+                this.store.dispatch(new UpdateBookAction(this.book));
+              } else {
+                console.log('error creating book');
+              }
+            });
+          } else {
+            console.log('error creating note');
+          }
+        });
       }
     });
   }
@@ -111,17 +138,15 @@ export class NotesPageComponent implements OnInit {
   updateNote(note: Note) {
     // TODO save
     this.saveState = LoadingState.ACTIVE;
-    this.dataService.updateNote(note)
-      .then(ok => {
-        if (ok) {
-          console.log('note updated: [' + note.id + '] ' + note.name);
-          this.store.dispatch(new UpdateNoteAction(note));
-          this.saveState = LoadingState.INACTIVE;
-
-        } else {
-          console.log('error updating note: ' + ok);
-        }
-      });
+    this.dataService.updateNote(note).then(ok => {
+      if (ok) {
+        console.log('note updated: [' + note.id + '] ' + note.name);
+        this.store.dispatch(new UpdateNoteAction(note));
+        this.saveState = LoadingState.INACTIVE;
+      } else {
+        console.log('error updating note: ' + ok);
+      }
+    });
   }
 
   selectNote(id: string) {
