@@ -23,7 +23,7 @@
         </div>
       </header>
 
-      <app-notes-list [notes]="notes | async" [selectedNoteId]="selectedNoteId | async" (selectNote)="selectNote($event)" [bookTitle]="book.name">
+      <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" (selectNote)="selectNote($event)" [bookTitle]="book.name">
       </app-notes-list>
 
     </div>

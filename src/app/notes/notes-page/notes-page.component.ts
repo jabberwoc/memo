@@ -43,6 +43,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class NotesPageComponent implements OnInit {
   book: Book;
   notes: Observable<Array<Note>>;
+  filteredNotes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
   selectedNoteId: Observable<string>;
   noteFilter = new BehaviorSubject<string>(null);
@@ -58,8 +59,8 @@ export class NotesPageComponent implements OnInit {
   ) {
     this.notes = this.store
     .select(_ => _.notes)
-    .map(_ => _.sort(Note.modifiedComparer))
-    .combineLatest(
+    .map(_ => _.sort(Note.modifiedComparer));
+    this.filteredNotes = this.notes.combineLatest(
       this.noteFilter,
       (notes, filter) =>
         notes.filter(n => {
