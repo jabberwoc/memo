@@ -18,6 +18,10 @@
   padding: 2px 4px !important;
 }
 
+.mce-container::before {
+  box-shadow: none !important;
+}
+
 .mce-listbox button {
   padding-right: 20px !important;
 }
@@ -38,10 +42,11 @@
   border-top: 0 !important;
 }
 
-
 /* content styles */
 
-a, a:active, a:focus {
+a,
+a:active,
+a:focus {
   color: #139ff7;
 }
 
@@ -50,7 +55,10 @@ a:hover {
   color: #00f;
 }
 
-table.mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
+table.mce-item-table,
+.mce-item-table td,
+.mce-item-table th,
+.mce-item-table caption {
   border: none;
 }
 
@@ -60,12 +68,12 @@ ul.todo-list {
 }
 
 ul.todo-list input[type='checkbox'] {
-  margin-right: .5em;
+  margin-right: 0.5em;
   vertical-align: middle;
 }
 
 i.mce-i-todoList:before {
-  content: "\f046";
+  content: '\f046';
   font-family: FontAwesome;
 }
 
@@ -98,5 +106,3 @@ i.mce-i-todoList:before {
 .validation-error {
   background: lightcoral !important;
 }
-
-
