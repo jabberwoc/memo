@@ -1,6 +1,6 @@
 <ul id="noteList" class="list-group">
   <li class="list-group-item" *ngFor="let n of notes" (click)="select(n.id)" [ngClass]="{ 'selected': n.id === selectedNoteId }">
-    <button class="icon icon-trash note-icon plain-btn btn-delete"></button>
+    <button class="icon icon-trash note-icon btn-icon btn-delete" (click)="delete(n);$event.stopPropagation();"></button>
     <h4 class="note-name">{{n.name}}</h4>
     <p class="list-group-item-text note-modified">
       {{n.modified | amTimeAgo}}

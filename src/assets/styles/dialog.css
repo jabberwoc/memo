@@ -1,0 +1,41 @@
+/* modal dialog */
+dialog {
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0 9px 46px 8px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  min-width: 300px;
+  min-height: 200px;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dialog-header {
+  padding: 1em;
+  background-color: slategray;
+  color: white;
+}
+
+.dialog-header > .title {
+  color: inherit;
+  font-size: 1.3em;
+}
+
+.dialog-content {
+  text-align: center;
+  padding: 2em;
+  color: #444;
+  background-color: #fff;
+}
+
+dialog .dialog-buttons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* border-top: 1px solid lightgray; */
+}

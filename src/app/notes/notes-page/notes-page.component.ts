@@ -23,10 +23,10 @@ import {
   AddNoteAction,
   UpdateBookAction,
   UpdateNoteAction,
-  SelectNoteAction
+  SelectNoteAction,
+  DeleteNoteAction
 } from '../../store/actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-// import { Modal } from 'ngx-modialog/plugins/bootstrap';
 
 @Component({
   selector: 'app-notes-page',
@@ -74,7 +74,6 @@ export class NotesPageComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private dataService: DataService,
-    // public modal: Modal,
     private store: Store<MemoStore>
   ) {
     this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
@@ -146,11 +145,14 @@ export class NotesPageComponent implements OnInit {
     });
   }
 
-  delteNote(note: Note): void {
-    // this.modal
-    //   .alert()
-    //   .message('Angular 2 Modal')
-    //   .open();
+  deleteNote(note: Note): void {
+    this.dataService.deleteNote(note).then(ok => {
+      if (ok) {
+        this.store.dispatch(new DeleteNoteAction(note.id));
+      } else {
+        console.log('error creating book');
+      }
+    });
   }
 
   closeBook(): void {

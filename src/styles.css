@@ -1,8 +1,11 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-@import "../node_modules/photonkit/dist/css/photon.css";
-@import "assets/styles/editor.css";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '../node_modules/photonkit/dist/css/photon.css';
+@import 'assets/styles/editor.css';
+@import 'assets/styles/dialog.css';
 
-html, body, section {
+html,
+body,
+section {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -16,17 +19,42 @@ html, body, section {
   color: #444;
 }
 
-
 /* buttons */
+.btn-plain {
+  box-sizing: border-box;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+  outline: 0;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 2px;
+  min-width: 88px;
+  font-size: 1em;
+  line-height: 2em;
+  border-radius: 2px;
+  color: #444;
+  background: transparent;
+}
 
-.plain-btn {
+.btn-plain:hover {
+  /* border: 1px solid lightslategray; */
+  background: slategray;
+  color: white;
+  /* border-radius: 0; */
+}
+
+.btn-icon {
   font-size: 1.5em;
   border: 0;
   background: transparent;
   cursor: pointer;
 }
 
-.plain-btn span {
+.btn-icon span {
   cursor: inherit;
 }
 
@@ -51,7 +79,6 @@ button:focus {
   background: #eee;
   box-shadow: 0 0 0 0;
 }
-
 
 /*
 .pane-group {
@@ -111,9 +138,7 @@ button:focus {
   /* border-right: 1px solid #ddd; */
 }
 
-
 /* icons */
-
 
 /* .icon {
   margin-right: 5px;
@@ -134,35 +159,9 @@ button:focus {
   content: '+';
 } */
 
-[data-icon]:before {
+/* [data-icon]:before {
   font-family: icons;
   font-weight: bold;
   content: attr(data-icon);
   speak: none;
-}
-
-
-/* .mat-dialog-container {
-  width: auto;
-  height: auto;
-} */
-
-
-/*
-md-dialog-container {
-  width: auto;
-  height: auto;
-  position: fixed;
-  left: 10%;
-  top: 10%;
-  right: 10%;
-  background-color: white;
-  z-index: 100000;
-} */
-
-
-/* md-dialog {
-  height: auto;
-  vertical-align: central;
-  align-items: center;
 } */

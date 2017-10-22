@@ -5,7 +5,7 @@
 
       <header id="notebookHeader">
 
-        <button id="notebooksButton" class="plain-btn dark-themed btn-section" (click)="closeBook()">
+        <button id="notebooksButton" class="btn-icon dark-themed btn-section" (click)="closeBook()">
           <!-- <i class="fa fa-book fa-fw" aria-hidden="true"></i> -->
           <span class="icon icon-book"></span>
         </button>
@@ -13,7 +13,7 @@
         <div class="loader" [@saveState]="saveState"></div>
 
         <div class="btn-group">
-          <button class="add-note plain-btn btn-add dark-themed" (click)="addNote()">
+          <button class="add-note btn-icon btn-add dark-themed" (click)="addNote()">
             <span class="icon icon-list-add"></span>
           </button>
         </div>
@@ -23,12 +23,16 @@
         </div>
       </header>
 
-      <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" (selectNote)="selectNote($event)" [bookTitle]="book.name">
+      <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
+        (deleteNote)="deleteNoteDialog.open($event)">
       </app-notes-list>
 
     </div>
     <div id="wrapper" class="pane">
       <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote($event)></app-editor>
     </div>
+
+    <app-delete-note (deleteConfirmed)="deleteNote($event)" #deleteNoteDialog></app-delete-note>
+
   </div>
 </section>

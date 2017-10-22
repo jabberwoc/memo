@@ -1,7 +1,17 @@
 import { Note } from '../entities/note';
 import { Book } from '../entities/book';
 import * as StoreActions from './actions';
-import { ADD_NOTES, ADD_NOTE, UPDATE_NOTE, DELETE_NOTE, SELECT_NOTE, ADD_BOOKS, ADD_BOOK, UPDATE_BOOK, DELETE_BOOK } from './actions';
+import {
+  ADD_NOTES,
+  ADD_NOTE,
+  UPDATE_NOTE,
+  DELETE_NOTE,
+  SELECT_NOTE,
+  ADD_BOOKS,
+  ADD_BOOK,
+  UPDATE_BOOK,
+  DELETE_BOOK
+} from './actions';
 
 // export type Action = StoreActions.;
 
@@ -10,7 +20,6 @@ export interface MemoStore {
   books: Array<Book>;
   selectedNoteId: string;
 }
-
 
 export function notes(state: Array<Note> = [], action: StoreActions.NoteActions) {
   switch (action.type) {
@@ -21,11 +30,11 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
     case UPDATE_NOTE:
       return state.map(note => {
         const payload = action.payload;
-        return note.id === payload.id ? new Note(payload.id, payload.name,
-          payload.book, payload.content, payload.modified) : note;
+        return note.id === payload.id
+          ? new Note(payload.id, payload.name, payload.book, payload.content, payload.modified)
+          : note;
       });
     case DELETE_NOTE:
-      // TODO scan?
       return state.filter(note => {
         return note.id !== action.payload;
       });
@@ -34,10 +43,12 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
   }
 }
 
-export function selectedNoteId(state: string = null, action: StoreActions.SelectNoteAction) {
+export function selectedNoteId(state: string = null, action: StoreActions.SelectNoteActions) {
   switch (action.type) {
     case SELECT_NOTE:
       return action.payload;
+    case DELETE_NOTE:
+      return action.payload === state ? null : state;
     default:
       return state;
   }
@@ -52,8 +63,9 @@ export function books(state: Array<Book> = [], action: StoreActions.BookActions)
     case UPDATE_BOOK:
       const payload = action.payload;
       return state.map(book => {
-        return book.id === payload.id ? new Book(payload.id, payload.name,
-          payload.count, payload.modified) : book;
+        return book.id === payload.id
+          ? new Book(payload.id, payload.name, payload.count, payload.modified)
+          : book;
       });
     case DELETE_BOOK:
       return state.filter(book => {

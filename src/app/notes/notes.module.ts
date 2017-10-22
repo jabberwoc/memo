@@ -9,6 +9,7 @@ import { MomentModule } from 'angular2-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.component';
 import { TextPipe } from './notes-page/pipe/text.pipe';
+import { DeleteNoteComponent } from './notes-page/dialog/delete-note/delete-note.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { TextPipe } from './notes-page/pipe/text.pipe';
     NotesListComponent,
     EditorComponent,
     AddNoteComponent,
-    TextPipe
+    TextPipe,
+    DeleteNoteComponent
   ],
   exports: [
     NotesPageComponent,

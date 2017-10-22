@@ -8,19 +8,22 @@ import { Note } from '../../../entities/note';
   styleUrls: ['./notes-list.component.css']
 })
 export class NotesListComponent implements OnInit {
-
   @Input() bookTitle: string;
   @Input() notes: Array<Note>;
   @Input() selectedNoteId: string;
 
   @Output() selectNote = new EventEmitter<string>();
-  @Output() deleteRequest = new EventEmitter<Note>();
+  @Output() deleteNote = new EventEmitter<Note>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   select(id: string): void {
     this.selectNote.next(id);
+  }
+
+  delete(note: Note): void {
+    this.deleteNote.next(note);
   }
 }
