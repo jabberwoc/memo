@@ -1,13 +1,13 @@
-#noteList .list-group-item {
+.note-list-item {
   border-top: 1px solid #666;
   color: #ddd;
 }
 
-#noteList .list-group-item:first-child {
+.note-list-item:first-child {
   border-top: 0;
 }
 
-#noteList .list-group-item-text {
+.note-list-item-text {
   color: gray;
 }
 
@@ -15,17 +15,17 @@
   background-color: white;
 }
 
-#noteList .selected {
+.note-list .selected {
   /*background: lightslategray;*/
   background: linear-gradient(90deg, #444, lightslategray);
   color: white;
 }
 
-#noteList .selected .list-group-item-text {
+.note-list .selected .note-list-item-text {
   color: lightgray;
 }
 
-#noteList h4 {
+.note-list h4 {
   margin: 0;
   font-size: 18px;
   font-weight: 500;

@@ -19,31 +19,25 @@ app-notes-list {
   flex-direction: column;
 }
 
-#notebookHeader {
-  /* position: relative;
-  top: 0;
-  left: 0;
-  right: 0; */
+.note-list-header {
   background: #444;
   margin: 0;
   padding: 0;
-  /*width: 220px;*/
-
   flex: none;
 }
 
-#notebookHeader .title {
+.note-list-header .title {
   color: #eee;
   font-size: 1.5em;
   /* 18px*/
   /*margin: auto auto;*/
 }
 
-#notebookHeader .btn-group {
+.note-list-header .btn-group {
   float: right;
 }
 
-#noteSearch {
+.note-search {
   padding: 10px;
 }
 
@@ -56,7 +50,6 @@ app-notes-list {
   width: 100%;
   height: 100%;
   background: lightgray;
-  /*background-image: linear-gradient(180deg, slategray, lightgray);*/
   display: none;
 }
 

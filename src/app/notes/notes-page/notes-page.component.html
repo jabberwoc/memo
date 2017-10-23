@@ -3,10 +3,9 @@
   <div class="pane-group">
     <div class="pane pane-sm sidebar">
 
-      <header id="notebookHeader">
+      <header class="note-list-header">
 
-        <button id="notebooksButton" class="btn-icon dark-themed btn-section" (click)="closeBook()">
-          <!-- <i class="fa fa-book fa-fw" aria-hidden="true"></i> -->
+        <button class="btn-icon dark-themed btn-section" (click)="closeBook()">
           <span class="icon icon-book"></span>
         </button>
         <span id="bookTitle" class="title dark-themed">{{book.name}}</span>
@@ -18,7 +17,7 @@
           </button>
         </div>
 
-        <div id="noteSearch">
+        <div class="note-search">
           <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="noteFilter.next($event)">
         </div>
       </header>
