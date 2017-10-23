@@ -1,5 +1,5 @@
 <dialog id="delete-dialog" #deleteNoteDialog>
-  <div class="dialog-header">
+  <div class="dialog-header delete">
     <h1 class="title">Confirm delete</h1>
   </div>
 
@@ -8,7 +8,7 @@
   </div>
 
   <div class="dialog-buttons">
-    <button id="cancel" class="btn btn-plain" (click)="close(false)">Cancel</button>
-    <button id="delete" class="btn btn-plain pull-right" (click)="close(true)">Delete</button>
+    <button id="cancel" class="btn btn-plain btn-cancel btn-left" (click)="close(false)">Cancel</button>
+    <button id="delete" class="btn btn-plain btn-delete btn-right" (click)="close(true)">Delete</button>
   </div>
 </dialog>
