@@ -5,6 +5,7 @@
     <p class="note-list-item-text note-modified">
       {{n.modified | amTimeAgo}}
     </p>
-    <p class="note-list-item-text note-excerpt">{{(n.content) | text}}</p>
+    <p *ngIf="n.content" class="note-list-item-text note-excerpt">{{(n.content) | text}}</p>
+    <span *ngIf="!n.content" class="icon icon-pencil note-list-item-text note-excerpt"></span>
   </li>
 </ul>
