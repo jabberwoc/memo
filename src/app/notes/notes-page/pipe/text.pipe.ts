@@ -6,7 +6,7 @@ export class TextPipe implements PipeTransform {
     if (value) {
       const parser = new DOMParser();
       const dom = parser.parseFromString(value, 'text/html');
-      return dom.body.textContent;
+      return dom.body.textContent.substring(0, 50).replace(/\s/g, ' ');
     }
 
     return '...';
