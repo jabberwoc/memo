@@ -71,3 +71,8 @@ dialog .dialog-buttons {
   color: white;
   background: #f04949;
 }
+
+.dialog-note-name {
+  font-size: 2em;
+  color: slategray;
+}
