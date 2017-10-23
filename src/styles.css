@@ -2,6 +2,7 @@
 @import '../node_modules/photonkit/dist/css/photon.css';
 @import 'assets/styles/editor.css';
 @import 'assets/styles/dialog.css';
+@import 'assets/styles/scrollbar.css';
 
 html,
 body,
