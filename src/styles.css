@@ -75,8 +75,18 @@ button:focus {
   outline: 0;
 }
 
+.form-control {
+  border-radius: 3px;
+  border: 0;
+  background: lightgray;
+}
+
 .form-control:focus {
-  border-color: #99aabb;
-  background: #eee;
+  border-color: #9ab;
+  background: #fff;
   box-shadow: 0 0 0 0;
+}
+
+.search-box::-webkit-input-placeholder {
+  color: #444;
 }

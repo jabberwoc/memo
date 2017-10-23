@@ -79,7 +79,7 @@ export class NotesPageComponent implements OnInit {
     this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
     this.filteredNotes = this.notes.combineLatest(this.noteFilter, (notes, filter) =>
       notes.filter(n => {
-        return filter ? n.name.indexOf(filter) !== -1 : true;
+        return filter ? n.name.toLowerCase().indexOf(filter) !== -1 : true;
       })
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
@@ -176,6 +176,10 @@ export class NotesPageComponent implements OnInit {
 
   selectNote(id: string) {
     this.store.dispatch(new SelectNoteAction(id));
+  }
+
+  filter(text: string) {
+    this.noteFilter.next(text.toLowerCase());
   }
 }
 

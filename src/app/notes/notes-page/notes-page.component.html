@@ -17,8 +17,8 @@
           </button>
         </div>
 
-        <div class="note-search">
-          <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="noteFilter.next($event)">
+        <div class="note-filter">
+          <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
         </div>
       </header>
 
