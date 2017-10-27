@@ -27,6 +27,7 @@ import {
   DeleteNoteAction
 } from '../../store/actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 
 @Component({
   selector: 'app-notes-page',
@@ -117,7 +118,6 @@ export class NotesPageComponent implements OnInit {
   }
 
   addNote(): void {
-    // TODO ngx-modialog
     const dialogRef = this.dialog.open(AddNoteComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
@@ -146,11 +146,16 @@ export class NotesPageComponent implements OnInit {
   }
 
   deleteNote(note: Note): void {
-    this.dataService.deleteNote(note).then(ok => {
-      if (ok) {
-        this.store.dispatch(new DeleteNoteAction(note.id));
-      } else {
-        console.log('error creating book');
+    const dialogRef = this.dialog.open(DeleteNoteComponent, { data: { name: note.name } });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed === true) {
+        this.dataService.deleteNote(note).then(ok => {
+          if (ok) {
+            this.store.dispatch(new DeleteNoteAction(note.id));
+          } else {
+            console.log('error creating book');
+          }
+        });
       }
     });
   }

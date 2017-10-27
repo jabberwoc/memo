@@ -30,6 +30,7 @@ import { StoreModule } from '@ngrx/store';
 import { notes, selectedNoteId, books } from './store/memo-store';
 import { BooksModule } from './books/books.module';
 import { NotesModule } from './notes/notes.module';
+import { DeleteNoteComponent } from './notes/notes-page/dialog/delete-note/delete-note.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,7 +45,7 @@ import { NotesModule } from './notes/notes.module';
     // ModalModule.forRoot(),
     StoreModule.forRoot({ notes, selectedNoteId, books })
   ],
-  entryComponents: [AddBookComponent, DeleteBookComponent, AddNoteComponent],
+  entryComponents: [AddBookComponent, DeleteBookComponent, AddNoteComponent, DeleteNoteComponent],
   providers: [DataService, PouchDbService],
   bootstrap: [AppComponent]
 })

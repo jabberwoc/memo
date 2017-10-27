@@ -23,15 +23,13 @@
       </header>
 
       <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
-        (deleteNote)="deleteNoteDialog.open($event)">
+        (deleteNote)="deleteNote($event)">
       </app-notes-list>
 
     </div>
     <div id="wrapper" class="pane">
       <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote($event)></app-editor>
     </div>
-
-    <app-delete-note (deleteConfirmed)="deleteNote($event)" #deleteNoteDialog></app-delete-note>
-
+    <!-- <app-delete-note (deleteConfirmed)="deleteNote($event)" #deleteNoteDialog></app-delete-note> -->
   </div>
 </section>

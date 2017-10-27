@@ -1,12 +1,12 @@
-<h2 md-dialog-title>add note</h2>
-
-<div md-dialog-content>
- <md-form-field>
-  <input mdInput tabindex="1" placeholder="Name" #nameInput>
-</md-form-field>
+<div class="dialog-header add">
+  <h1 class="title">Add note</h1>
 </div>
 
-<div md-dialog-actions>
-    <button md-button  (click)="onCancel()" tabindex="-1">Cancel</button>
-    <button md-button (click)="dialogRef.close(nameInput.value)" tabindex="2">Ok</button>
+<div class="dialog-content">
+  <input class="form-control" type="text" tabindex="1" placeholder="Name" #nameInput (keyup.enter)="okButton.click()">
+</div>
+
+<div class="dialog-buttons">
+  <button id="cancel" class="btn btn-plain btn-cancel btn-left" (click)="onCancel()">Cancel</button>
+  <button id="ok" class="btn btn-plain btn-add btn-right" (click)="dialogRef.close(nameInput.value)" #okButton>Ok</button>
 </div>

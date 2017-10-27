@@ -5,36 +5,26 @@ import {
   EventEmitter,
   Input,
   ViewChild,
-  ElementRef
+  ElementRef,
+  trigger,
+  transition,
+  style,
+  animate,
+  state,
+  Inject
 } from '@angular/core';
 import { Note } from '../../../../entities/note';
 import { Observable } from 'rxjs/Observable';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-delete-note',
   templateUrl: './delete-note.component.html',
   styleUrls: ['./delete-note.component.css']
 })
-export class DeleteNoteComponent implements OnInit {
-  @ViewChild('deleteNoteDialog') private dialog: ElementRef;
-
-  @Output() deleteConfirmed = new EventEmitter<Note>();
-  note: Note;
-
-  constructor() {}
-
-  ngOnInit() {}
-
-  close(ok: boolean) {
-    if (ok) {
-      this.deleteConfirmed.next(this.note);
-    }
-
-    this.dialog.nativeElement.close();
-  }
-
-  public open(note: Note) {
-    this.note = note;
-    this.dialog.nativeElement.showModal();
-  }
+export class DeleteNoteComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DeleteNoteComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 }
