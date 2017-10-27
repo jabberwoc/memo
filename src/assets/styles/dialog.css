@@ -97,7 +97,7 @@ dialog::backdrop {
   background: lightslategray;
 }
 
-.dialog-note-name {
+.dialog-input-name {
   font-size: 2em;
   color: slategray;
 }
