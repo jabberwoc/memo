@@ -1,9 +1,12 @@
 <section id="books-section">
   <div class="pane-group">
     <div class="pane">
-      <header class="nb-header">
-        <h1><span class="icon icon-book"></span> {{pageTitle}}</h1>
-        <button id="createNotebook" class="btn-nb-add" data-icon="+" (click)="addBook()"></button>
+      <header class="books-header">
+        <h1>
+          <span class="icon icon-book"></span> {{pageTitle}}</h1>
+        <button id="createNotebook" class="btn-nb-add" (click)="addBook()">
+          <span class="icon icon-plus"></span>
+        </button>
       </header>
 
       <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)"></app-books-list>

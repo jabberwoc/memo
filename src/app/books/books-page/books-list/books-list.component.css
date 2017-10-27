@@ -23,7 +23,7 @@
   width: 200px;
   height: 150px;
   border: 1px solid slategray;
-  border-radius: .3em;
+  border-radius: 0.3em;
   margin: 10px;
   color: white;
   cursor: pointer;
@@ -42,19 +42,23 @@
   bottom: 0;
   right: 0;
   color: #444;
+  cursor: pointer;
+  visibility: collapse;
 }
 
-.tiled > li > .btn-delete:hover {
+.tiled > li:hover .btn-delete {
+  visibility: visible;
+}
+
+.tiled > li .btn-delete:hover {
   color: white;
 }
-
 
 /* .tiled > li.ui-selected .btn-delete {
   line-height: 50px;
   bottom: initial;
   transition: all linear .2s;
 } */
-
 
 /* .tiled > li .detail-list {
   position: absolute;
@@ -92,7 +96,7 @@
   padding: 0 2px;
   background: slategray;
   border: 1px solid slategray;
-  border-radius: .3em;
+  border-radius: 0.3em;
   color: white;
   cursor: inherit;
   /* background: blue; */
@@ -113,12 +117,10 @@
   transform: translate(0%, -50%);
   vertical-align: center;
   cursor: pointer;
-  border-radius: .3em;
+  border-radius: 0.3em;
   /* background: lightslategray; */
   font-size: 1.2em;
   width: 100%;
-  /* width: 100%;
-  height: 100%; */
 }
 
 .book-detail {
@@ -131,7 +133,7 @@
   height: 100%;
   overflow: hidden;
   background: lightgray;
-  border-radius: .3em;
+  border-radius: 0.3em;
   text-align: left;
 }
 
@@ -147,10 +149,8 @@
   right: 5px;
   bottom: 5px;
   left: 5px;
-  /* width: 80%;
-  height: 80%; */
   margin: 10px;
-  border-radius: .3em;
-  /* background: red; */
+  border-radius: 0.3em;
   background: lightslategray;
+  cursor: pointer;
 }
