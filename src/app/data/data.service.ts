@@ -11,30 +11,7 @@ export class DataService {
   noteUri = docUri.route('note/:book/(:note)');
   bookUri = docUri.route('book/(:book)');
 
-  constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {
-    this.setup();
-  }
-
-  setup(): void {
-    // if (!this.electronService.isElectronApp) {
-    //   const books = [
-    //     new Book('1', 'bla', 6),
-    //     new Book('2', 'blubb', 42),
-    //     new Book('3', 'hans', 7),
-    //     new Book('4', 'peter', 14)
-    //   ];
-    //   books.forEach(book => this.pouchDbService.put(this.bookUri({ book: book.id }),
-    //     { id: book.id, name: book.name, count: book.count }));
-    //   const notes = [
-    //     new Note('note1', 'note 1', '1', 'sdsdsd', new Date().toJSON()),
-    //     new Note('note2', 'note 2', '1', 'bla', new Date().toJSON()),
-    //     new Note('note3', 'note 3', '1', 'blubb', new Date().toJSON()),
-    //     new Note('note4', 'note 4', '1', '...', new Date().toJSON())
-    //   ];
-    //   notes.forEach(note => this.pouchDbService.put(this.noteUri({ book: '1', note: note.id }),
-    //     { id: note.id, name: note.name, book: note.book, content: note.content, modified: note.modified }));
-    // }
-  }
+  constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {}
 
   getBooks(): Promise<Array<Book>> {
     const pattern = this.bookUri();
@@ -73,16 +50,8 @@ export class DataService {
           const pattern = this.noteUri({ book: this.bookUri(id).book });
           return this.pouchDbService
             .all(pattern, pattern + '\uffff', false)
-            .then(notes => {
-              return Promise.all(
-                notes.rows.map(note => {
-                  return this.pouchDbService.remove(note.id);
-                })
-              );
-            })
-            .then(results => {
-              return Promise.resolve(results.every(_ => _.ok));
-            })
+            .then(notes => Promise.all(notes.rows.map(note => this.pouchDbService.remove(note.id))))
+            .then(results => Promise.resolve(results.every(_ => _.ok)))
             .catch(err => {
               console.log(err);
               return false;
@@ -109,14 +78,21 @@ export class DataService {
   createNote(note: Note): Promise<boolean> {
     note.id = cuid();
     const id = this.noteUri({ book: note.book, note: note.id });
+
     note.modified = new Date().toJSON();
-    return this.pouchDbService.put(id, {
-      id: note.id,
-      name: note.name,
-      book: note.book,
-      content: note.content,
-      modified: note.modified
-    });
+    return this.pouchDbService
+      .put(id, {
+        id: note.id,
+        name: note.name,
+        book: note.book,
+        content: note.content,
+        modified: note.modified
+      })
+      .then(_ => {
+        return this.getBook(note.book).then(book => {
+          return this.updateBook(book).then(updated => Boolean(updated));
+        });
+      });
   }
 
   updateNote(note: Note): Promise<boolean> {
@@ -131,14 +107,22 @@ export class DataService {
     });
   }
 
-  updateBook(book: Book): Promise<boolean> {
-    const id = this.bookUri({ book: book.id });
-    book.modified = new Date().toJSON();
-    return this.pouchDbService.put(id, {
-      id: book.id,
-      name: book.name,
-      count: book.count,
-      modified: book.modified
+  updateBook(book: Book): Promise<Book> {
+    const id = this.noteUri({ book: book.id });
+
+    // update note count
+    return this.countNotes(book.id).then(count => {
+      book.modified = new Date().toJSON();
+      book.count = count;
+      const bookId = this.bookUri({ book: book.id });
+      return this.pouchDbService
+        .put(bookId, {
+          id: book.id,
+          name: book.name,
+          count: book.count,
+          modified: book.modified
+        })
+        .then(ok => book);
     });
   }
 
@@ -147,11 +131,24 @@ export class DataService {
     return this.pouchDbService
       .remove(id)
       .then(result => {
+        if (result.ok) {
+          return this.getBook(note.book).then(book =>
+            this.updateBook(book).then(updated => Boolean(updated))
+          );
+        }
+
         return result.ok;
       })
       .catch(err => {
         console.log(err);
         return false;
       });
+  }
+
+  countNotes(bookId: string): Promise<number> {
+    const pattern = this.noteUri({ book: bookId });
+    return this.pouchDbService.all(pattern, pattern + '\uffff', true).then(result => {
+      return result.rows.length;
+    });
   }
 }

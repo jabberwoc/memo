@@ -128,11 +128,9 @@ export class NotesPageComponent implements OnInit {
             console.log('created new note: [' + newNote.id + '] ' + name);
             this.store.dispatch(new AddNoteAction(newNote));
 
-            // update book count
-            this.book.count++;
-            this.dataService.updateBook(this.book).then(done => {
-              if (done) {
-                this.store.dispatch(new UpdateBookAction(this.book));
+            this.dataService.updateBook(this.book).then(book => {
+              if (book) {
+                this.store.dispatch(new UpdateBookAction(book));
               } else {
                 console.log('error creating book');
               }
