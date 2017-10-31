@@ -28,8 +28,7 @@
 
     </div>
     <div id="wrapper" class="pane">
-      <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote($event)></app-editor>
+      <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
     </div>
-    <!-- <app-delete-note (deleteConfirmed)="deleteNote($event)" #deleteNoteDialog></app-delete-note> -->
   </div>
 </section>
