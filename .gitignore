@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/build
 
 # dependencies
 /node_modules
@@ -42,5 +43,4 @@ testem.log
 Thumbs.db
 
 # Databases
-/db*
-/package*
+/db

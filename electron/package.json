@@ -1,0 +1,11 @@
+{
+  "name": "memo",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "main.js",
+
+  "private": true,
+  "dependencies": {
+    "electron-settings": "^3.1.3"
+  }
+}

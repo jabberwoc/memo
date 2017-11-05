@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron'),
   settings = require('electron-settings');
-require('dotenv').config();
+// require('dotenv').config();
 // Reload file requires rebuild
 // require('electron-reload')(__dirname);
 
@@ -36,18 +36,7 @@ function createWindow() {
     win.setBounds(winBounds);
   }
 
-  // Specify entry point
-  if (process.env.PACKAGE === 'true') {
-    win.loadURL(`file://${__dirname}/dist/index.html`);
-    // win.loadURL(url.format({
-    //   pathname: path.join(__dirname, 'dist/index.html'),
-    //   protocol: 'file:',
-    //   slashes: true
-    // }));
-  } else {
-    win.loadURL('http://localhost:4200');
-    // win.webContents.openDevTools();
-  }
+  win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('close', e => {
     settings.set('winBounds', win.getBounds());
