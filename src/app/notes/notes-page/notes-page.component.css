@@ -26,7 +26,7 @@ app-notes-list {
   flex: none;
 }
 
-.note-list-header .title {
+#bookTitle {
   color: #eee;
   font-size: 1.5em;
   /* 18px*/
