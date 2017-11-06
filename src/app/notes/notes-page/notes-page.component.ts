@@ -91,8 +91,6 @@ export class NotesPageComponent implements OnInit {
         return notes.find(_ => _.id === selectedId) || null;
       }
     );
-
-    this.noteFilter.subscribe(filter => console.log(filter));
   }
 
   ngOnInit() {
