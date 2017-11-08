@@ -1,5 +1,6 @@
 {
   "name": "memo",
+  "description": "app for taking notes",
   "version": "0.1.0",
   "license": "MIT",
   "main": "main.js",

@@ -1,6 +1,7 @@
 {
   "name": "memo",
   "version": "0.1.0",
+  "description": "app for taking notes",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
@@ -14,11 +15,14 @@
       "cd build && npm install electron-rebuild && $(npm bin)/electron-rebuild && npm remove electron-rebuild && cd ..",
     "dist:linux":
       "electron-packager build --platform=linux --arch=x64 --out=dist/ --asar --overwrite",
+    "dist:win":
+      "electron-packager build --platform=win32 --arch=x64 --out=dist/ --asar --overwrite",
     "dist:mac":
       "electron-packager build --platform=darwin --arch=x64 --out=dist/ --asar --overwrite",
     "package:debian":
       "electron-installer-debian --src dist/memo-linux-x64/ --dest dist/installers/ --arch amd64",
     "package:mac": "electron-installer-dmg dist/memo-darwin-x64/memo.app memo",
+    "package:win": "electron-installer-windows --src dist/memo-win32-x64/ --dest dist/installers/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
