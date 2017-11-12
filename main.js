@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron'),
+const { app, BrowserWindow, Menu } = require('electron'),
   settings = require('electron-settings');
 require('dotenv').config();
 // Reload file requires rebuild
@@ -85,3 +85,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+require('./menu');

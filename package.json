@@ -1,7 +1,7 @@
 {
   "name": "memo",
   "version": "0.1.0",
-  "description": "app for taking notes",
+  "description": "an app for taking notes",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
@@ -11,8 +11,6 @@
     "build-prod": "ng build --prod --output-path=build --base-href",
     "prepare": "cp -aL electron/. build && cd build && npm install --production && cd ..",
     "build:electron": "npm run clean && npm run build-prod && npm run prepare",
-    "build:electron:post":
-      "cd build && npm install electron-rebuild && $(npm bin)/electron-rebuild && npm remove electron-rebuild && cd ..",
     "dist:linux":
       "electron-packager build --platform=linux --arch=x64 --out=dist/ --asar --overwrite",
     "dist:win":
