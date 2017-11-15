@@ -11,14 +11,10 @@
     "build-prod": "ng build --prod --output-path=build --base-href",
     "prepare": "cp -aL electron/. build && cd build && npm install --production && cd ..",
     "build:electron": "npm run clean && npm run build-prod && npm run prepare",
-    "dist:linux":
-      "electron-packager build --platform=linux --arch=x64 --out=dist/ --asar --overwrite",
-    "dist:win":
-      "electron-packager build --platform=win32 --arch=x64 --out=dist/ --asar --overwrite",
-    "dist:mac":
-      "electron-packager build --platform=darwin --arch=x64 --out=dist/ --asar --overwrite",
-    "package:debian":
-      "electron-installer-debian --src dist/memo-linux-x64/ --dest dist/installers/ --arch amd64",
+    "dist:linux": "electron-packager build --platform=linux --arch=x64 --out=dist/ --asar --overwrite",
+    "dist:win": "electron-packager build --platform=win32 --arch=x64 --out=dist/ --asar --overwrite",
+    "dist:mac": "electron-packager build --platform=darwin --arch=x64 --out=dist/ --asar --overwrite",
+    "package:debian": "electron-installer-debian --src dist/memo-linux-x64/ --dest dist/installers/ --arch amd64",
     "package:mac": "electron-installer-dmg dist/memo-darwin-x64/memo.app memo",
     "package:win": "electron-installer-windows --src dist/memo-win32-x64/ --dest dist/installers/",
     "test": "ng test",
@@ -30,17 +26,18 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^4.4.6",
+    "@angular/animations": "^5.0.1",
     "@angular/cdk": "^2.0.0-beta.12",
-    "@angular/common": "^4.4.6",
-    "@angular/compiler": "^4.4.6",
-    "@angular/core": "^4.4.6",
-    "@angular/forms": "^4.4.6",
-    "@angular/http": "^4.4.6",
+    "@angular/common": "^5.0.1",
+    "@angular/compiler": "^5.0.1",
+    "@angular/core": "^5.0.1",
+    "@angular/forms": "^5.0.1",
+    "@angular/http": "^5.0.1",
     "@angular/material": "^2.0.0-beta.12",
-    "@angular/platform-browser": "^4.4.6",
-    "@angular/platform-browser-dynamic": "^4.4.6",
-    "@angular/router": "^4.4.6",
+    "@angular/platform-browser": "^5.0.1",
+    "@angular/platform-browser-dynamic": "^5.0.1",
+    "@angular/platform-server": "^5.0.1",
+    "@angular/router": "^5.0.1",
     "@ngrx/store": "^4.1.0",
     "@types/cuid": "^1.3.0",
     "@types/lodash": "^4.14.78",
@@ -55,13 +52,13 @@
     "path": "^0.12.7",
     "photonkit": "^0.1.2",
     "pouchdb": "^6.3.4",
-    "rxjs": "^5.5.1",
+    "rxjs": "^5.5.2",
     "tinymce": "^4.7.1",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
     "@angular/cli": "1.4.9",
-    "@angular/compiler-cli": "^4.4.6",
+    "@angular/compiler-cli": "^5.0.1",
     "@angular/language-service": "^4.4.6",
     "@types/jasmine": "~2.6.0",
     "@types/jasminewd2": "~2.0.2",
@@ -84,6 +81,6 @@
     "protractor": "~5.2.0",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
-    "typescript": "^2.3.4"
+    "typescript": "2.4.2"
   }
 }

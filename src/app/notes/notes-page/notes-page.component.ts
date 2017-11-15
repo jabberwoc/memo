@@ -38,13 +38,13 @@ import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component'
       state(
         'inactive',
         style({
-          opacity: 0
+          visibility: 'hidden'
         })
       ),
       state(
         'active',
         style({
-          opactiy: 1
+          visibility: 'visible'
         })
       ),
       // transition('inactive => active', animate('1000ms ease-in')),
