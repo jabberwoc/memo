@@ -1,8 +1,7 @@
 const { app, BrowserWindow, Menu } = require('electron'),
-  settings = require('electron-settings');
+  settings = require('electron-settings'),
+  path = require('path');
 require('dotenv').config();
-// Reload file requires rebuild
-// require('electron-reload')(__dirname);
 
 // const dbName = 'db';
 
@@ -30,15 +29,21 @@ let win = null;
 
 function createWindow() {
   // Initialize the window to our specified dimensions
-  win = new BrowserWindow({ width: 1000, height: 600 });
-  const winBounds = settings.get('winBounds');
-  if (winBounds) {
-    win.setBounds(winBounds);
-  }
+  win = new BrowserWindow({
+    width: 1000,
+    height: 600,
+    show: false,
+    backgroundColor: '#444',
+    icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+  });
+  // const winBounds = settings.get('winBounds');
+  // if (winBounds) {
+  //   win.setBounds(winBounds);
+  // }
 
   // Specify entry point
   if (process.env.PACKAGE === 'true') {
-    win.loadURL(`file://${__dirname}/dist/index.html`);
+    win.loadURL(`file://${__dirname}/build/index.html`);
     // win.loadURL(url.format({
     //   pathname: path.join(__dirname, 'dist/index.html'),
     //   protocol: 'file:',

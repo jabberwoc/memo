@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu } = require('electron'),
-  settings = require('electron-settings');
+  settings = require('electron-settings'),
+  path = require('path');
 // require('dotenv').config();
 // Reload file requires rebuild
 // require('electron-reload')(__dirname);
@@ -30,7 +31,11 @@ let win = null;
 
 function createWindow() {
   // Initialize the window to our specified dimensions
-  win = new BrowserWindow({ width: 1000, height: 600 });
+  win = new BrowserWindow({
+    width: 1000,
+    height: 600,
+    icon: path.join(__dirname, 'icons/64x64.png')
+  });
   const winBounds = settings.get('winBounds');
   if (winBounds) {
     win.setBounds(winBounds);
