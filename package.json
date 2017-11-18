@@ -15,6 +15,8 @@
       "electron-packager build --platform=linux --arch=x64 --prune=true --out=dist/ --asar --overwrite",
     "dist:win":
       "electron-packager build --platform=win32 --arch=x64 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
+    "dist:win32":
+      "electron-packager build --platform=win32 --arch=ia32 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
     "dist:mac":
       "electron-packager build --platform=darwin --arch=x64 --prune=true --icon=assets/icons/mac/puffin.icns --out=dist/ --asar --overwrite",
     "package:debian": "electron-installer-debian --arch amd64 --config deb.json",
