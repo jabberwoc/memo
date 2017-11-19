@@ -20,6 +20,10 @@
   padding: 2px 4px !important;
 }
 
+.mce-btn.mce-active button {
+  background: slategray !important;
+}
+
 .mce-container::before {
   box-shadow: none !important;
 }
