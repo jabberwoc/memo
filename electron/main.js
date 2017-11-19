@@ -34,6 +34,8 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1000,
     height: 600,
+    show: false,
+    backgroundColor: '#444',
     icon: path.join(__dirname, 'icons/64x64.png')
   });
   const winBounds = settings.get('winBounds');

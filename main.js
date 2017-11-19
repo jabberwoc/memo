@@ -36,22 +36,16 @@ function createWindow() {
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
-  // const winBounds = settings.get('winBounds');
-  // if (winBounds) {
-  //   win.setBounds(winBounds);
-  // }
+  const winBounds = settings.get('winBounds');
+  if (winBounds) {
+    win.setBounds(winBounds);
+  }
 
   // Specify entry point
   if (process.env.PACKAGE === 'true') {
     win.loadURL(`file://${__dirname}/build/index.html`);
-    // win.loadURL(url.format({
-    //   pathname: path.join(__dirname, 'dist/index.html'),
-    //   protocol: 'file:',
-    //   slashes: true
-    // }));
   } else {
     win.loadURL('http://localhost:4200');
-    // win.webContents.openDevTools();
   }
 
   win.on('close', e => {
