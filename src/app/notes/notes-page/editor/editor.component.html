@@ -1,10 +1,8 @@
-<div id="note-title" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }"
-  #noteTitle>
+<div id="note-title" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }" #noteTitle>
   <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
     {{ selectedNote?.name }}</label>
   <form [formGroup]="titleForm" novalidate>
-    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()"
-    (blur)="setTitleEditMode(false)"
+    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
       type="text" formControlName="title" [ngModel]="selectedNote?.name">
   </form>
 </div>

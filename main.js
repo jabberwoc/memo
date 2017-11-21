@@ -30,9 +30,8 @@ let win = null;
 function createWindow() {
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
-    width: 1000,
+    width: 800,
     height: 600,
-    show: false,
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });

@@ -47,6 +47,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       this.titleForm.setValue({
         title: this.selectedNote.name
       });
+
+      this.resizeEditor();
     }
   }
 
@@ -116,7 +118,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       plugins: [
         'advlist autolink lists link image charmap print hr anchor pagebreak',
         'searchreplace wordcount visualblocks visualchars fullscreen',
-        'insertdatetime nonbreaking save table contextmenu',
+        'insertdatetime nonbreaking save contextmenu',
         'paste textcolor colorpicker textpattern imagetools codesample code noneditable'
       ],
       toolbar:
@@ -299,9 +301,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
 
     const wrapperHeight = document.getElementById('wrapper').offsetHeight;
-    if (!this.titleElementHeight) {
-      this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
-    }
+    // TODO doesn't work with angular 5
+    // if (!this.titleElementHeight) {
+    //   this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
+    // }
+    this.titleElementHeight = document.getElementById('note-title').offsetHeight;
+    console.log(document.getElementById('note-title').offsetHeight);
 
     let toolbarGrpHeight = 0;
     const elements = document.getElementsByClassName('mce-toolbar-grp');
