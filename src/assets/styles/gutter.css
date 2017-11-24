@@ -11,7 +11,7 @@
 }
 
 .gutter.gutter-horizontal {
-  background: gray url('/assets/images/vertical.png') 50% no-repeat;
+  background: gray url('../images/vertical.png') 50% no-repeat;
   image-rendering: pixelated;
   cursor: ew-resize;
 }

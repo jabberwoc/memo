@@ -1,6 +1,6 @@
 {
   "name": "memo",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "an app for taking notes",
   "license": "MIT",
   "main": "main.js",
@@ -11,10 +11,14 @@
     "build-prod": "ng build --prod --output-path=build --base-href",
     "prepare": "cp -aL electron/. build && cd build && npm install --production && cd ..",
     "build:electron": "npm run clean && npm run build-prod && npm run prepare",
-    "dist:linux": "electron-packager build --platform=linux --arch=x64 --prune=true --out=dist/ --asar --overwrite",
-    "dist:win": "electron-packager build --platform=win32 --arch=x64 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
-    "dist:win32": "electron-packager build --platform=win32 --arch=ia32 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
-    "dist:mac": "electron-packager build --platform=darwin --arch=x64 --prune=true --icon=assets/icons/mac/puffin.icns --out=dist/ --asar --overwrite",
+    "dist:linux":
+      "electron-packager build --platform=linux --arch=x64 --prune=true --out=dist/ --asar --overwrite",
+    "dist:win":
+      "electron-packager build --platform=win32 --arch=x64 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
+    "dist:win32":
+      "electron-packager build --platform=win32 --arch=ia32 --prune=true --icon=assets/icons/win/puffin.ico --out=dist/ --asar --overwrite",
+    "dist:mac":
+      "electron-packager build --platform=darwin --arch=x64 --prune=true --icon=assets/icons/mac/puffin.icns --out=dist/ --asar --overwrite",
     "package:debian": "electron-installer-debian --arch amd64 --config deb.json",
     "package:mac": "electron-installer-dmg dist/memo-darwin-x64/memo.app memo",
     "package:win": "electron-installer-windows --src dist/memo-win32-x64/ --dest dist/installers/",
