@@ -3,6 +3,7 @@
 @import 'assets/styles/editor.css';
 @import 'assets/styles/dialog.css';
 @import 'assets/styles/scrollbar.css';
+@import 'assets/styles/gutter.css';
 
 html,
 body,
@@ -20,6 +21,10 @@ h4,
 h5,
 h6 {
   font-weight: 100;
+}
+
+body {
+  background: #444;
 }
 
 .dark-themed {

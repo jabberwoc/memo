@@ -6,7 +6,8 @@ import {
   state,
   style,
   transition,
-  animate
+  animate,
+  AfterViewInit
 } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
@@ -28,6 +29,7 @@ import {
 } from '../../store/actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
+import Split from 'split.js';
 
 @Component({
   selector: 'app-notes-page',
@@ -60,7 +62,7 @@ import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component'
     ])
   ]
 })
-export class NotesPageComponent implements OnInit {
+export class NotesPageComponent implements OnInit, AfterViewInit {
   book: Book;
   notes: Observable<Array<Note>>;
   filteredNotes: Observable<Array<Note>>;
@@ -91,6 +93,36 @@ export class NotesPageComponent implements OnInit {
         return notes.find(_ => _.id === selectedId) || null;
       }
     );
+  }
+
+  ngAfterViewInit(): void {
+    const setting = localStorage.getItem('split-sizes');
+    let sizes;
+
+    if (setting) {
+      sizes = JSON.parse(setting);
+    } else {
+      sizes = [25, 75];
+    }
+
+    const split = Split(['#app-notes-list', '#app-editor'], {
+      sizes: sizes,
+      minSize: 150,
+      gutterSize: 5,
+      onDragEnd: function() {
+        localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
+      },
+      elementStyle: function(dimension, size, gutterSize) {
+        return {
+          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+        };
+      },
+      gutterStyle: function(dimension, gutterSize) {
+        return {
+          'flex-basis': gutterSize + 'px'
+        };
+      }
+    });
   }
 
   ngOnInit() {

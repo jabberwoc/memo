@@ -1,0 +1,17 @@
+.gutter {
+  /* background-color: #444;
+  background-repeat: no-repeat;
+  background-position: 50%; */
+  background: transparent;
+  opacity: 0;
+}
+
+.gutter:hover {
+  opacity: 1;
+}
+
+.gutter.gutter-horizontal {
+  background: gray url('/assets/images/vertical.png') 50% no-repeat;
+  image-rendering: pixelated;
+  cursor: ew-resize;
+}

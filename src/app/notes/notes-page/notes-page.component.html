@@ -1,8 +1,7 @@
 <section id="notes-section">
 
   <div class="pane-group">
-    <div class="pane pane-sm sidebar">
-
+    <div id="app-notes-list">
       <header class="note-list-header">
 
         <button class="btn-icon dark-themed btn-section" (click)="closeBook()">
@@ -21,13 +20,12 @@
           <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
         </div>
       </header>
-
       <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
         (deleteNote)="deleteNote($event)">
       </app-notes-list>
 
     </div>
-    <div id="wrapper" class="pane">
+    <div id="app-editor">
       <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
     </div>
   </div>

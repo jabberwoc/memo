@@ -7,8 +7,6 @@
   width: 100%;
   height: 100%;
   background: lightgray;
-  /*background-image: linear-gradient(180deg, slategray, lightgray);*/
-  /* display: none; */
 }
 
 .placeholder-content {
@@ -26,13 +24,13 @@
 .placeholder-content > .add-note {
   cursor: pointer;
   border: 2px solid;
-  border-radius: .1em;
+  border-radius: 0.1em;
   font-size: 6em;
   line-height: 1em;
   width: 1.2em;
   height: 1.2em;
   display: block;
-  margin: .4em auto 0 auto;
+  margin: 0.4em auto 0 auto;
 }
 
 .placeholder-content > .add-note span {

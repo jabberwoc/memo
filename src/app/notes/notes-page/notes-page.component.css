@@ -3,20 +3,18 @@ app-notes-list {
   overflow-y: auto;
 }
 
+#app-notes-list {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#app-editor {
+  position: relative;
+}
+
 #editor {
   display: none;
-}
-
-.pane {
-  overflow: hidden;
-  border: 0;
-}
-
-.sidebar {
-  background: #444;
-  display: flex;
-  height: 100%;
-  flex-direction: column;
 }
 
 .note-list-header {
@@ -29,8 +27,6 @@ app-notes-list {
 #bookTitle {
   color: #eee;
   font-size: 1.5em;
-  /* 18px*/
-  /*margin: auto auto;*/
 }
 
 .note-list-header .btn-group {

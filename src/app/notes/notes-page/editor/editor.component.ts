@@ -300,7 +300,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const wrapperHeight = document.getElementById('wrapper').offsetHeight;
+    const wrapperHeight = document.getElementById('app-editor').offsetHeight;
     // TODO doesn't work with angular 5
     // if (!this.titleElementHeight) {
     //   this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
