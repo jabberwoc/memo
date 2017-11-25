@@ -36,9 +36,9 @@
 }
 
 .note-icon:hover {
-  background: #f04949;
+  background: #333;
   border-radius: 3px;
-  color: white;
+  color: #f04949;
 }
 
 li:hover .note-icon {
