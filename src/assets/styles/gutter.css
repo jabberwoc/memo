@@ -1,7 +1,4 @@
 .gutter {
-  /* background-color: #444;
-  background-repeat: no-repeat;
-  background-position: 50%; */
   background: transparent;
   opacity: 0;
 }
@@ -11,7 +8,7 @@
 }
 
 .gutter.gutter-horizontal {
-  background: gray url('../images/vertical.png') 50% no-repeat;
+  background: lightslategray url('../images/grip.png') 50% no-repeat;
   image-rendering: pixelated;
   cursor: ew-resize;
 }

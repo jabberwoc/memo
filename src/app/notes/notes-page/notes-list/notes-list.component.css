@@ -16,7 +16,6 @@
 }
 
 .note-list .selected {
-  /*background: lightslategray;*/
   background: linear-gradient(90deg, #444, lightslategray);
   color: white;
 }
