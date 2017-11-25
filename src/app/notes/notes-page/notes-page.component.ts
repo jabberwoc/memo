@@ -95,6 +95,10 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     );
   }
 
+  ngOnInit(): void {
+    this.initRouting();
+  }
+
   ngAfterViewInit(): void {
     const setting = localStorage.getItem('split-sizes');
     let sizes;
@@ -125,17 +129,23 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
+  initRouting(): void {
     this.route.paramMap.subscribe(params => {
       console.log('params: + ' + params);
 
       this.book = new Book(params.get('bookId'), params.get('name'), 0, null);
 
-      this.dataService.getBook(params.get('bookId')).then(book => {
-        this.book = book;
-        console.log('selected book: ' + this.book.name + '... loading notes..');
-        this.loadNotes(this.book.id);
-      });
+      this.dataService
+        .getBook(params.get('bookId'))
+        .then(book => {
+          this.book = book;
+          console.log('selected book: ' + this.book.name + '... loading notes..');
+          this.loadNotes(this.book.id);
+        })
+        .catch(err => {
+          this.router.navigate(['books']);
+          return Observable.empty();
+        });
     });
   }
 
@@ -194,7 +204,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   updateNote(note: Note) {
-    // TODO save
     this.saveState = LoadingState.ACTIVE;
     this.dataService.updateNote(note).then(ok => {
       if (ok) {
