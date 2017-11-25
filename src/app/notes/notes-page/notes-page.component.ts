@@ -108,7 +108,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     const split = Split(['#app-notes-list', '#app-editor'], {
       sizes: sizes,
       minSize: 150,
-      gutterSize: 7,
+      gutterSize: 5,
       onDragEnd: function() {
         localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
       },
