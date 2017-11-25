@@ -89,12 +89,16 @@ i.mce-i-todoList:before {
 
 .mce-container .note-title {
   font-size: xx-large;
-  width: 100%;
   box-sizing: border-box;
   color: inherit;
 }
 
+.mce-container input.note-title {
+  width: 100%;
+}
+
 #note-title {
+  display: grid;
   padding: 8px;
   color: slategray;
 }
