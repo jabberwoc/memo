@@ -305,7 +305,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     // if (!this.titleElementHeight) {
     //   this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
     // }
-    this.titleElementHeight = document.getElementById('note-title').offsetHeight;
+    this.titleElementHeight = document.getElementById('note-title-wrapper').offsetHeight;
 
     let toolbarGrpHeight = 0;
     const elements = document.getElementsByClassName('mce-toolbar-grp');

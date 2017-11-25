@@ -97,7 +97,7 @@ i.mce-i-todoList:before {
   width: 100%;
 }
 
-#note-title {
+#note-title-wrapper {
   display: grid;
   padding: 8px;
   color: slategray;
