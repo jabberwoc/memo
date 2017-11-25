@@ -43,24 +43,6 @@
   color: white;
 }
 
-/* .tiled > li.ui-selected .btn-delete {
-  line-height: 50px;
-  bottom: initial;
-  transition: all linear .2s;
-} */
-
-/* .tiled > li .detail-list {
-  position: absolute;
-  top: 50px;
-  bottom: 0;
-  font-size: 1em;
-  color: #666;
-  list-style-type: none;
-  background: lightgray;
-  visibility: collapse;
-  text-align: center;
-} */
-
 .tiled > li .list-group-item {
   padding: 5px 10px;
   font-size: 1em;
@@ -88,13 +70,11 @@
   border-radius: 0.3em;
   color: white;
   cursor: inherit;
-  /* background: blue; */
   display: block;
 }
 
 .book-title-name {
   cursor: inherit;
-  /* background: green; */
   font-size: 1.2em;
   line-height: 1.2em;
 }
@@ -104,12 +84,13 @@
   top: 50%;
   left: 0;
   transform: translate(0%, -50%);
-  vertical-align: center;
   cursor: pointer;
   border-radius: 0.3em;
-  /* background: lightslategray; */
   font-size: 1.2em;
   width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .book-detail {

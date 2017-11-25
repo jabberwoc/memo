@@ -7,7 +7,8 @@ import {
   style,
   transition,
   animate,
-  AfterViewInit
+  AfterViewInit,
+  HostBinding
 } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../../entities/book';
@@ -18,6 +19,7 @@ import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../../store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { slideInDownAnimation } from '../../animations';
 import 'rxjs/Rx';
 import {
   AddNotesAction,
@@ -36,6 +38,7 @@ import Split from 'split.js';
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css'],
   animations: [
+    slideInDownAnimation,
     trigger('saveState', [
       state(
         'inactive',
@@ -63,6 +66,10 @@ import Split from 'split.js';
   ]
 })
 export class NotesPageComponent implements OnInit, AfterViewInit {
+  @HostBinding('@routeAnimation') routeAnimation = true;
+  // @HostBinding('style.display') display = 'block';
+  // @HostBinding('style.position') position = 'absolute';
+
   book: Book;
   notes: Observable<Array<Note>>;
   filteredNotes: Observable<Array<Note>>;
@@ -152,8 +159,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
       this.store.dispatch(new AddNotesAction(notes));
-
-      console.log(notes);
     });
   }
 

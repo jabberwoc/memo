@@ -1,13 +1,9 @@
 #books-section {
+  flex-direction: column;
   background-color: #444;
-  /* background-color: #2b2e3b; */
 }
 
 .books-header {
-  /* position: absolute;
-     top: 0;
-     left: 0;
-     right: 0; */
   text-align: center;
   padding: 1em 0;
   line-height: 1em;

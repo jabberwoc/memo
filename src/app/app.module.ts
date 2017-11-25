@@ -36,6 +36,7 @@ import { DeleteNoteComponent } from './notes/notes-page/dialog/delete-note/delet
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     NgxElectronModule,
     RouterModule.forRoot(APP_ROUTES, { useHash: true }),
     BooksModule,

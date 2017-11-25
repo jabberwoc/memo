@@ -1,32 +1,31 @@
 <section id="notes-section">
 
-  <div class="pane-group">
-    <div id="app-notes-list">
-      <header class="note-list-header">
-
+  <div id="app-notes-list">
+    <header class="note-list-header">
+      <div class="header-row">
         <button class="btn-icon dark-themed btn-section" (click)="closeBook()">
           <span class="icon icon-book"></span>
         </button>
         <span id="bookTitle" class="dark-themed">{{book.name}}</span>
-        <div class="loader" [@saveState]="saveState"></div>
-
-        <div class="btn-group">
-          <button class="add-note btn-icon btn-add dark-themed" (click)="addNote()">
-            <span class="icon icon-list-add"></span>
-          </button>
+        <div>
+          <div class="loader" [@saveState]="saveState"></div>
         </div>
 
-        <div class="note-filter">
-          <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
-        </div>
-      </header>
-      <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
-        (deleteNote)="deleteNote($event)">
-      </app-notes-list>
+        <button class="add-note btn-icon btn-add dark-themed" (click)="addNote()">
+          <span class="icon icon-list-add"></span>
+        </button>
+      </div>
 
-    </div>
-    <div id="app-editor">
-      <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
-    </div>
+      <div class="note-filter">
+        <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
+      </div>
+    </header>
+    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
+      (deleteNote)="deleteNote($event)">
+    </app-notes-list>
+
+  </div>
+  <div id="app-editor">
+    <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
   </div>
 </section>
