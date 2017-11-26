@@ -33,7 +33,7 @@ function createWindow() {
     width: 800,
     height: 600,
     backgroundColor: '#444',
-    icon: path.join(__dirname, 'assets/icons/png/32x32.png')
+    icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
   const winBounds = settings.get('winBounds');
   if (winBounds) {
