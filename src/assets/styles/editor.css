@@ -88,19 +88,32 @@ i.mce-i-todoList:before {
 }
 
 .mce-container .note-title {
-  font-size: xx-large;
+  font-size: 2.5em;
   box-sizing: border-box;
   color: inherit;
 }
 
-.mce-container input.note-title {
+#note-title-wrapper form,
+#note-title-wrapper label {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#note-title-wrapper input.note-title {
   width: 100%;
 }
 
 #note-title-wrapper {
   display: grid;
+  grid-template-columns: auto 30px;
+  grid-template-rows: auto;
+  align-items: center;
   padding: 8px;
   color: slategray;
+}
+
+#note-title-wrapper .state {
+  grid-column: 2;
 }
 
 .edit-mode {

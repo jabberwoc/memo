@@ -37,33 +37,7 @@ import Split from 'split.js';
   selector: 'app-notes-page',
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css'],
-  animations: [
-    slideInDownAnimation,
-    trigger('saveState', [
-      state(
-        'inactive',
-        style({
-          visibility: 'hidden'
-        })
-      ),
-      state(
-        'active',
-        style({
-          visibility: 'visible'
-        })
-      ),
-      // transition('inactive => active', animate('1000ms ease-in')),
-      transition(
-        'active => inactive',
-        animate(
-          1000,
-          style({
-            opacity: 0
-          })
-        )
-      )
-    ])
-  ]
+  animations: [slideInDownAnimation]
 })
 export class NotesPageComponent implements OnInit, AfterViewInit {
   @HostBinding('@routeAnimation') routeAnimation = true;
@@ -210,6 +184,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   updateNote(note: Note) {
     this.saveState = LoadingState.ACTIVE;
+
     this.dataService.updateNote(note).then(ok => {
       if (ok) {
         console.log('note updated: [' + note.id + '] ' + note.name);

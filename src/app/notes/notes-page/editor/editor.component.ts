@@ -15,14 +15,17 @@ import {
 import { Note } from '../../../entities/note';
 import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import * as _ from 'lodash';
+import * as lodash from 'lodash';
+import { LoadingState } from '../notes-page.component';
+import { busyAnimation } from '../../../animations';
 
 declare var tinymce: any;
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']
+  styleUrls: ['./editor.component.css'],
+  animations: [busyAnimation]
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output() addNote = new EventEmitter();
@@ -31,12 +34,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('noteTitle') private noteTitle: ElementRef;
 
   private selectedNoteValue: Note;
+  @Input() saveState: LoadingState;
   get selectedNote(): Note {
     return this.selectedNoteValue;
   }
   @Input()
   set selectedNote(value: Note) {
-    if (_.isEqual(value, this.selectedNoteValue)) {
+    if (lodash.isEqual(value, this.selectedNoteValue)) {
       return;
     }
 

@@ -1,5 +1,31 @@
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
 
+// Busy animation
+export const busyAnimation: AnimationEntryMetadata = trigger('saveState', [
+  state(
+    'inactive',
+    style({
+      visibility: 'hidden'
+    })
+  ),
+  state(
+    'active',
+    style({
+      visibility: 'visible'
+    })
+  ),
+  // transition('inactive => active', animate('1000ms ease-in')),
+  transition(
+    'active => inactive',
+    animate(
+      1000,
+      style({
+        opacity: 0
+      })
+    )
+  )
+]);
+
 // Component transition animations
 export const slideInDownAnimation: AnimationEntryMetadata = trigger('routeAnimation', [
   state(

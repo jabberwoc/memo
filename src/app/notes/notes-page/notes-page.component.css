@@ -95,24 +95,3 @@ app-notes-list {
 .media-body {
   display: block;
 }
-
-.loader {
-  display: inline-block;
-  border: 2px solid slategray;
-  border-top: 2px solid #ddd;
-  animation: spin 2s linear infinite;
-  border-radius: 50%;
-  width: 1em;
-  height: 1em;
-  margin: auto;
-  flex: none;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}

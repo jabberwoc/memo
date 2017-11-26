@@ -7,9 +7,6 @@
           <span class="icon icon-book"></span>
         </button>
         <span id="bookTitle" class="dark-themed">{{book.name}}</span>
-        <div>
-          <div class="loader" [@saveState]="saveState"></div>
-        </div>
 
         <button class="add-note btn-icon btn-add dark-themed" (click)="addNote()">
           <span class="icon icon-list-add"></span>
@@ -26,6 +23,6 @@
 
   </div>
   <div id="app-editor">
-    <app-editor [selectedNote]="selectedNote | async" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
+    <app-editor [selectedNote]="selectedNote | async" [saveState]="saveState" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
   </div>
 </section>
