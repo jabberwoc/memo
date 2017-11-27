@@ -1,3 +1,7 @@
+textarea {
+  visibility: hidden;
+}
+
 .editor-placeholder {
   position: absolute;
   top: 0;
