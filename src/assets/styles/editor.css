@@ -40,6 +40,14 @@
   width: auto !important;
 }
 
+.mce-primary button {
+  color: white !important;
+}
+
+.mce-btn.mce-primary {
+  background-color: lightslategray !important;
+}
+
 .mce-toolbar .mce-ico {
   color: #444;
 }

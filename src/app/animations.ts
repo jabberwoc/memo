@@ -44,7 +44,7 @@ export const slideInDownAnimation: AnimationEntryMetadata = trigger('routeAnimat
   ]),
   transition(':leave', [
     animate(
-      '0.5s ease-out',
+      '0.2s ease-out',
       style({
         opacity: 0
         // transform: 'translateY(100%)'
