@@ -30,6 +30,8 @@ const { app, BrowserWindow, Menu } = require('electron'),
 let win = null;
 
 function createWindow() {
+  require('./menu');
+
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
     width: 800,
@@ -80,5 +82,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-require('./menu');
