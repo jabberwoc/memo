@@ -81,7 +81,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    tinymce.remove(this.editor);
+    if (this.editorReady) {
+      this.editor.setContent('');
+      tinymce.remove(this.editor);
+    }
   }
 
   saveNote(): void {

@@ -132,7 +132,10 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
-      this.store.dispatch(new AddNotesAction(notes));
+      if (notes.length > 0) {
+        this.store.dispatch(new AddNotesAction(notes));
+        this.selectNote(notes[0].id);
+      }
     });
   }
 
