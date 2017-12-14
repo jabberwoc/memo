@@ -31,9 +31,11 @@ import { notes, selectedNoteId, books } from './store/memo-store';
 import { BooksModule } from './books/books.module';
 import { NotesModule } from './notes/notes.module';
 import { DeleteNoteComponent } from './notes/notes-page/dialog/delete-note/delete-note.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './guard/auth.guard';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LoginComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -47,7 +49,7 @@ import { DeleteNoteComponent } from './notes/notes-page/dialog/delete-note/delet
     StoreModule.forRoot({ notes, selectedNoteId, books })
   ],
   entryComponents: [AddBookComponent, DeleteBookComponent, AddNoteComponent, DeleteNoteComponent],
-  providers: [DataService, PouchDbService],
+  providers: [DataService, PouchDbService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

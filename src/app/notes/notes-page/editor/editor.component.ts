@@ -126,12 +126,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         'advlist autolink lists link image charmap print hr anchor pagebreak',
         'searchreplace wordcount visualblocks visualchars fullscreen',
         'insertdatetime nonbreaking save contextmenu',
-        'paste textcolor colorpicker textpattern imagetools codesample code noneditable'
+        'paste textcolor colorpicker textpattern imagetools codesample code noneditable table'
       ],
       toolbar:
         'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | ' +
         'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | ' +
-        'todoList bullist numlist outdent indent | link image print | codesample | ' +
+        'bullist numlist outdent indent | link image print | table codesample | ' +
         'fullscreen code',
       image_advtab: true,
       image_title: true,
