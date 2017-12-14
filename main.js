@@ -41,6 +41,10 @@ function createWindow() {
   if (winBounds) {
     win.setBounds(winBounds);
   }
+  const winMaximized = settings.get('winMaximized');
+  if (winMaximized === true) {
+    win.maximize();
+  }
 
   // Specify entry point
   if (process.env.PACKAGE === 'true') {
@@ -51,6 +55,7 @@ function createWindow() {
 
   win.on('close', e => {
     settings.set('winBounds', win.getBounds());
+    settings.set('winMaximized', win.isMaximized());
   });
 
   // Emitted when the window is closed.

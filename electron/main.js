@@ -1,9 +1,6 @@
 const { app, BrowserWindow, Menu } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
-// require('dotenv').config();
-// Reload file requires rebuild
-// require('electron-reload')(__dirname);
 
 // const dbName = 'db';
 
@@ -43,11 +40,16 @@ function createWindow() {
   if (winBounds) {
     win.setBounds(winBounds);
   }
+  const winMaximized = settings.get('winMaximized');
+  if (winMaximized === true) {
+    win.maximize();
+  }
 
   win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('close', e => {
     settings.set('winBounds', win.getBounds());
+    settings.set('winMaximized', win.isMaximized());
   });
 
   // Emitted when the window is closed.
