@@ -1,5 +1,4 @@
 .gutter {
-  background: transparent;
   opacity: 0;
 }
 
@@ -8,7 +7,7 @@
 }
 
 .gutter.gutter-horizontal {
-  background: lightslategray url('../images/handle.png') 50% no-repeat;
+  background: #eee url('../images/handle.png') 50% no-repeat;
   image-rendering: pixelated;
   cursor: ew-resize;
 }
