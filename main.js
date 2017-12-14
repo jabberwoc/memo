@@ -37,6 +37,8 @@ function createWindow() {
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
+  // win.setAutoHideMenuBar(true);
+
   const winBounds = settings.get('winBounds');
   if (winBounds) {
     win.setBounds(winBounds);
