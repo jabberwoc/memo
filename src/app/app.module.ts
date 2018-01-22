@@ -4,8 +4,6 @@ import { NgModule } from '@angular/core';
 // import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 import { AppComponent } from './app.component';
-// import { BooksPageComponent } from './books/books-page/books-page.component';
-// import { BooksListComponent } from './books/books-page/books-list/books-list.component';
 import { NgxElectronModule } from 'ngx-electron';
 import { RouterModule } from '@angular/router';
 import { APP_ROUTES } from './app.routes';
@@ -24,7 +22,6 @@ import { MomentModule } from 'angular2-moment';
 import { EditorComponent } from './notes/notes-page/editor/editor.component';
 
 // import { ModalModule } from 'ngx-modialog';
-// import { BootstrapModalModule } from 'ngx-modialog/plugins/bootstrap';
 
 import { StoreModule } from '@ngrx/store';
 import { notes, selectedNoteId, books } from './store/memo-store';
@@ -32,10 +29,12 @@ import { BooksModule } from './books/books.module';
 import { NotesModule } from './notes/notes.module';
 import { DeleteNoteComponent } from './notes/notes-page/dialog/delete-note/delete-note.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './guard/auth.guard';
+import { AuthGuard } from './authentication/guard/auth.guard';
+import { SettingsComponent } from './settings/settings.component';
+import { AuthenticationService } from './authentication/authentication.service';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, SettingsComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -49,7 +48,7 @@ import { AuthGuard } from './guard/auth.guard';
     StoreModule.forRoot({ notes, selectedNoteId, books })
   ],
   entryComponents: [AddBookComponent, DeleteBookComponent, AddNoteComponent, DeleteNoteComponent],
-  providers: [DataService, PouchDbService, AuthGuard],
+  providers: [DataService, PouchDbService, AuthenticationService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -6,10 +9,36 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  model: any = {};
+  loading = false;
+  error: string;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    public dialogRef: MatDialogRef<LoginComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  cancel(): void {
+    this.dialogRef.close();
   }
 
+  login() {
+    this.loading = true;
+    this.authenticationService.login(this.model.username, this.model.password).subscribe(
+      data => {
+        this.dialogRef.close();
+      },
+      error => {
+        // TODO report error
+        // this.alertService.error(error);
+        this.error = 'Invalid username / password';
+      }
+    );
+
+    this.loading = false;
+  }
 }
