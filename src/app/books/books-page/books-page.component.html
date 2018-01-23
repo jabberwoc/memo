@@ -5,14 +5,17 @@
     <button id="createNotebook" class="btn-nb-add" (click)="addBook()">
       <span class="icon icon-plus"></span>
     </button>
-    <!-- <div class="right">
-      <button class="btn-icon dark-themed" (click)="openSettings()">
+    <div class="right">
+      <button class="btn-icon dark-themed" title="settings" (click)="openSettings()">
         <span class="icon icon-cog"></span>
       </button>
-      <button class="btn-icon dark-themed" (click)="login()">
-        <span class="icon icon-login"></span>
+      <button class="btn-icon dark-themed" title="Export" (click)="export()">
+        <span class="icon icon-export"></span>
       </button>
-    </div> -->
+      <!-- <button class="btn-icon dark-themed" (click)="login()">
+        <span class="icon icon-login"></span>
+      </button> -->
+    </div>
   </header>
 
   <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)"></app-books-list>

@@ -14,4 +14,8 @@ export class SettingsComponent implements OnInit {
       console.log('settings params: + ' + params);
     });
   }
+
+  navigateBack(): void {
+    this.router.navigate(['books']);
+  }
 }

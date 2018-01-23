@@ -7,6 +7,7 @@ import { DeleteBookComponent } from './books-page/dialog/delete-book/delete-book
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { NgxFsModule } from 'ngx-fs';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatInputModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    NgxFsModule
   ],
   declarations: [BooksPageComponent, BooksListComponent, AddBookComponent, DeleteBookComponent],
   exports: [BooksPageComponent, BooksListComponent]

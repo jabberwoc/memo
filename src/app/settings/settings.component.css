@@ -1,0 +1,7 @@
+section {
+  justify-content: center;
+}
+
+section > div {
+  align-self: center;
+}
