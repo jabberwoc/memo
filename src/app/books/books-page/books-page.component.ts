@@ -10,8 +10,6 @@ import { Observable } from 'rxjs/Observable';
 import { AddBookAction, AddBooksAction, DeleteBookAction } from '../../store/actions';
 import { Router } from '@angular/router';
 import { LoginComponent } from '../../login/login.component';
-import { ElectronService } from 'ngx-electron';
-import { FsService } from 'ngx-fs';
 
 @Component({
   selector: 'app-books-page',
@@ -27,9 +25,7 @@ export class BooksPageComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private dataService: DataService,
-    private store: Store<MemoStore>,
-    private electronService: ElectronService,
-    private fsService: FsService
+    private store: Store<MemoStore>
   ) {
     this.books = this.store.select(_ => _.books).map(_ => _.sort(Book.modifiedComparer));
   }
@@ -92,33 +88,5 @@ export class BooksPageComponent implements OnInit {
 
   openSettings(): void {
     this.router.navigate(['settings']);
-  }
-
-  export(): void {
-    this.dataService.getBooks().then(books => {
-      Promise.all(books.map(book => this.dataService.getNotes(book.id))).then(result => {
-        const notes = Array.prototype.concat(...result);
-        const jsonExport = JSON.stringify({ books: books, notes: notes });
-        console.log(jsonExport);
-
-        const savePath = this.electronService.remote.dialog.showSaveDialog({
-          title: 'Export data',
-          defaultPath: 'memo-export.json'
-        });
-
-        console.log(savePath);
-
-        // const remote = require('electron').remote;
-        // const electronFs = remote.require('fs');
-
-        (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
-          if (err) {
-            return console.log('error exporting memo data: ' + err);
-          }
-
-          console.log('memo data exported successfully.');
-        });
-      });
-    });
   }
 }

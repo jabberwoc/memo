@@ -1,7 +1,15 @@
 <section id="settings-section">
-  <div>
-    <button class="btn-icon dark-themed" (click)="navigateBack()">
+  <header>
+    <button class="btn-icon dark-themed left" (click)="navigateBack()">
       <span class="icon icon-back"></span>
     </button>
-  </div>
+    <button class="btn-icon dark-themed" title="Import" (click)="import()">
+      <span class="icon icon-download"></span>
+    </button>
+    <button class="btn-icon dark-themed" title="Export" (click)="export()">
+      <span class="icon icon-export"></span>
+    </button>
+  </header>
+
+  <div class="panel"></div>
 </section>

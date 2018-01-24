@@ -16,8 +16,7 @@ import { NgxFsModule } from 'ngx-fs';
     MatButtonModule,
     MatInputModule,
     BrowserAnimationsModule,
-    FormsModule,
-    NgxFsModule
+    FormsModule
   ],
   declarations: [BooksPageComponent, BooksListComponent, AddBookComponent, DeleteBookComponent],
   exports: [BooksPageComponent, BooksListComponent]

@@ -28,16 +28,13 @@ export class DataService {
     });
   }
 
-  createBook(book: Book): Promise<boolean> {
-    book.id = cuid();
+  createBook(book: Book): Promise<Book> {
+    if (book.id == null) {
+      book.id = cuid();
+    }
     const id = this.bookUri({ book: book.id });
     book.modified = new Date().toJSON();
-    return this.pouchDbService.put(id, {
-      id: book.id,
-      name: book.name,
-      count: book.count,
-      modified: book.modified
-    });
+    return this.pouchDbService.put(id, book).then(result => (result.ok ? book : false));
   }
 
   deleteBook(book: Book): Promise<boolean> {
@@ -75,23 +72,33 @@ export class DataService {
     });
   }
 
-  createNote(note: Note): Promise<boolean> {
-    note.id = cuid();
+  createNote(note: Note): Promise<Note> {
+    if (note.id == null) {
+      note.id = cuid();
+    }
     const id = this.noteUri({ book: note.book, note: note.id });
 
     note.modified = new Date().toJSON();
-    return this.pouchDbService
-      .put(id, {
-        id: note.id,
-        name: note.name,
-        book: note.book,
-        content: note.content,
-        modified: note.modified
-      })
-      .then(_ => {
+    return this.pouchDbService.put(id, note).then(result => {
+      if (result.ok) {
         return this.getBook(note.book).then(book => {
-          return this.updateBook(book).then(updated => Boolean(updated));
+          return this.updateBookNoteCount(book);
         });
+      }
+    });
+  }
+
+  createNotes(notes: Array<Note>): Promise<Array<Note>> {
+    return this.pouchDbService
+      .bulkCreate(
+        (<any>notes).map(n => {
+          n.id = cuid();
+          n._id = this.noteUri({ book: n.book, note: n.id });
+          return n;
+        })
+      )
+      .then(result => {
+        return result.every(_ => _.ok) ? notes : false;
       });
   }
 
@@ -107,7 +114,7 @@ export class DataService {
     });
   }
 
-  updateBook(book: Book): Promise<Book> {
+  updateBookNoteCount(book: Book): Promise<Book> {
     const id = this.noteUri({ book: book.id });
 
     // update note count
@@ -115,14 +122,7 @@ export class DataService {
       book.modified = new Date().toJSON();
       book.count = count;
       const bookId = this.bookUri({ book: book.id });
-      return this.pouchDbService
-        .put(bookId, {
-          id: book.id,
-          name: book.name,
-          count: book.count,
-          modified: book.modified
-        })
-        .then(ok => book);
+      return this.pouchDbService.put(bookId, book).then(result => (result.ok ? book : false));
     });
   }
 
@@ -133,7 +133,7 @@ export class DataService {
       .then(result => {
         if (result.ok) {
           return this.getBook(note.book).then(book =>
-            this.updateBook(book).then(updated => Boolean(updated))
+            this.updateBookNoteCount(book).then(updated => Boolean(updated))
           );
         }
 

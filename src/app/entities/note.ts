@@ -14,8 +14,24 @@ export class Note {
   }
 
   public static modifiedComparer(a: Note, b: Note) {
-    if (a.modified > b.modified) { return -1; }
-    if (a.modified < b.modified) { return 1; }
+    if (a.modified > b.modified) {
+      return -1;
+    }
+    if (a.modified < b.modified) {
+      return 1;
+    }
     return 0;
+  }
+}
+
+export class NoteDto {
+  name: string;
+  content: string;
+  modified: string;
+
+  constructor(name: string, content: string, modified: string) {
+    this.name = name;
+    this.content = content;
+    this.modified = modified;
   }
 }

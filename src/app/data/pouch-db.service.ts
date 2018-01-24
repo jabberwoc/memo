@@ -76,6 +76,10 @@ export class PouchDbService {
     );
   }
 
+  public bulkCreate(documents: any[]) {
+    return this.database.bulkDocs(documents);
+  }
+
   public remove(id: string) {
     return this.database.get(id).then(doc => {
       return this.database.remove(doc);

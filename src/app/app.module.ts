@@ -32,6 +32,7 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './authentication/guard/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { AuthenticationService } from './authentication/authentication.service';
+import { NgxFsModule } from 'ngx-fs';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SettingsComponent],
@@ -39,6 +40,7 @@ import { AuthenticationService } from './authentication/authentication.service';
     BrowserModule,
     BrowserAnimationsModule,
     NgxElectronModule,
+    NgxFsModule,
     RouterModule.forRoot(APP_ROUTES, { useHash: true }),
     BooksModule,
     NotesModule,

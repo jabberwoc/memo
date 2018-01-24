@@ -132,8 +132,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
+      this.store.dispatch(new AddNotesAction(notes));
       if (notes.length > 0) {
-        this.store.dispatch(new AddNotesAction(notes));
         this.selectNote(notes[0].id);
       }
     });
@@ -150,7 +150,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
             console.log('created new note: [' + newNote.id + '] ' + name);
             this.store.dispatch(new AddNoteAction(newNote));
 
-            this.dataService.updateBook(this.book).then(book => {
+            this.dataService.updateBookNoteCount(this.book).then(book => {
               if (book) {
                 this.store.dispatch(new UpdateBookAction(book));
               } else {
