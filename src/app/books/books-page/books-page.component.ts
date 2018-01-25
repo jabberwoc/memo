@@ -17,7 +17,7 @@ import { LoginComponent } from '../../login/login.component';
   styleUrls: ['./books-page.component.css']
 })
 export class BooksPageComponent implements OnInit {
-  pageTitle = 'books';
+  pageTitle = 'Books';
 
   books: Observable<Array<Book>>;
 
