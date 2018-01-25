@@ -7,17 +7,77 @@ section {
 section > header {
   align-self: stretch;
   text-align: center;
+  color: #888;
 }
 
-section .panel {
+header .left {
+  float: left;
+}
+
+.panel {
   flex: 1;
   width: 50%;
   min-width: 300px;
   background: #555;
-  margin: 6em 0;
+  margin: 2em 0;
   border-radius: 4px;
+  list-style: none;
+  padding: 0;
 }
 
-button.left {
-  float: left;
+.panel .container {
+  display: flex;
+  align-items: stretch;
+  color: white;
+  border-top: 1px solid transparent;
+  height: 3em;
+}
+
+.panel > :first-child {
+  border-top: 0;
+}
+
+.container > * {
+  align-items: center;
+  display: flex;
+}
+
+.container > .left {
+  flex: 2;
+  background: slategray;
+  font-size: 1.2em;
+  padding-left: 1em;
+}
+
+.container > .right {
+  flex: 1;
+  text-align: right;
+  background: gray;
+  border-left: 1px solid darkgray;
+}
+
+.panel > :first-child > .left {
+  border-top-left-radius: 4px;
+}
+
+.panel > :first-child > .right {
+  border-top-right-radius: 4px;
+}
+
+/* .panel > :last-child > .left {
+  border-bottom-left-radius: 4px;
+}
+
+.panel > :last-child > .right {
+  border-bottom-right-radius: 4px;
+} */
+
+.container button {
+  width: 100%;
+  height: 100%;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.container button:hover {
+  background-image: linear-gradient(to bottom, darkgray, gray);
 }

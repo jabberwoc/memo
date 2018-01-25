@@ -3,13 +3,33 @@
     <button class="btn-icon dark-themed left" (click)="navigateBack()">
       <span class="icon icon-back"></span>
     </button>
-    <button class="btn-icon dark-themed" title="Import" (click)="import()">
+    <!-- <button class="btn-icon dark-themed" title="Import" (click)="import()">
       <span class="icon icon-download"></span>
     </button>
     <button class="btn-icon dark-themed" title="Export" (click)="export()">
       <span class="icon icon-export"></span>
-    </button>
+    </button> -->
+
+    <h1>
+      <span class="icon icon-cog"></span> Settings</h1>
   </header>
 
-  <div class="panel"></div>
+  <ul class="panel">
+    <li class="container">
+      <div class="left">Import books</div>
+      <div class="right">
+        <button class="btn-icon dark-themed" title="Import" (click)="import()">
+          <span class="icon icon-download"></span>
+        </button>
+      </div>
+    </li>
+    <li class="container">
+      <div class="left">Export books to JSON file</div>
+      <div class="right">
+        <button class="btn-icon dark-themed" title="Export" (click)="export()">
+          <span class="icon icon-export"></span>
+        </button>
+      </div>
+    </li>
+  </ul>
 </section>
