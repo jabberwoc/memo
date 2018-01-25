@@ -8,35 +8,16 @@ section > header {
   color: #888;
 }
 
-.btn-nb-add {
-  font-size: 2em;
-  border: 0;
-  border-radius: 2px;
-  cursor: pointer;
-  color: lightgray;
-  background: transparent;
-}
-
-.btn-nb-add span {
-  cursor: inherit;
-}
-
-.btn-nb-add:focus {
-  outline: 0;
-}
-
-.btn-nb-add:hover {
-  color: #eee;
-  /*background: slategray;*/
-  background-image: linear-gradient(180deg, slategray, #444);
-}
-
-.btn-nb-add {
-  display: inline-block;
-  padding: 0 15px;
-  margin-left: 10px;
-}
-
-div.right {
+#icons {
   float: right;
+}
+
+#icons > button {
+  font-size: 2em;
+  width: 2em;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+#icons > button:hover {
+  background-image: linear-gradient(180deg, slategray, #444);
 }
