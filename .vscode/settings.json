@@ -1,4 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "terminal.integrated.enableBold": false
+  "terminal.integrated.enableBold": true,
+  "terminal.integrated.fontFamily": "source code pro"
 }
