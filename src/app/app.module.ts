@@ -33,6 +33,7 @@ import { AuthGuard } from './authentication/guard/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { AuthenticationService } from './authentication/authentication.service';
 import { NgxFsModule } from 'ngx-fs';
+import { BusyModule } from './busy/busy.module';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SettingsComponent],
@@ -44,6 +45,7 @@ import { NgxFsModule } from 'ngx-fs';
     RouterModule.forRoot(APP_ROUTES, { useHash: true }),
     BooksModule,
     NotesModule,
+    BusyModule,
     // AngularFontAwesomeModule
     // NgbModule.forRoot()
     // ModalModule.forRoot(),

@@ -17,7 +17,7 @@ import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
 import { LoadingState } from '../notes-page.component';
-import { busyAnimation } from '../../../animations';
+import { readyAnimation } from '../../../animations';
 
 declare var tinymce: any;
 
@@ -25,7 +25,7 @@ declare var tinymce: any;
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
-  animations: [busyAnimation]
+  animations: [readyAnimation]
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output() addNote = new EventEmitter();
@@ -87,14 +87,23 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  saveNote(): void {
-    const debounceNext = () => this.debouncer.next(this.selectedNote);
-
+  zone(fn: (...args: any[]) => void, applyThis?: any, applyArgs?: any[]): void {
     if (NgZone.isInAngularZone()) {
-      debounceNext();
+      fn();
     } else {
-      this.ngZone.run(() => debounceNext());
+      this.ngZone.run(fn);
     }
+  }
+
+  saveNote(): void {
+    // const debounceNext = () => this.debouncer.next(this.selectedNote);
+
+    // if (NgZone.isInAngularZone()) {
+    //   debounceNext();
+    // } else {
+    //   this.ngZone.run(() => debounceNext());
+    // }
+    this.zone(() => this.debouncer.next(this.selectedNote));
   }
 
   initEditor(): void {
@@ -105,17 +114,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       // skin_url: 'assets/tinymce/skins/modern',
       content_css: 'assets/styles/editor.css',
-
-      // setup: editor => {
-      //   this.editor = editor;
-      //   editor.on('keyup', () => {
-      //     const content = editor.getContent();
-      //     this.onEditorKeyup.emit(content);
-      //   });
-      // },
-
-      // TODO
-      // content_css: contentCss,
 
       statusbar: false,
       branding: false,
@@ -223,7 +221,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addEditorTitle();
 
     setTimeout(() => {
-      this.editorReady = true;
+      this.zone(() => (this.editorReady = true));
 
       if (this.selectedNote) {
         this.setContent(this.selectedNote.content);

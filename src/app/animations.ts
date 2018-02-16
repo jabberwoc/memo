@@ -1,7 +1,7 @@
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
 
 // Busy animation
-export const busyAnimation: AnimationEntryMetadata = trigger('saveState', [
+export const readyAnimation: AnimationEntryMetadata = trigger('saveState', [
   state(
     'inactive',
     style({

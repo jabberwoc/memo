@@ -65,10 +65,8 @@ body {
 }
 
 .btn-plain:hover {
-  /* border: 1px solid lightslategray; */
   background: slategray;
   color: white;
-  /* border-radius: 0; */
 }
 
 .btn-icon {

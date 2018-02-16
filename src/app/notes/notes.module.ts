@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './notes-page/dialog/add-note/add-note.component';
 import { TextPipe } from './notes-page/pipe/text.pipe';
 import { DeleteNoteComponent } from './notes-page/dialog/delete-note/delete-note.component';
+import { BusyModule } from '../busy/busy.module';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { DeleteNoteComponent } from './notes-page/dialog/delete-note/delete-note
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    MomentModule
+    MomentModule,
+    BusyModule
   ],
   declarations: [
     NotesPageComponent,
