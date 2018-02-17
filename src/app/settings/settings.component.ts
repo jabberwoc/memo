@@ -92,11 +92,6 @@ export class SettingsComponent implements OnInit {
       // parse json data
       const memoData = JSON.parse(data);
 
-      // const books = memoData['books'];
-      // const notes = memoData['notes'];
-
-      console.log(memoData);
-
       // save books & notes
       Promise.all(
         memoData.map(b =>
@@ -113,12 +108,6 @@ export class SettingsComponent implements OnInit {
           })
         )
       ).then(_ => console.log('Import finished.'));
-
-      // Promise.all(books.map(b => this.dataService.createBook(b))).then(_ => {
-      //   Promise.all(notes.map(n => this.dataService.createNote(n))).then(__ => {
-      //     console.log('Import finished.');
-      //   });
-      // });
     });
   }
 }
