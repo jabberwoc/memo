@@ -1,15 +1,19 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
+import PouchAuth from 'pouchdb-authentication';
 import { ElectronService } from 'ngx-electron';
 import { Book } from '../entities/book';
-// const PouchDB = require('pouchdb'),
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 const path = require('path');
+PouchDB.plugin(PouchAuth);
 
 @Injectable()
 export class PouchDbService {
   private isInstantiated: boolean;
+  private remoteDatabase: PouchDB.Database<{}>;
   private database: any;
-  private listener: EventEmitter<any> = new EventEmitter();
+  private listener: Subject<any> = new Subject<any>();
   private dbName = 'memo';
 
   public constructor(private electronService: ElectronService) {
@@ -86,19 +90,52 @@ export class PouchDbService {
     });
   }
 
-  public sync(remote: string) {
-    // TODO
-    // let remoteDatabase = new PouchDB(remote);
-    // this.database.sync(remoteDatabase, {
-    //   live: true
-    // }).on('change', change => {
-    //   this.listener.emit(change);
-    // }).on('error', error => {
-    //   console.error(JSON.stringify(error));
-    // });
+  public login(
+    remoteUrl: string,
+    username: string,
+    password: string
+  ): Promise<PouchDB.Authentication.LoginResponse> {
+    if (!remoteUrl) {
+      return;
+    }
+
+    this.remoteDatabase = new PouchDB(remoteUrl + '/userdb-' + this.convertToHex(username), {
+      skip_setup: true
+    });
+    return this.remoteDatabase.logIn(username, password).then(response => {
+      if (response.ok) {
+        this.sync();
+        return response;
+      }
+    });
   }
 
-  public getChangeListener() {
+  private sync() {
+    if (!this.remoteDatabase) {
+      return;
+    }
+
+    this.database
+      .sync(this.remoteDatabase, {
+        live: true
+      })
+      .on('change', change => {
+        this.listener.next(change);
+      })
+      .on('error', error => {
+        console.error(JSON.stringify(error));
+      });
+  }
+
+  public getChangeListener(): Observable<any> {
     return this.listener;
+  }
+
+  private convertToHex(value: string) {
+    let hex = '';
+    for (let i = 0; i < value.length; i++) {
+      hex += '' + value.charCodeAt(i).toString(16);
+    }
+    return hex;
   }
 }

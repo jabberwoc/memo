@@ -81,3 +81,12 @@ header .left {
 .container button:hover {
   background-image: linear-gradient(to bottom, darkgray, gray);
 }
+
+.container .right input {
+  width: 100%;
+  height: 100%;
+  color: #444;
+  background: white;
+  border: 0;
+  border-radius: 0;
+}

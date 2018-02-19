@@ -28,8 +28,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.loading = true;
-    this.authenticationService.login(this.model.username, this.model.password).subscribe(
-      data => {
+    this.authenticationService.login(this.model.username, this.model.password).then(
+      response => {
+        // TODO
+        console.log(response);
         this.dialogRef.close();
       },
       error => {

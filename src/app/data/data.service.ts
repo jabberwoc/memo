@@ -11,7 +11,15 @@ export class DataService {
   noteUri = docUri.route('note/:book/(:note)');
   bookUri = docUri.route('book/(:book)');
 
-  constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {}
+  constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {
+    pouchDbService
+      .getChangeListener()
+      .filter(__ => __.direction === 'pull')
+      .subscribe(change => {
+        console.log(change);
+        // TODO changes incoming...
+      });
+  }
 
   getBooks(): Promise<Array<Book>> {
     const pattern = this.bookUri();

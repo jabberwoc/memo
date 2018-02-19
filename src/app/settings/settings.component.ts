@@ -4,6 +4,7 @@ import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
 import { BookDto, Book } from '../entities/book';
+import { Dictionary } from 'lodash';
 
 @Component({
   selector: 'app-settings',
@@ -11,6 +12,8 @@ import { BookDto, Book } from '../entities/book';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
+  configItems: Dictionary<string> = {};
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -23,10 +26,24 @@ export class SettingsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       console.log('settings params: + ' + params);
     });
+
+    let remoteUrl = this.getConfigValue('remoteUrl');
+    if (!remoteUrl) {
+      remoteUrl = '';
+    }
+    this.configItems['remoteUrl'] = remoteUrl;
   }
 
   navigateBack(): void {
     this.router.navigate(['books']);
+  }
+
+  getConfigValue(key: string): string {
+    return localStorage.getItem(key);
+  }
+
+  setConfigValue(key: string): void {
+    localStorage.setItem(key, this.configItems[key]);
   }
 
   export(): void {
@@ -55,6 +72,7 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  // TODO remove
   export2(): void {
     this.dataService.getBooks().then(books => {
       Promise.all(books.map(book => this.dataService.getNotes(book.id))).then(result => {

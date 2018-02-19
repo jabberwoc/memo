@@ -34,9 +34,10 @@ import { SettingsComponent } from './settings/settings.component';
 import { AuthenticationService } from './authentication/authentication.service';
 import { NgxFsModule } from 'ngx-fs';
 import { BusyModule } from './busy/busy.module';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SettingsComponent],
+  declarations: [AppComponent, LoginComponent, SettingsComponent, MenuComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
