@@ -1,5 +1,7 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '../node_modules/photonkit/dist/css/photon.css';
+/* @import '../node_modules/font-awesome/css/font-awesome.min.css'; */
+@import '~font-awesome/css/font-awesome.css';
 @import 'assets/styles/editor.css';
 @import 'assets/styles/dialog.css';
 @import 'assets/styles/scrollbar.css';
@@ -14,12 +16,17 @@ body {
 }
 
 section {
-  display: flex;
+  /* display: flex;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
+  left: 0; */
+
+  display: flex;
+  flex: 1;
+  /* background: blue; */
+  position: relative;
 }
 
 h1,

@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-// import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 import { AppComponent } from './app.component';
 import { NgxElectronModule } from 'ngx-electron';
@@ -47,7 +46,6 @@ import { MenuComponent } from './menu/menu.component';
     BooksModule,
     NotesModule,
     BusyModule,
-    // AngularFontAwesomeModule
     // NgbModule.forRoot()
     // ModalModule.forRoot(),
     StoreModule.forRoot({ notes, selectedNoteId, books })

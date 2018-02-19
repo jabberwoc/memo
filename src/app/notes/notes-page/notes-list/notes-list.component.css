@@ -1,3 +1,7 @@
+.note-list {
+  background: #444;
+}
+
 .note-list-item {
   border-top: 1px solid #666;
   color: #ddd;

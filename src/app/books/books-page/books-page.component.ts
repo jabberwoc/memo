@@ -9,7 +9,6 @@ import { MemoStore } from '../../store/memo-store';
 import { Observable } from 'rxjs/Observable';
 import { AddBookAction, AddBooksAction, DeleteBookAction } from '../../store/actions';
 import { Router } from '@angular/router';
-import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-books-page',
@@ -74,19 +73,7 @@ export class BooksPageComponent implements OnInit {
     });
   }
 
-  login(): void {
-    const dialogRef = this.dialog.open(LoginComponent);
-
-    // dialogRef.afterClosed().subscribe(() => {
-    //   // TODO ?
-    // });
-  }
-
   ngOnInit() {
     this.loadBooks();
-  }
-
-  openSettings(): void {
-    this.router.navigate(['settings']);
   }
 }

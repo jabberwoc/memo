@@ -1,12 +1,40 @@
+:host {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+section {
+  display: flex;
+  /* position: relative; */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 app-notes-list {
   flex: auto;
   overflow-y: auto;
+
+  /* position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; */
 }
 
 #app-notes-list {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  /* position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; */
 }
 
 #app-editor {
