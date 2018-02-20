@@ -1,13 +1,24 @@
 <nav>
-  <!-- <ul> -->
-  <button class="btn-icon dark-themed fa fa-book" title="books" (click)="openBooks()">
-  </button>
-  <button class="btn-icon dark-themed fa fa-cog" title="settings" (click)="openSettings()">
-  </button>
-  <button class="btn-icon dark-themed fa fa-sign-in" (click)="login()">
-  </button>
-  <!-- <li>login</li>
-    <li>books</li>
-    <li>settings</li> -->
-  <!-- </ul> -->
+  <div class="content-menu">
+    <div class="nav-item">
+      <button class="btn-icon fa fa-plus-square" title="add" (click)="openBooks()"></button>
+    </div>
+  </div>
+  <div class="navigation-menu">
+    <div class="nav-item">
+      <button class="btn-icon fa fa-book" title="books" (click)="openBooks()">
+      </button>
+    </div>
+    <div class="nav-item nav-item-active" (click)="openSettings()">
+      <p class="sideways">settings</p>
+      <button class="btn-icon fa fa-cog" title="settings">
+      </button>
+    </div>
+  </div>
+  <div class="login-menu">
+    <div class="nav-item">
+      <button class="btn-icon fa fa-sign-in" (click)="login()">
+      </button>
+    </div>
+  </div>
 </nav>
