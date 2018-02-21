@@ -13,7 +13,7 @@ import {
   state,
   Inject
 } from '@angular/core';
-import { Note } from '../../../../entities/note';
+import { Note } from '../../../core/data/entities/note';
 import { Observable } from 'rxjs/Observable';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 

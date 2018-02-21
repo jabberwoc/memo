@@ -12,12 +12,12 @@ import {
   NgZone,
   HostListener
 } from '@angular/core';
-import { Note } from '../../../entities/note';
+import { Note } from '../../core/data/entities/note';
 import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
 import { LoadingState } from '../notes-page.component';
-import { readyAnimation } from '../../../animations';
+import { readyAnimation } from '../animations';
 
 declare var tinymce: any;
 
@@ -108,12 +108,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   initEditor(): void {
     // TODO
-    tinymce.baseURL = 'assets/tinymce/';
+    tinymce.baseURL = '/assets/tinymce/';
     tinymce.init({
       selector: '#' + this.elementId,
 
       // skin_url: 'assets/tinymce/skins/modern',
-      content_css: 'assets/styles/editor.css',
+      content_css: '/assets/styles/editor.css',
 
       statusbar: false,
       branding: false,

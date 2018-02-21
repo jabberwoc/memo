@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-login',

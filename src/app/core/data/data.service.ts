@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { PouchDbService } from './pouch-db.service';
-import { Book } from '../entities/book';
+import { Book } from './entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
 import { ElectronService } from 'ngx-electron';
-import { Note } from '../entities/note';
+import { Note } from './entities/note';
 
 @Injectable()
 export class DataService {

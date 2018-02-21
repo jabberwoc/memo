@@ -5,15 +5,13 @@
     </div>
   </div>
   <div class="navigation-menu">
-    <div class="nav-item">
-      <button class="btn-icon fa fa-book" title="books" (click)="openBooks()">
+
+    <div [routerLink]="n.routerLink" class="nav-item" [ngClass]="{ 'nav-item-active': n.isActive }" *ngFor="let n of navigationItems">
+      <p *ngIf="n.isActive" class="sideways">{{ n.name }}</p>
+      <button class="btn-icon fa fa-{{n.icon}}" title="n.name">
       </button>
     </div>
-    <div class="nav-item nav-item-active" (click)="openSettings()">
-      <p class="sideways">settings</p>
-      <button class="btn-icon fa fa-cog" title="settings">
-      </button>
-    </div>
+
   </div>
   <div class="login-menu">
     <div class="nav-item">

@@ -2,7 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
 import PouchAuth from 'pouchdb-authentication';
 import { ElectronService } from 'ngx-electron';
-import { Book } from '../entities/book';
+import { Book } from './entities/book';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 const path = require('path');

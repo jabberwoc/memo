@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Note } from '../../../entities/note';
+import { Note } from '../../core/data/entities/note';
 
 @Component({
   selector: 'app-notes-list',

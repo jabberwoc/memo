@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DataService } from '../../data/data.service';
-import { Book } from '../../entities/book';
+import { DataService } from '../core/data/data.service';
+import { Book } from '../core/data/entities/book';
 import { AddBookComponent } from './dialog/add-book/add-book.component';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
 import { Store } from '@ngrx/store';
-import { MemoStore } from '../../store/memo-store';
+import { MemoStore } from '../core/data/store/memo-store';
 import { Observable } from 'rxjs/Observable';
-import { AddBookAction, AddBooksAction, DeleteBookAction } from '../../store/actions';
+import 'rxjs/add/operator/map';
+import { AddBookAction, AddBooksAction, DeleteBookAction } from '../core/data/store/actions';
 import { Router } from '@angular/router';
 
 @Component({

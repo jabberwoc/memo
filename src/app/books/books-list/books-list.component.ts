@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Book } from '../../../entities/book';
+import { Book } from '../../core/data/entities/book';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataService } from '../../../data/data.service';
+import { DataService } from '../../core/data/data.service';
 
 @Component({
   selector: 'app-books-list',
@@ -14,11 +14,7 @@ export class BooksListComponent implements OnInit {
 
   selectedBook: Book;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private dataService: DataService
-  ) {}
+  constructor(private router: Router, private dataService: DataService) {}
 
   select(book: Book): void {
     this.selectedBook = book;
@@ -29,19 +25,12 @@ export class BooksListComponent implements OnInit {
   open(book: Book): void {
     // TODO
     console.log('opening book: ' + book.id + ', name: ' + book.name);
-    this.router.navigate(['notes', book.id, { name: book.name }]);
+    this.router.navigate(['notes', book.id]);
   }
 
   deleteBook(book: Book) {
     this.deleteRequest.next(book);
   }
 
-  ngOnInit() {
-    this.route.params.subscribe(p => {
-      console.log(p);
-      // this.id = p['id'];
-      // this.showDetails = p['showDetails'];
-      // this.load();
-    });
-  }
+  ngOnInit() {}
 }

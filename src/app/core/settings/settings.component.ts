@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
-import { BookDto, Book } from '../entities/book';
+import { BookDto, Book } from '../data/entities/book';
 import { Dictionary } from 'lodash';
 
 @Component({

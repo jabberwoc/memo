@@ -11,15 +11,15 @@ import {
   HostBinding
 } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Book } from '../../entities/book';
-import { DataService } from '../../data/data.service';
-import { Note } from '../../entities/note';
+import { Book } from '../core/data/entities/book';
+import { DataService } from '../core/data/data.service';
+import { Note } from '../core/data/entities/note';
 import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
-import { MemoStore } from '../../store/memo-store';
+import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { slideInDownAnimation } from '../../animations';
+import { slideInDownAnimation } from './animations';
 import 'rxjs/Rx';
 import {
   AddNotesAction,
@@ -28,7 +28,7 @@ import {
   UpdateNoteAction,
   SelectNoteAction,
   DeleteNoteAction
-} from '../../store/actions';
+} from '../core/data/store/actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
@@ -112,9 +112,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   initRouting(): void {
     this.route.paramMap.subscribe(params => {
-      console.log('params: + ' + params);
-
-      this.book = new Book(params.get('bookId'), params.get('name'), 0, null);
+      this.book = new Book(params.get('bookId'), null, 0, null);
 
       this.dataService
         .getBook(params.get('bookId'))
