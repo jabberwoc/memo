@@ -1,19 +1,8 @@
 <section>
   <header>
-
-    <div id="icons">
-      <button id="createNotebook" class="btn-icon dark-themed" title="add book" (click)="addBook()">
-        <span class="icon icon-plus"></span>
-      </button>
-      <button class="btn-icon dark-themed" title="settings" (click)="openSettings()">
-        <span class="icon icon-cog"></span>
-      </button>
-      <button class="btn-icon dark-themed" (click)="login()">
-        <span class="icon icon-login"></span>
-      </button>
-    </div>
     <h1>
-      <span class="icon icon-book"></span> {{pageTitle}}</h1>
+      <span class="fa fa-book"></span> {{pageTitle}}
+    </h1>
   </header>
 
   <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)"></app-books-list>

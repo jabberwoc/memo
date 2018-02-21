@@ -11,17 +11,3 @@ section > header {
   text-align: center;
   color: #888;
 }
-
-#icons {
-  float: right;
-}
-
-#icons > button {
-  font-size: 2em;
-  width: 2em;
-  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
-}
-
-#icons > button:hover {
-  background-image: linear-gradient(180deg, slategray, #444);
-}

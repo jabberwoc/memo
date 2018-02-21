@@ -13,20 +13,7 @@ import { BooksModule } from './books/books.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    // BrowserModule,
-    BrowserAnimationsModule,
-    CoreModule
-    // , BooksModule, NotesModule
-  ],
-  // entryComponents: [
-  //   AddBookComponent,
-  //   DeleteBookComponent,
-  //   AddNoteComponent,
-  //   DeleteNoteComponent,
-  //   LoginComponent
-  // ],
-  // providers: [],
+  imports: [BrowserAnimationsModule, CoreModule],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

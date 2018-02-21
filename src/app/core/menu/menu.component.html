@@ -14,7 +14,12 @@
 
   </div>
   <div class="login-menu">
-    <div class="nav-item">
+    <div class="nav-item" *ngIf="user | async">
+      <p class="sideways">{{ user | async }}</p>
+      <button class="btn-icon fa fa-sign-out" (click)="logout()">
+      </button>
+    </div>
+    <div class="nav-item" *ngIf="!(user | async)">
       <button class="btn-icon fa fa-sign-in" (click)="login()">
       </button>
     </div>

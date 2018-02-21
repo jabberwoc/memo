@@ -27,7 +27,6 @@ import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/mater
   imports: [
     CommonModule,
     CoreRoutingModule,
-    // BrowserAnimationsModule,
     NgxElectronModule,
     NgxFsModule,
     FormsModule,
@@ -51,5 +50,4 @@ import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/mater
     LoginComponent
   ]
 })
-// https://www.technouz.com/4644/angular-5-app-structure-multiple-modules/
 export class CoreModule {}

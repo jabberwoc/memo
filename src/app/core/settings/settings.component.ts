@@ -12,6 +12,7 @@ import { Dictionary } from 'lodash';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
+  pageTitle = 'Settings';
   configItems: Dictionary<string> = {};
 
   constructor(

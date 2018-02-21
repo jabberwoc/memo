@@ -14,16 +14,7 @@ import { NotesModule } from '../notes/notes.module';
 import { CoreModule } from '../core/core.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    // CoreModule,
-    BooksRoutingModule
-    // MatDialogModule,
-    // MatButtonModule,
-    // MatInputModule,
-    // BrowserAnimationsModule,
-    // FormsModule
-  ],
+  imports: [CommonModule, BooksRoutingModule],
   declarations: [BooksPageComponent, BooksListComponent, AddBookComponent, DeleteBookComponent],
   exports: [BooksPageComponent, BooksListComponent]
 })

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material';
 import { LoginComponent } from '../authentication/login/login.component';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-menu',
@@ -11,6 +12,7 @@ import { NavigationItem } from './navigation-item';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  user: Observable<string>;
   navigationItems: Array<NavigationItem> = [
     new NavigationItem('books', '/books', 'book'),
     new NavigationItem('settings', '/settings', 'cog')
@@ -30,6 +32,8 @@ export class MenuComponent implements OnInit {
         this.setNavigationItem(e.urlAfterRedirects);
       }
     });
+
+    this.user = this.authenticationService.loggedInUser;
   }
 
   setNavigationItem(path: string): void {
@@ -57,5 +61,9 @@ export class MenuComponent implements OnInit {
     // dialogRef.afterClosed().subscribe(() => {
     //   // TODO ?
     // });
+  }
+
+  logout(): void {
+    // TODO
   }
 }

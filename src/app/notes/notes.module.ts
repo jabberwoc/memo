@@ -17,13 +17,9 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     NotesRoutingModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    // BrowserAnimationsModule,
+    MomentModule,
     FormsModule,
     ReactiveFormsModule,
-    MomentModule,
     SharedModule
   ],
   declarations: [

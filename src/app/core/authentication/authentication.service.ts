@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class AuthenticationService {
-  isLoggedIn = new BehaviorSubject<boolean>(false);
+  loggedInUser = new BehaviorSubject<string>(null);
 
   constructor(private pouchDbService: PouchDbService) {}
 
@@ -16,7 +16,7 @@ export class AuthenticationService {
       if (response.ok) {
         // user logged in
         // TODO save
-        this.isLoggedIn.next(true);
+        this.loggedInUser.next(response.name);
         console.log('user ' + response.name + ' successfully logged in.');
         return response;
       }
