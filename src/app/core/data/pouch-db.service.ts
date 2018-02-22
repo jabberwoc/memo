@@ -2,7 +2,6 @@ import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
 import PouchAuth from 'pouchdb-authentication';
 import { ElectronService } from 'ngx-electron';
-import { Book } from './entities/book';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 const path = require('path');
@@ -13,20 +12,16 @@ export class PouchDbService {
   private isInstantiated: boolean;
   private remoteDatabase: PouchDB.Database<{}>;
   private database: any;
-  private listener: Subject<any> = new Subject<any>();
   private dbName = 'memo';
+  private syncHandler: any;
+
+  // sync listeners (TOOD: types)
+  private change: Subject<any> = new Subject<any>();
+  private state: Subject<any> = new Subject<any>();
+  private error: Subject<any> = new Subject<any>();
 
   public constructor(private electronService: ElectronService) {
     if (!this.isInstantiated) {
-      // if (electronService.isElectronApp) {
-      //   this.database = electronService.remote.getGlobal('shared').db;
-      //   console.log('database setup from electron app');
-
-      // } else {
-      //   this.database = new PouchDB('memo', { auto_compaction: true });
-      //   console.log('database setup in browser');
-      // }
-
       this.setupDatabase();
     }
   }
@@ -110,25 +105,52 @@ export class PouchDbService {
     });
   }
 
+  public logout(): Promise<PouchDB.Core.BasicResponse> {
+    if (!this.remoteDatabase) {
+      // not syncing
+      return;
+    }
+
+    this.syncHandler.cancel();
+    return this.remoteDatabase.logOut();
+  }
+
   private sync() {
     if (!this.remoteDatabase) {
       return;
     }
 
-    this.database
-      .sync(this.remoteDatabase, {
-        live: true
-      })
-      .on('change', change => {
-        this.listener.next(change);
-      })
-      .on('error', error => {
-        console.error(JSON.stringify(error));
-      });
+    this.syncHandler = this.database.sync(this.remoteDatabase, {
+      live: true,
+      retry: true
+    });
+
+    this.syncHandler.on('change', change => {
+      console.log('Remote sync: changes detected.');
+      console.log(change);
+      this.change.next(change);
+    });
+    this.syncHandler.on('paused', info => {
+      console.warn('Remote sync: connection paused.');
+      console.log(info);
+      this.state.next(info);
+    });
+    this.syncHandler.on('active', info => {
+      console.log('Remote sync: connection resumed.');
+      this.state.next(info);
+    });
+    this.syncHandler.on('complete', info => {
+      console.error('Remote sync: connection closed.');
+      this.state.next(info);
+    });
+    this.syncHandler.on('error', error => {
+      console.error('Remote sync error: ' + JSON.stringify(error));
+      this.error.next(error);
+    });
   }
 
   public getChangeListener(): Observable<any> {
-    return this.listener;
+    return this.change;
   }
 
   private convertToHex(value: string) {

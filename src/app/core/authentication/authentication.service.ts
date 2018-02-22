@@ -22,4 +22,14 @@ export class AuthenticationService {
       }
     });
   }
+
+  logout() {
+    return this.pouchDbService.logout().then(response => {
+      if (response.ok) {
+        console.log('user ' + this.loggedInUser.getValue() + ' successfully logged out.');
+        this.loggedInUser.next(null);
+        return response;
+      }
+    });
+  }
 }

@@ -96,13 +96,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   saveNote(): void {
-    // const debounceNext = () => this.debouncer.next(this.selectedNote);
-
-    // if (NgZone.isInAngularZone()) {
-    //   debounceNext();
-    // } else {
-    //   this.ngZone.run(() => debounceNext());
-    // }
     this.zone(() => this.debouncer.next(this.selectedNote));
   }
 

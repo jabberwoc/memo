@@ -30,6 +30,11 @@ nav {
   background: slategray;
 }
 
+.nav-item-info {
+  color: white;
+  background: slategray;
+}
+
 .sideways {
   text-orientation: sideways;
   writing-mode: vertical-rl;
@@ -50,6 +55,7 @@ nav .nav-item {
   outline: none;
 }
 
-.login-menu {
-  justify-self: flex-end;
+.nav-item.disabled {
+  pointer-events: none;
+  cursor: default;
 }

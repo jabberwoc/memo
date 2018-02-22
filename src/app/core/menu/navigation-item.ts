@@ -1,13 +1,14 @@
 export class NavigationItem {
-  name: string;
-  routerLink: string;
-  icon: string;
-  isActive = false;
+  readonly name: string;
+  readonly routerLink: string;
+  readonly icon: string;
+  readonly isInfo: boolean;
+  isSelected: boolean;
 
-  // TODO context actions
-  constructor(name: string, routerLink: string, icon: string) {
+  constructor(name: string, icon: string, routerLink: string, isInfo: boolean = false) {
     this.name = name;
-    this.routerLink = routerLink;
     this.icon = icon;
+    this.routerLink = routerLink;
+    this.isInfo = isInfo;
   }
 }

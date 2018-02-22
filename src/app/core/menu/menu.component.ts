@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { LoginComponent } from '../authentication/login/login.component';
@@ -13,10 +13,14 @@ import { Observable } from 'rxjs/Observable';
 })
 export class MenuComponent implements OnInit {
   user: Observable<string>;
-  navigationItems: Array<NavigationItem> = [
-    new NavigationItem('books', '/books', 'book'),
-    new NavigationItem('settings', '/settings', 'cog')
+  private navigationItems: Array<NavigationItem> = [
+    new NavigationItem('notes', 'sticky-note', '/notes', true),
+    new NavigationItem('books', 'book', '/books'),
+    new NavigationItem('settings', 'cog', '/settings')
   ];
+  visibleNavigationItems: Array<NavigationItem> = this.navigationItems.filter(
+    _ => _.isSelected || !_.isInfo
+  );
 
   constructor(
     private router: Router,
@@ -36,26 +40,22 @@ export class MenuComponent implements OnInit {
     this.user = this.authenticationService.loggedInUser;
   }
 
-  setNavigationItem(path: string): void {
+  private setNavigationItem(path: string): void {
     // reset
-    this.navigationItems.forEach(_ => (_.isActive = false));
-    // TODO /notes path
+    this.navigationItems.forEach(_ => (_.isSelected = false));
     const currentItem = this.navigationItems.find(_ => path.startsWith(_.routerLink));
     // and set
     if (currentItem) {
-      currentItem.isActive = true;
+      currentItem.isSelected = true;
+      console.log(currentItem);
     }
+
+    // filter visible
+    console.log('filtering navigation items...');
+    this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
   }
 
-  openBooks(): void {
-    this.router.navigate(['books']);
-  }
-
-  openSettings(): void {
-    this.router.navigate(['settings']);
-  }
-
-  login(): void {
+  public login(): void {
     const dialogRef = this.dialog.open(LoginComponent);
 
     // dialogRef.afterClosed().subscribe(() => {
@@ -63,7 +63,7 @@ export class MenuComponent implements OnInit {
     // });
   }
 
-  logout(): void {
-    // TODO
+  public logout(): void {
+    this.authenticationService.logout();
   }
 }
