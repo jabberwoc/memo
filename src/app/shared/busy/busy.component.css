@@ -1,31 +1,28 @@
 .box {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1001;
-  /* background: lightgray; */
-  background: transparent;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .loader {
-  /* box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.3); */
-  border: 1em solid slategray;
-  border-top: 1em solid rgba(112, 128, 144, 0.5);
+  border: solid slategray;
+  border-top-color: rgba(112, 128, 144, 0.5);
   animation: spin 2s linear infinite;
   border-radius: 50%;
-  width: 10em;
-  height: 10em;
   margin: 0 auto;
   position: relative;
-  /* top: 40%; */
-  /* left: 0; */
   background: transparent;
+  visibility: inherit;
 }
 
 @keyframes spin {

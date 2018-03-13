@@ -5,6 +5,7 @@ import { LoginComponent } from '../authentication/login/login.component';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
 import { Observable } from 'rxjs/Observable';
+import { DataService } from '../data/data.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,6 +14,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class MenuComponent implements OnInit {
   user: Observable<string>;
+  isSyncing = false;
+
   private navigationItems: Array<NavigationItem> = [
     new NavigationItem('notes', 'sticky-note', '/notes', true),
     new NavigationItem('books', 'book', '/books'),
@@ -38,6 +41,13 @@ export class MenuComponent implements OnInit {
     });
 
     this.user = this.authenticationService.loggedInUser;
+
+    // TODO DataService change indicator push + pull
+    const resetObservable = Observable.of(false);
+    this.authenticationService.syncChanges.subscribe(_ => {
+      this.isSyncing = true;
+      this.isSyncing = false;
+    });
   }
 
   private setNavigationItem(path: string): void {

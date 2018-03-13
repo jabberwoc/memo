@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.authenticationService.login(this.model.username, this.model.password).then(
       response => {
+        this.loading = false;
         // TODO
         console.log(response);
         this.dialogRef.close();
@@ -40,7 +41,5 @@ export class LoginComponent implements OnInit {
         this.error = 'Invalid username / password';
       }
     );
-
-    this.loading = false;
   }
 }

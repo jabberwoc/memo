@@ -46,7 +46,7 @@ textarea {
   color: white;
 }
 
-.loader {
+/* .loader {
   display: inline-block;
   border: 2px solid slategray;
   border-top: 2px solid #ddd;
@@ -64,4 +64,4 @@ textarea {
   100% {
     transform: rotate(360deg);
   }
-}
+} */

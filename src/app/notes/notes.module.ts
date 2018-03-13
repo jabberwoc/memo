@@ -5,7 +5,6 @@ import { NotesPageComponent } from './notes-page.component';
 import { NotesListComponent } from './notes-list/notes-list.component';
 import { EditorComponent } from './editor/editor.component';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MomentModule } from 'angular2-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';

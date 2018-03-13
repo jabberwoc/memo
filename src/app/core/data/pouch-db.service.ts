@@ -130,17 +130,16 @@ export class PouchDbService {
       console.log(change);
       this.change.next(change);
     });
-    this.syncHandler.on('paused', info => {
-      console.warn('Remote sync: connection paused.');
-      console.log(info);
-      this.state.next(info);
+    this.syncHandler.on('paused', () => {
+      console.log('Remote sync: connection paused.');
+      this.state.next('connection paused');
     });
-    this.syncHandler.on('active', info => {
+    this.syncHandler.on('active', () => {
       console.log('Remote sync: connection resumed.');
-      this.state.next(info);
+      this.state.next('connection resumed');
     });
     this.syncHandler.on('complete', info => {
-      console.error('Remote sync: connection closed.');
+      console.log('Remote sync: connection closed.');
       this.state.next(info);
     });
     this.syncHandler.on('error', error => {

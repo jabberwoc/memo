@@ -5,20 +5,14 @@ import * as cuid from 'cuid';
 import docUri from 'docuri';
 import { ElectronService } from 'ngx-electron';
 import { Note } from './entities/note';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class DataService {
-  noteUri = docUri.route('note/:book/(:note)');
-  bookUri = docUri.route('book/(:book)');
+  private noteUri = docUri.route('note/:book/(:note)');
+  private bookUri = docUri.route('book/(:book)');
 
   constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {
-    pouchDbService
-      .getChangeListener()
-      .filter(__ => __.direction === 'pull')
-      .subscribe(change => {
-        console.log(change);
-        // TODO changes incoming...
-      });
   }
 
   getBooks(): Promise<Array<Book>> {

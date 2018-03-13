@@ -19,8 +19,9 @@ import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { slideInDownAnimation } from './animations';
-import 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+// import { slideInDownAnimation } from './animations';
 import {
   AddNotesAction,
   AddNoteAction,
@@ -29,21 +30,17 @@ import {
   SelectNoteAction,
   DeleteNoteAction
 } from '../core/data/store/actions';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
+// import { BusyState } from '../shared/busy/busy-state';
 
 @Component({
   selector: 'app-notes-page',
   templateUrl: './notes-page.component.html',
-  styleUrls: ['./notes-page.component.css'],
-  animations: [slideInDownAnimation]
+  styleUrls: ['./notes-page.component.css']
+  // animations: [slideInDownAnimation]
 })
 export class NotesPageComponent implements OnInit, AfterViewInit {
-  @HostBinding('@routeAnimation') routeAnimation = true;
-  // @HostBinding('style.display') display = 'block';
-  // @HostBinding('style.position') position = 'absolute';
-
   book: Book;
   notes: Observable<Array<Note>>;
   filteredNotes: Observable<Array<Note>>;
@@ -51,7 +48,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   selectedNoteId: Observable<string>;
   noteFilter = new BehaviorSubject<string>(null);
 
-  saveState = LoadingState.INACTIVE;
+  isSaving = false;
 
   constructor(
     private router: Router,
@@ -67,13 +64,9 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       })
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
-    this.selectedNote = Observable.combineLatest(
-      this.notes,
-      this.selectedNoteId,
-      (notes, selectedId) => {
-        return notes.find(_ => _.id === selectedId) || null;
-      }
-    );
+    this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
+      return notes.find(_ => _.id === selectedId) || null;
+    });
   }
 
   ngOnInit(): void {
@@ -184,13 +177,13 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   updateNote(note: Note) {
-    this.saveState = LoadingState.ACTIVE;
+    this.isSaving = true;
 
     this.dataService.updateNote(note).then(ok => {
       if (ok) {
         console.log('note updated: [' + note.id + '] ' + note.name);
         this.store.dispatch(new UpdateNoteAction(note));
-        this.saveState = LoadingState.INACTIVE;
+        this.isSaving = false;
       } else {
         console.log('error updating note: ' + ok);
       }
@@ -204,9 +197,4 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   filter(text: string) {
     this.noteFilter.next(text.toLowerCase());
   }
-}
-
-export class LoadingState {
-  static ACTIVE = 'active';
-  static INACTIVE = 'inactive';
 }

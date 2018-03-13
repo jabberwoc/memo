@@ -6,8 +6,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class AuthenticationService {
   loggedInUser = new BehaviorSubject<string>(null);
+  syncChanges: Observable<any>;
 
-  constructor(private pouchDbService: PouchDbService) {}
+  constructor(private pouchDbService: PouchDbService) {
+    this.syncChanges = pouchDbService.getChangeListener();
+  }
 
   login(username: string, password: string): Promise<PouchDB.Authentication.LoginResponse> {
     // TODO

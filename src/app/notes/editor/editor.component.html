@@ -6,7 +6,7 @@
     <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
       type="text" formControlName="title" [ngModel]="selectedNote?.name">
   </form>
-  <div [@saveState]="saveState" class="loader state"></div>
+  <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>
 </div>
 
 <textarea id="{{ elementId }}"></textarea>
@@ -19,4 +19,4 @@
   </div>
 </div>
 
-<app-busy [isBusy]="!editorReady"></app-busy>
+<app-busy [isBusy]="!editorReady" [size]="10" [overlay]="true"></app-busy>

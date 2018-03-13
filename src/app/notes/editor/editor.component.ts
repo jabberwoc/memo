@@ -16,16 +16,16 @@ import { Note } from '../../core/data/entities/note';
 import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
-import { LoadingState } from '../notes-page.component';
-import { readyAnimation } from '../animations';
+import { BusyState } from '../../shared/busy/busy-state';
+// import { saveStateAnimation } from './../animations';
 
 declare var tinymce: any;
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css'],
-  animations: [readyAnimation]
+  styleUrls: ['./editor.component.css']
+  // animations: [saveStateAnimation]
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output() addNote = new EventEmitter();
@@ -34,7 +34,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('noteTitle') private noteTitle: ElementRef;
 
   private selectedNoteValue: Note;
-  @Input() saveState: LoadingState;
+  @Input() isSaving: boolean;
   get selectedNote(): Note {
     return this.selectedNoteValue;
   }
@@ -56,6 +56,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  busyState = BusyState.ACTIVE;
   elementId = 'editor';
   editor: any;
   editorReady = false;
@@ -214,7 +215,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addEditorTitle();
 
     setTimeout(() => {
-      this.zone(() => (this.editorReady = true));
+      this.zone(() => {
+        this.editorReady = true;
+        this.busyState = BusyState.INACTIVE;
+      });
 
       if (this.selectedNote) {
         this.setContent(this.selectedNote.content);

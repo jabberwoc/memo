@@ -20,5 +20,5 @@
     <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()">Cancel</button>
     <button [disabled]="loading" class="btn btn-plain btn-ok btn-right" (click)="login()" tabindex="2">Login</button>
   </div>
-  <app-busy [isBusy]="loading"></app-busy>
+  <app-busy [isBusy]="loading" [overlay]="true"></app-busy>
 </div>

@@ -22,6 +22,8 @@ import { AddBookComponent } from '../books/dialog/add-book/add-book.component';
 import { DeleteBookComponent } from '../books/dialog/delete-book/delete-book.component';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
+import 'rxjs/Rx';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [

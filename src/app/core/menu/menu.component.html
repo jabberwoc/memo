@@ -16,6 +16,7 @@
   </div>
   <div class="login-menu">
     <div class="nav-item" *ngIf="user | async">
+      <app-busy [isBusy]="isSyncing" [size]="1.5"></app-busy>
       <p class="sideways">{{ user | async }}</p>
       <button class="btn-icon fa fa-sign-out" title="logout" (click)="logout()">
       </button>
