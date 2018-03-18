@@ -6,6 +6,7 @@ import { AuthenticationService } from '../authentication/authentication.service'
 import { NavigationItem } from './navigation-item';
 import { Observable } from 'rxjs/Observable';
 import { DataService } from '../data/data.service';
+import { MenuService, MenuName } from './menu.service';
 
 @Component({
   selector: 'app-menu',
@@ -16,48 +17,46 @@ export class MenuComponent implements OnInit {
   user: Observable<string>;
   isSyncing = false;
 
-  private navigationItems: Array<NavigationItem> = [
-    new NavigationItem('notes', 'sticky-note', '/notes', true),
-    new NavigationItem('books', 'book', '/books'),
-    new NavigationItem('settings', 'cog', '/settings')
-  ];
-  visibleNavigationItems: Array<NavigationItem> = this.navigationItems.filter(
-    _ => _.isSelected || !_.isInfo
-  );
+  private navigationItems: Array<NavigationItem>;
+  visibleNavigationItems: Array<NavigationItem>;
+  selectedNavigationItem: NavigationItem;
 
   constructor(
     private router: Router,
     private dialog: MatDialog,
+    private menuService: MenuService,
     private authenticationService: AuthenticationService
-  ) {}
+  ) {
+    this.navigationItems = menuService.navigationItems;
+    this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
+  }
 
   ngOnInit() {
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
         console.log('navigation event url: ' + e.urlAfterRedirects);
 
-        this.setNavigationItem(e.urlAfterRedirects);
+        this.selectNavigationItem(e.urlAfterRedirects);
       }
     });
 
     this.user = this.authenticationService.loggedInUser;
 
     // TODO DataService change indicator push + pull
-    const resetObservable = Observable.of(false);
-    this.authenticationService.syncChanges.subscribe(_ => {
+    this.authenticationService.syncChanges.throttleTime(2000).subscribe(_ => {
       this.isSyncing = true;
-      this.isSyncing = false;
+      setTimeout(() => (this.isSyncing = false), 0);
     });
   }
 
-  private setNavigationItem(path: string): void {
+  private selectNavigationItem(path: string): void {
     // reset
     this.navigationItems.forEach(_ => (_.isSelected = false));
-    const currentItem = this.navigationItems.find(_ => path.startsWith(_.routerLink));
+    const targetItem = this.navigationItems.find(_ => path.startsWith(_.routerLink));
     // and set
-    if (currentItem) {
-      currentItem.isSelected = true;
-      console.log(currentItem);
+    if (targetItem) {
+      targetItem.isSelected = true;
+      this.selectedNavigationItem = targetItem;
     }
 
     // filter visible
@@ -65,7 +64,7 @@ export class MenuComponent implements OnInit {
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
   }
 
-  public login(): void {
+  login(): void {
     const dialogRef = this.dialog.open(LoginComponent);
 
     // dialogRef.afterClosed().subscribe(() => {
@@ -73,7 +72,14 @@ export class MenuComponent implements OnInit {
     // });
   }
 
-  public logout(): void {
+  logout(): void {
     this.authenticationService.logout();
+  }
+
+  executeAddAction(navigationItem: NavigationItem): void {
+    const target = this.navigationItems.find(_ => _ === navigationItem);
+    if (target && target.action) {
+      target.action();
+    }
   }
 }

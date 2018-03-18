@@ -1,13 +1,14 @@
 <nav>
   <div class="content-menu">
-    <div class="nav-item">
-      <button class="btn-icon fa fa-plus-square" title="add"></button>
+    <div class="nav-item" *ngIf="selectedNavigationItem && selectedNavigationItem.action">
+      <button class="btn-icon fa fa-plus-square" title="add" (click)="executeAddAction(selectedNavigationItem)"></button>
     </div>
   </div>
   <div class="navigation-menu">
 
     <div [routerLink]="n.routerLink" class="nav-item" [ngClass]="{ 'nav-item-active': n.isSelected,'disabled' : n.isSelected, 'nav-item-info' : n.isInfo }"
       *ngFor="let n of visibleNavigationItems">
+
       <p *ngIf="n.isSelected" class="sideways">{{ n.name }}</p>
       <button class="btn-icon fa fa-{{n.icon}}" title="{{n.name}}">
       </button>
@@ -16,7 +17,9 @@
   </div>
   <div class="login-menu">
     <div class="nav-item" *ngIf="user | async">
-      <app-busy [isBusy]="isSyncing" [size]="1.5"></app-busy>
+      <div class="sync-wrapper">
+        <app-busy [isBusy]="isSyncing" [size]="1.5" [fadeOut]="true"></app-busy>
+      </div>
       <p class="sideways">{{ user | async }}</p>
       <button class="btn-icon fa fa-sign-out" title="logout" (click)="logout()">
       </button>

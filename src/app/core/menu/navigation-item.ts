@@ -4,6 +4,7 @@ export class NavigationItem {
   readonly icon: string;
   readonly isInfo: boolean;
   isSelected: boolean;
+  action: () => void;
 
   constructor(name: string, icon: string, routerLink: string, isInfo: boolean = false) {
     this.name = name;

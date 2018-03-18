@@ -24,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import 'rxjs/Rx';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MenuService } from './menu/menu.service';
 
 @NgModule({
   imports: [
@@ -43,7 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   declarations: [LoginComponent, SettingsComponent, MenuComponent],
   exports: [RouterModule, MenuComponent],
-  providers: [DataService, PouchDbService, AuthenticationService, AuthGuard],
+  providers: [DataService, PouchDbService, AuthenticationService, AuthGuard, MenuService],
   entryComponents: [
     AddBookComponent,
     DeleteBookComponent,

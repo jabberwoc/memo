@@ -32,6 +32,7 @@ import {
 } from '../core/data/store/actions';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
+import { MenuService, MenuName } from '../core/menu/menu.service';
 // import { BusyState } from '../shared/busy/busy-state';
 
 @Component({
@@ -55,6 +56,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private dataService: DataService,
+    private menuService: MenuService,
     private store: Store<MemoStore>
   ) {
     this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
@@ -67,6 +69,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
       return notes.find(_ => _.id === selectedId) || null;
     });
+
+    this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
   }
 
   ngOnInit(): void {

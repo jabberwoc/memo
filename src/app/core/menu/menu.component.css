@@ -59,3 +59,7 @@ nav .nav-item {
   pointer-events: none;
   cursor: default;
 }
+
+.sync-wrapper {
+  height: 1.5em;
+}

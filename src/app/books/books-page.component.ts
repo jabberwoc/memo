@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { AddBookAction, AddBooksAction, DeleteBookAction } from '../core/data/store/actions';
 import { Router } from '@angular/router';
+import { MenuService, MenuName } from '../core/menu/menu.service';
 
 @Component({
   selector: 'app-books-page',
@@ -25,9 +26,11 @@ export class BooksPageComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private dataService: DataService,
+    private menuService: MenuService,
     private store: Store<MemoStore>
   ) {
     this.books = this.store.select(_ => _.books).map(_ => _.sort(Book.modifiedComparer));
+    this.menuService.registerMenuAction(MenuName.BOOKS, () => this.addBook());
   }
 
   addBook(): void {
