@@ -18,11 +18,8 @@ nav {
   margin: 0;
 }
 
-.nav-item:hover {
+.navigation-menu .nav-item:hover {
   cursor: pointer;
-}
-.nav-item:hover * {
-  cursor: inherit;
 }
 
 .nav-item-active {
