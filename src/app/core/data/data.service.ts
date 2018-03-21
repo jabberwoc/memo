@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { PouchDbService } from './pouch-db.service';
 import { Book } from './entities/book';
 import * as cuid from 'cuid';
@@ -6,13 +6,65 @@ import docUri from 'docuri';
 import { ElectronService } from 'ngx-electron';
 import { Note } from './entities/note';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { MemoStore } from './store/memo-store';
+import {
+  AddNotesAction,
+  AddOrUpdateNoteAction,
+  DeleteBookAction,
+  AddOrUpdateBookAction,
+  DeleteNoteAction,
+  AddNoteAction,
+  UpdateBookAction
+} from './store/actions';
 
 @Injectable()
 export class DataService {
   private noteUri = docUri.route('note/:book/(:note)');
   private bookUri = docUri.route('book/(:book)');
 
-  constructor(private electronService: ElectronService, private pouchDbService: PouchDbService) {
+  constructor(
+    private electronService: ElectronService,
+    private pouchDbService: PouchDbService,
+    private store: Store<MemoStore>
+  ) {
+    // sync changes wth state
+    // TODO typed change object
+    this.pouchDbService
+      .getChangeListener()
+      .filter(_ => _.direction === 'pull')
+      .subscribe(_ => this.updateState(_.change));
+  }
+
+  updateState(change: any): void {
+    if (!change.ok) {
+      // TODO handle conflicts
+      console.log('pull changes has errors');
+      console.log(change.errors);
+      return;
+    }
+
+    const books = change.docs.filter(_ => (<string>_._id).startsWith('book/'));
+    const notes = change.docs.filter(_ => (<string>_._id).startsWith('note/'));
+
+    // deleted: _deleted: true
+    books.forEach(book => {
+      if (book._deleted) {
+        const bookId = this.bookUri(book._id).book;
+        this.store.dispatch(new DeleteBookAction(bookId));
+      } else {
+        this.store.dispatch(new AddOrUpdateBookAction(book));
+      }
+    });
+
+    notes.forEach(note => {
+      if (note._deleted) {
+        const noteId = this.noteUri(note._id).note;
+        this.store.dispatch(new DeleteNoteAction(noteId));
+      } else {
+        this.store.dispatch(new AddOrUpdateNoteAction(note));
+      }
+    });
   }
 
   getBooks(): Promise<Array<Book>> {

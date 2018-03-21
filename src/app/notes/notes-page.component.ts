@@ -21,7 +21,6 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-// import { slideInDownAnimation } from './animations';
 import {
   AddNotesAction,
   AddNoteAction,
@@ -33,7 +32,6 @@ import {
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
 import { MenuService, MenuName } from '../core/menu/menu.service';
-// import { BusyState } from '../shared/busy/busy-state';
 
 @Component({
   selector: 'app-notes-page',
@@ -70,6 +68,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       return notes.find(_ => _.id === selectedId) || null;
     });
 
+    // register 'add note' action in menu
     this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
   }
 
@@ -168,7 +167,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
           if (ok) {
             this.store.dispatch(new DeleteNoteAction(note.id));
           } else {
-            console.log('error creating book');
+            console.log('error deleting book');
           }
         });
       }

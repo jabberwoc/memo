@@ -10,11 +10,20 @@ export class AuthenticationService {
 
   constructor(private pouchDbService: PouchDbService) {
     this.syncChanges = pouchDbService.getChangeListener();
+    pouchDbService.getErrorListener().subscribe(_ => {
+      if (_.error === 'unauthorized' && this.loggedInUser.value !== null) {
+        this.loggedInUser.next(null);
+      }
+      // TODO else ?
+    });
   }
 
   login(username: string, password: string): Promise<PouchDB.Authentication.LoginResponse> {
     // TODO
     const remoteUrl = localStorage.getItem('remoteUrl');
+    if (!remoteUrl) {
+      return Promise.reject('Remote Url not set');
+    }
     return this.pouchDbService.login(remoteUrl, username, password).then(response => {
       if (response.ok) {
         // user logged in

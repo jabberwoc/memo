@@ -5,12 +5,12 @@
   </div>
   <div class="dialog-content">
     <div class="form-group">
-      <input type="text" class="form-control" name="username" placeholder="username" [(ngModel)]="model.username" #username="ngModel"
-        required />
+      <input type="text" class="form-control" name="username" placeholder="username" [(ngModel)]="model.username" (keyup.enter)="loginButton.click()"
+        #username="ngModel" required />
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" name="password" placeholder="password" [(ngModel)]="model.password" #password="ngModel"
-        required />
+      <input type="password" class="form-control" name="password" placeholder="password" [(ngModel)]="model.password" (keyup.enter)="loginButton.click()"
+        #password="ngModel" required />
     </div>
 
     <div *ngIf="error" class="error">{{ error }}</div>
@@ -18,7 +18,7 @@
 
   <div class="dialog-buttons">
     <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()">Cancel</button>
-    <button [disabled]="loading" class="btn btn-plain btn-ok btn-right" (click)="login()" tabindex="2">Login</button>
+    <button [disabled]="loading" class="btn btn-plain btn-ok btn-right" (click)="login()" tabindex="2" #loginButton>Login</button>
   </div>
   <app-busy [isBusy]="loading" [overlay]="true"></app-busy>
 </div>

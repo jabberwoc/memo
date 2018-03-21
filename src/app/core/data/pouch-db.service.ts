@@ -152,6 +152,10 @@ export class PouchDbService {
     return this.change;
   }
 
+  public getErrorListener(): Observable<any> {
+    return this.error;
+  }
+
   private convertToHex(value: string) {
     let hex = '';
     for (let i = 0; i < value.length; i++) {

@@ -5,15 +5,15 @@ import {
   ADD_NOTES,
   ADD_NOTE,
   UPDATE_NOTE,
+  ADD_OR_UPDATE_NOTE,
   DELETE_NOTE,
   SELECT_NOTE,
   ADD_BOOKS,
   ADD_BOOK,
   UPDATE_BOOK,
-  DELETE_BOOK
+  DELETE_BOOK,
+  ADD_OR_UPDATE_BOOK
 } from './actions';
-
-// export type Action = StoreActions.;
 
 export interface MemoStore {
   notes: Array<Note>;
@@ -29,11 +29,21 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
       return [...state, action.payload];
     case UPDATE_NOTE:
       return state.map(note => {
-        const payload = action.payload;
-        return note.id === payload.id
-          ? new Note(payload.id, payload.name, payload.book, payload.content, payload.modified)
+        return note.id === action.payload.id
+          ? new Note(
+              action.payload.id,
+              action.payload.name,
+              action.payload.book,
+              action.payload.content,
+              action.payload.modified
+            )
           : note;
       });
+    case ADD_OR_UPDATE_NOTE:
+      if (state.some(_ => _.id === action.payload.id)) {
+        return notes(state, new StoreActions.UpdateNoteAction(action.payload));
+      }
+      return notes(state, new StoreActions.AddNoteAction(action.payload));
     case DELETE_NOTE:
       return state.filter(note => {
         return note.id !== action.payload;
@@ -61,12 +71,21 @@ export function books(state: Array<Book> = [], action: StoreActions.BookActions)
     case ADD_BOOK:
       return [...state, action.payload];
     case UPDATE_BOOK:
-      const payload = action.payload;
       return state.map(book => {
-        return book.id === payload.id
-          ? new Book(payload.id, payload.name, payload.count, payload.modified)
+        return book.id === action.payload.id
+          ? new Book(
+              action.payload.id,
+              action.payload.name,
+              action.payload.count,
+              action.payload.modified
+            )
           : book;
       });
+    case ADD_OR_UPDATE_BOOK:
+      if (state.some(_ => _.id === action.payload.id)) {
+        return books(state, new StoreActions.UpdateBookAction(action.payload));
+      }
+      return books(state, new StoreActions.AddBookAction(action.payload));
     case DELETE_BOOK:
       return state.filter(book => {
         return book.id !== action.payload;

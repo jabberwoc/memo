@@ -38,7 +38,8 @@ export class LoginComponent implements OnInit {
       error => {
         // TODO report error
         // this.alertService.error(error);
-        this.error = 'Invalid username / password';
+        this.loading = false;
+        this.error = error; // 'Invalid username / password';
       }
     );
   }
