@@ -2,28 +2,30 @@ import { Note } from '../entities/note';
 import { Book } from '../entities/book';
 import * as StoreActions from './actions';
 import {
-  ADD_NOTES,
+  SET_NOTES,
   ADD_NOTE,
   UPDATE_NOTE,
   ADD_OR_UPDATE_NOTE,
   DELETE_NOTE,
   SELECT_NOTE,
-  ADD_BOOKS,
+  SET_BOOKS,
   ADD_BOOK,
   UPDATE_BOOK,
   DELETE_BOOK,
-  ADD_OR_UPDATE_BOOK
+  ADD_OR_UPDATE_BOOK,
+  SELECT_BOOK
 } from './actions';
 
 export interface MemoStore {
   notes: Array<Note>;
   books: Array<Book>;
+  selectedBook: Book;
   selectedNoteId: string;
 }
 
 export function notes(state: Array<Note> = [], action: StoreActions.NoteActions) {
   switch (action.type) {
-    case ADD_NOTES:
+    case SET_NOTES:
       return action.payload;
     case ADD_NOTE:
       return [...state, action.payload];
@@ -64,9 +66,20 @@ export function selectedNoteId(state: string = null, action: StoreActions.Select
   }
 }
 
+export function selectedBook(state: Book = null, action: StoreActions.SelectBookActions) {
+  switch (action.type) {
+    case SELECT_BOOK:
+      return action.payload;
+    case DELETE_BOOK:
+      return state === null || action.payload === state.id ? null : state;
+    default:
+      return state;
+  }
+}
+
 export function books(state: Array<Book> = [], action: StoreActions.BookActions) {
   switch (action.type) {
-    case ADD_BOOKS:
+    case SET_BOOKS:
       return action.payload;
     case ADD_BOOK:
       return [...state, action.payload];

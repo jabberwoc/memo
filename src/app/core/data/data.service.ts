@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
 import {
-  AddNotesAction,
+  SetNotesAction,
   AddOrUpdateNoteAction,
   DeleteBookAction,
   AddOrUpdateBookAction,
@@ -22,6 +22,7 @@ import {
 export class DataService {
   private noteUri = docUri.route('note/:book/(:note)');
   private bookUri = docUri.route('book/(:book)');
+  syncPull: Observable<any>;
 
   constructor(
     private electronService: ElectronService,
@@ -29,42 +30,44 @@ export class DataService {
     private store: Store<MemoStore>
   ) {
     // sync changes wth state
-    // TODO typed change object
-    this.pouchDbService
+    this.syncPull = this.pouchDbService
       .getChangeListener()
       .filter(_ => _.direction === 'pull')
-      .subscribe(_ => this.updateState(_.change));
+      .map(_ => this.formatChange(_.change))
+      .filter(_ => _ !== false);
   }
 
-  updateState(change: any): void {
+  private formatChange(change: any): any {
     if (!change.ok) {
       // TODO handle conflicts
       console.log('pull changes has errors');
       console.log(change.errors);
-      return;
+      return false;
     }
 
-    const books = change.docs.filter(_ => (<string>_._id).startsWith('book/'));
-    const notes = change.docs.filter(_ => (<string>_._id).startsWith('note/'));
-
-    // deleted: _deleted: true
-    books.forEach(book => {
-      if (book._deleted) {
-        const bookId = this.bookUri(book._id).book;
-        this.store.dispatch(new DeleteBookAction(bookId));
-      } else {
-        this.store.dispatch(new AddOrUpdateBookAction(book));
+    const deleted = { books: [], notes: [] };
+    const books = [];
+    const notes = [];
+    change.docs.forEach(doc => {
+      if (doc._id.startsWith('book/')) {
+        if (doc._deleted) {
+          this.store.dispatch(new DeleteBookAction(this.bookUri(doc._id).book));
+        } else {
+          books.push(doc);
+        }
+      } else if (doc._id.startsWith('note/')) {
+        if (doc._deleted) {
+          this.store.dispatch(new DeleteNoteAction(this.noteUri(doc._id).note));
+        } else {
+          notes.push(doc);
+        }
       }
     });
 
-    notes.forEach(note => {
-      if (note._deleted) {
-        const noteId = this.noteUri(note._id).note;
-        this.store.dispatch(new DeleteNoteAction(noteId));
-      } else {
-        this.store.dispatch(new AddOrUpdateNoteAction(note));
-      }
-    });
+    return {
+      books: books,
+      notes: notes
+    };
   }
 
   getBooks(): Promise<Array<Book>> {

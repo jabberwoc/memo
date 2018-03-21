@@ -42,7 +42,6 @@ export class MenuComponent implements OnInit {
 
     this.user = this.authenticationService.loggedInUser;
 
-    // TODO DataService change indicator push + pull
     this.authenticationService.syncChanges.throttleTime(2000).subscribe(_ => {
       this.isSyncing = true;
       setTimeout(() => (this.isSyncing = false), 0);
@@ -60,7 +59,6 @@ export class MenuComponent implements OnInit {
     }
 
     // filter visible
-    console.log('filtering navigation items...');
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
   }
 

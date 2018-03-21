@@ -8,7 +8,12 @@ import { Store } from '@ngrx/store';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { AddBookAction, AddBooksAction, DeleteBookAction } from '../core/data/store/actions';
+import {
+  AddBookAction,
+  SetBooksAction,
+  DeleteBookAction,
+  AddOrUpdateBookAction
+} from '../core/data/store/actions';
 import { Router } from '@angular/router';
 import { MenuService, MenuName } from '../core/menu/menu.service';
 
@@ -31,6 +36,12 @@ export class BooksPageComponent implements OnInit {
   ) {
     this.books = this.store.select(_ => _.books).map(_ => _.sort(Book.modifiedComparer));
     this.menuService.registerMenuAction(MenuName.BOOKS, () => this.addBook());
+
+    this.dataService.syncPull.subscribe(change => this.updateState(change));
+  }
+
+  updateState(change: any): void {
+    change.books.forEach(_ => this.store.dispatch(new AddOrUpdateBookAction(_)));
   }
 
   addBook(): void {
@@ -53,7 +64,7 @@ export class BooksPageComponent implements OnInit {
 
   loadBooks(): void {
     this.dataService.getBooks().then(books => {
-      this.store.dispatch(new AddBooksAction(books));
+      this.store.dispatch(new SetBooksAction(books));
     });
   }
 

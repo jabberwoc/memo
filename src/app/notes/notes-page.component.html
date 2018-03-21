@@ -6,7 +6,7 @@
         <button class="btn-icon dark-themed btn-section" (click)="closeBook()">
           <span class="icon icon-book"></span>
         </button>
-        <span id="bookTitle" class="dark-themed">{{book.name}}</span>
+        <span id="bookTitle" class="dark-themed">{{book?.name}}</span>
 
         <button class="add-note btn-icon btn-add dark-themed" (click)="addNote()">
           <span class="icon icon-list-add"></span>
@@ -17,7 +17,7 @@
         <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
       </div>
     </header>
-    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book.name" (selectNote)="selectNote($event)"
+    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book?.name" (selectNote)="selectNote($event)"
       (deleteNote)="deleteNote($event)">
     </app-notes-list>
 

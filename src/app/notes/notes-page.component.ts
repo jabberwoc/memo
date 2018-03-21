@@ -22,12 +22,14 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import {
-  AddNotesAction,
+  SetNotesAction,
   AddNoteAction,
   UpdateBookAction,
   UpdateNoteAction,
   SelectNoteAction,
-  DeleteNoteAction
+  DeleteNoteAction,
+  SelectBookAction,
+  AddOrUpdateNoteAction
 } from '../core/data/store/actions';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
@@ -45,6 +47,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   filteredNotes: Observable<Array<Note>>;
   selectedNote: Observable<Note>;
   selectedNoteId: Observable<string>;
+  selectedBook: Observable<Book>;
   noteFilter = new BehaviorSubject<string>(null);
 
   isSaving = false;
@@ -67,6 +70,19 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
       return notes.find(_ => _.id === selectedId) || null;
     });
+    this.store
+      .select(_ => _.selectedBook)
+      .skip(1)
+      .subscribe(book => {
+        if (book === null) {
+          this.router.navigate(['books']);
+        } else {
+          this.book = book;
+          this.loadNotes(book.id);
+        }
+      });
+
+    this.dataService.syncPull.subscribe(change => this.updateState(change));
 
     // register 'add note' action in menu
     this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
@@ -108,14 +124,11 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   initRouting(): void {
     this.route.paramMap.subscribe(params => {
-      this.book = new Book(params.get('bookId'), null, 0, null);
-
       this.dataService
         .getBook(params.get('bookId'))
         .then(book => {
-          this.book = book;
-          console.log('selected book: ' + this.book.name + '... loading notes..');
-          this.loadNotes(this.book.id);
+          this.store.dispatch(new SelectBookAction(book));
+          console.log('selected book: ' + book.name + '... loading notes..');
         })
         .catch(err => {
           this.router.navigate(['books']);
@@ -126,11 +139,17 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
-      this.store.dispatch(new AddNotesAction(notes));
+      this.store.dispatch(new SetNotesAction(notes));
       if (notes.length > 0) {
         this.selectNote(notes[0].id);
       }
     });
+  }
+
+  updateState(change: any): void {
+    change.notes
+      .filter(_ => _.book === this.book.id)
+      .forEach(_ => this.store.dispatch(new AddOrUpdateNoteAction(_)));
   }
 
   addNote(): void {

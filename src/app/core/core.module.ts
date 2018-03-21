@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { LoginComponent } from './authentication/login/login.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MenuComponent } from './menu/menu.component';
-import { notes, selectedNoteId, books } from './data/store/memo-store';
+import { notes, selectedNoteId, books, selectedBook } from './data/store/memo-store';
 import { DataService } from './data/data.service';
 import { PouchDbService } from './data/pouch-db.service';
 import { AuthenticationService } from './authentication/authentication.service';
@@ -37,7 +37,7 @@ import { MenuService } from './menu/menu.service';
     MatButtonModule,
     MatInputModule,
     SharedModule,
-    StoreModule.forRoot({ notes, selectedNoteId, books }),
+    StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
     // TODO remove when entryComponents are moved (shared / core module or independent)
     BooksModule,
     NotesModule
