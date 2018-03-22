@@ -28,19 +28,6 @@ export class PouchDbService {
 
   setupDatabase() {
     this.database = new PouchDB('memo', { auto_compaction: true });
-
-    // replicate
-    const remoteUrl = 'http://localhost:5984/' + this.dbName;
-    const remoteDB = new PouchDB(remoteUrl);
-    this.database.replicate
-      .to(remoteDB)
-      .on('complete', function() {
-        console.log('replicating to ' + remoteUrl);
-      })
-      .on('error', function(err) {
-        console.log('replication failed. not syncing to remote db.');
-      });
-
     this.isInstantiated = true;
   }
 

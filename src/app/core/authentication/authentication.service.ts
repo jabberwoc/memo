@@ -16,6 +16,15 @@ export class AuthenticationService {
       }
       // TODO else ?
     });
+
+    // TODO check auto login
+    if (JSON.parse(localStorage.getItem('auto-login'))) {
+      this.autoLogin();
+    }
+  }
+
+  autoLogin(): void {
+    // TODO
   }
 
   login(username: string, password: string): Promise<PouchDB.Authentication.LoginResponse> {
@@ -27,7 +36,9 @@ export class AuthenticationService {
     return this.pouchDbService.login(remoteUrl, username, password).then(response => {
       if (response.ok) {
         // user logged in
-        // TODO save
+        // TODO check auto login option (checkbox) and save:
+        // localStorage.setItem('auto-login', JSON.stringify(true))
+
         this.loggedInUser.next(response.name);
         console.log('user ' + response.name + ' successfully logged in.');
         return response;
@@ -42,6 +53,8 @@ export class AuthenticationService {
         this.loggedInUser.next(null);
         return response;
       }
+
+      // TODO save credentials for auto login
     });
   }
 }
