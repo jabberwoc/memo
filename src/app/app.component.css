@@ -11,3 +11,7 @@ app-menu {
   left: 0;
   bottom: 0;
 }
+
+router-outlet {
+  margin-left: 4em;
+}
