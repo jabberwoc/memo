@@ -52,7 +52,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         title: this.selectedNote.name
       });
 
-      this.resizeEditor();
+      setTimeout(() => this.resizeEditor(), 0);
     }
   }
 
