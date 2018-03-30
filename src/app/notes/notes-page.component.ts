@@ -67,9 +67,12 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       })
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
-    this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
-      return notes.find(_ => _.id === selectedId) || null;
-    });
+    this.selectedNote = this.notes.combineLatest(
+      this.selectedNoteId,
+      (notes, selectedId) => {
+        return notes.find(_ => _.id === selectedId) || null;
+      }
+    );
     this.store
       .select(_ => _.selectedBook)
       .skip(1)

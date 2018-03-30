@@ -7,7 +7,6 @@ import { DeleteBookComponent } from './dialog/delete-book/delete-book.component'
 import { Store } from '@ngrx/store';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 import {
   AddBookAction,
   SetBooksAction,

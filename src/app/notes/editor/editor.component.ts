@@ -101,13 +101,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   initEditor(): void {
-    // TODO
-    tinymce.baseURL = '/assets/tinymce/';
+    tinymce.baseURL = 'assets/tinymce';
     tinymce.init({
       selector: '#' + this.elementId,
 
-      // skin_url: 'assets/tinymce/skins/modern',
-      content_css: '/assets/styles/editor.css',
+      relative_urls: false,
+      document_base_url: '.',
+      // theme_url: 'assets/tinymce/themes/modern/theme.min.js',
+      skin_url: 'assets/tinymce/skins/lightgray',
+      content_css: 'assets/styles/editor.css',
 
       statusbar: false,
       branding: false,
