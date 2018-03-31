@@ -39,7 +39,6 @@ import { MenuService, MenuName } from '../core/menu/menu.service';
   selector: 'app-notes-page',
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css']
-  // animations: [slideInDownAnimation]
 })
 export class NotesPageComponent implements OnInit, AfterViewInit {
   book: Book;
