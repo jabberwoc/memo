@@ -24,11 +24,7 @@ export class DataService {
   private bookUri = docUri.route('book/(:book)');
   syncPull: Observable<any>;
 
-  constructor(
-    private electronService: ElectronService,
-    private pouchDbService: PouchDbService,
-    private store: Store<MemoStore>
-  ) {
+  constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
     // sync changes wth state
     this.syncPull = this.pouchDbService
       .getChangeListener()

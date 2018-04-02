@@ -6,6 +6,7 @@
 @import 'assets/styles/dialog.css';
 @import 'assets/styles/scrollbar.css';
 @import 'assets/styles/gutter.css';
+@import 'assets/styles/checkbox.css';
 
 html,
 body {
@@ -105,7 +106,7 @@ button:focus {
 
 .form-control {
   border-radius: 3px;
-  border: 0;
+  border-color: transparent;
   background: lightgray;
 }
 

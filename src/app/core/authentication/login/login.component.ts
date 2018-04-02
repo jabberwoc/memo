@@ -28,19 +28,21 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.loading = true;
-    this.authenticationService.login(this.model.username, this.model.password).then(
-      response => {
-        this.loading = false;
-        // TODO
-        console.log(response);
-        this.dialogRef.close();
-      },
-      error => {
-        // TODO report error
-        // this.alertService.error(error);
-        this.loading = false;
-        this.error = error; // 'Invalid username / password';
-      }
-    );
+    console.log(this.model);
+    this.authenticationService
+      .login(this.model.username, this.model.password, this.model.autoLogin)
+      .then(
+        response => {
+          this.loading = false;
+          // TODO
+          console.log(response);
+          this.dialogRef.close();
+        },
+        error => {
+          // this.alertService.error(error);
+          this.loading = false;
+          this.error = error; // 'Invalid username / password';
+        }
+      );
   }
 }

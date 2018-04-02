@@ -12,6 +12,10 @@
       <input type="password" class="form-control" name="password" placeholder="password" [(ngModel)]="model.password" (keyup.enter)="loginButton.click()"
         #password="ngModel" required />
     </div>
+    <label class="checkbox">Remember me
+      <input type="checkbox" id="autoLogin" name="autoLogin" value="autoLogin" [(ngModel)]="model.autoLogin">
+      <span class="checkmark"></span>
+    </label>
 
     <div *ngIf="error" class="error">{{ error }}</div>
   </div>
