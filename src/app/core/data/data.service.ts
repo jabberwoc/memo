@@ -135,7 +135,9 @@ export class DataService {
     return this.pouchDbService.put(id, note).then(result => {
       if (result.ok) {
         return this.getBook(note.book).then(book => {
-          return this.updateBookNoteCount(book);
+          return this.updateBookNoteCount(book).then(
+            _ => new Note(note.id, note.name, note.book, note.content, note.modified)
+          );
         });
       }
     });

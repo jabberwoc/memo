@@ -63,6 +63,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   titleEditMode = false;
   titleElementHeight = 0;
   toolbarVisible = false;
+  editorHeight: number;
   debouncer: Subject<Note> = new Subject<Note>();
   titleForm: FormGroup;
 
@@ -169,8 +170,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   resize(height): void {
-    if (this.editorReady) {
+    if (this.editorReady && this.editorHeight !== height) {
       this.editor.theme.resizeTo('100%', height);
+      this.editorHeight = height;
     }
   }
 

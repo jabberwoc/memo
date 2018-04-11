@@ -66,12 +66,9 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       })
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
-    this.selectedNote = this.notes.combineLatest(
-      this.selectedNoteId,
-      (notes, selectedId) => {
-        return notes.find(_ => _.id === selectedId) || null;
-      }
-    );
+    this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
+      return notes.find(_ => _.id === selectedId) || null;
+    });
     this.store
       .select(_ => _.selectedBook)
       .skip(1)
@@ -159,9 +156,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
-        const newNote = new Note(null, name, this.book.id, '', null);
-        this.dataService.createNote(newNote).then(ok => {
-          if (ok) {
+        this.dataService.createNote(new Note(null, name, this.book.id, '', null)).then(newNote => {
+          if (newNote) {
             console.log('created new note: [' + newNote.id + '] ' + name);
             this.store.dispatch(new AddNoteAction(newNote));
 
