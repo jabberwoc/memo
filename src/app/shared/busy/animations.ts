@@ -21,7 +21,7 @@ export const fadeOutAnimation: AnimationEntryMetadata = trigger('busyState', [
     })
   ),
   transition(
-    'fadeOut => void',
+    'fadeOut => inactive',
     animate(
       1000,
       style({
