@@ -40,7 +40,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
   @Input()
   set selectedNote(value: Note) {
-    if (lodash.isEqual(value, this.selectedNoteValue)) {
+    if (Note.isEqual(value, this.selectedNoteValue)) {
       return;
     }
 
@@ -69,7 +69,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
-    this.debouncer.debounceTime(300).subscribe(n => this.changeNote.next(n));
+    this.debouncer.debounceTime(300).subscribe(n => {
+      this.selectedNoteValue = n;
+      this.changeNote.next(n);
+    });
   }
 
   createTitleForm() {
@@ -236,8 +239,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const content = this.editor.getContent();
 
     if (content !== this.selectedNote.content) {
-      this.selectedNote.content = content;
-
       this.saveNote();
     }
   }

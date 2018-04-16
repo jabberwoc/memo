@@ -15,13 +15,17 @@ export class AuthenticationService {
 
     this.syncChanges = pouchDbService.getChangeListener();
     pouchDbService.getErrorListener().subscribe(_ => {
-      // TODO check if logged in / auto login
-      if (_.error === 'unauthorized' && this.loggedInUser.value !== null) {
+      // was logged in
+      const currentUser = this.loggedInUser.value;
+      if (_.error === 'unauthorized' && currentUser !== null) {
         this.loggedInUser.next(null);
+
+        // try auto login for previously logge din user
+        this.autoLogin(currentUser);
       }
     });
 
-    // TODO check auto login
+    // check auto login
     const user = localStorage.getItem('auto-login');
     if (user) {
       this.autoLogin(user);

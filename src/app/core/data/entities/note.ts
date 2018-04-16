@@ -22,6 +22,19 @@ export class Note {
     }
     return 0;
   }
+
+  public static isEqual(note1: Note, note2: Note): boolean {
+    if (!note1 || !note2) {
+      return false;
+    }
+
+    return (
+      note1.id === note2.id &&
+      note1.name === note2.name &&
+      note1.book === note2.book &&
+      note1.content === note2.content
+    );
+  }
 }
 
 export class NoteDto {
