@@ -17,7 +17,6 @@ import { Subject } from 'rxjs/Subject';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
 import { BusyState } from '../../shared/busy/busy-state';
-// import { saveStateAnimation } from './../animations';
 
 declare var tinymce: any;
 
@@ -25,7 +24,6 @@ declare var tinymce: any;
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
-  // animations: [saveStateAnimation]
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output() addNote = new EventEmitter();
@@ -69,10 +67,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
-    this.debouncer.debounceTime(300).subscribe(n => {
-      this.selectedNoteValue = n;
-      this.changeNote.next(n);
-    });
+    this.debouncer.debounceTime(300).subscribe(n => this.changeNote.next(n));
   }
 
   createTitleForm() {
@@ -239,6 +234,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const content = this.editor.getContent();
 
     if (content !== this.selectedNote.content) {
+      this.selectedNote.content = content;
       this.saveNote();
     }
   }
