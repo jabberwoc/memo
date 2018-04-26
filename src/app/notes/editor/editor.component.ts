@@ -62,12 +62,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   titleElementHeight = 0;
   toolbarVisible = false;
   editorHeight: number;
-  debouncer: Subject<Note> = new Subject<Note>();
+  debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
-    this.debouncer.debounceTime(300).subscribe(n => this.changeNote.next(n));
+    this.debouncer.debounceTime(300).subscribe(change => {
+      change(this.selectedNote);
+      this.changeNote.next(this.selectedNote);
+    });
   }
 
   createTitleForm() {
@@ -95,8 +98,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  saveNote(): void {
-    this.zone(() => this.debouncer.next(this.selectedNote));
+  saveNote(change?: (note: Note) => void): void {
+    this.zone(() => {
+      if (change) {
+        this.debouncer.next(change);
+      } else {
+        this.debouncer.next((note: Note) => {});
+      }
+    });
   }
 
   initEditor(): void {
@@ -135,6 +144,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       file_picker_callback: this.filePickerCallback,
       setup: ed => this.setupEditor(ed),
       custom_shortcuts: false
+      // TODO enable
+      // extended_valid_elements : 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]'
     });
   }
 
@@ -202,8 +213,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     if (this.titleForm.status === 'VALID') {
       if (titleValue !== this.selectedNote.name) {
-        this.selectedNote.name = titleValue;
-        this.saveNote();
+        // this.selectedNote.name = titleValue;
+        this.saveNote((note: Note) => (note.name = titleValue));
       }
     } else {
       // reset title
@@ -234,8 +245,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const content = this.editor.getContent();
 
     if (content !== this.selectedNote.content) {
-      this.selectedNote.content = content;
-      this.saveNote();
+      // this.selectedNote.content = content;
+      this.saveNote((note: Note) => (note.content = content));
     }
   }
 

@@ -31,15 +31,17 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
       return [...state, action.payload];
     case UPDATE_NOTE:
       return state.map(note => {
-        return note.id === action.payload.id
-          ? new Note(
-              action.payload.id,
-              action.payload.name,
-              action.payload.book,
-              action.payload.content,
-              action.payload.modified
-            )
-          : note;
+        if (note.id === action.payload.id && action.payload.modified > note.modified) {
+          return new Note(
+            action.payload.id,
+            action.payload.name,
+            action.payload.book,
+            action.payload.content,
+            action.payload.modified
+          );
+        }
+
+        return note;
       });
     case ADD_OR_UPDATE_NOTE:
       if (state.some(_ => _.id === action.payload.id)) {
