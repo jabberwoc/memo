@@ -70,7 +70,8 @@ if (process.platform === 'darwin') {
     { role: 'minimize' },
     { role: 'zoom' },
     { type: 'separator' },
-    { role: 'front' }
+    { role: 'front' },
+    { role: 'toggledevtools' }
   ];
 }
 
