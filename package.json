@@ -71,7 +71,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "^9.6.0",
     "codelyzer": "~4.2.1",
-    "electron": "^1.8.1",
+    "electron": "^2.0.0",
     "electron-installer-debian": "^0.8.1",
     "electron-installer-dmg": "^0.2.1",
     "electron-installer-windows": "^1.1.0",
