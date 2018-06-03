@@ -6,7 +6,8 @@ import { AddBookComponent } from './dialog/add-book/add-book.component';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
 import { Store } from '@ngrx/store';
 import { MemoStore } from '../core/data/store/memo-store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   AddBookAction,
   SetBooksAction,
@@ -33,7 +34,7 @@ export class BooksPageComponent implements OnInit {
     private menuService: MenuService,
     private store: Store<MemoStore>
   ) {
-    this.books = this.store.select(_ => _.books).map(_ => _.sort(Book.modifiedComparer));
+    this.books = this.store.select(_ => _.books).pipe(map(_ => _.sort(Book.modifiedComparer)));
     this.menuService.registerMenuAction(MenuName.BOOKS, () => this.addBook());
 
     this.dataService.syncPull.subscribe(change => this.updateState(change));

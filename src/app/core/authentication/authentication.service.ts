@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ElectronService } from 'ngx-electron';
 
 @Injectable()

@@ -1,7 +1,14 @@
-import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
+import {
+  animate,
+  AnimationTriggerMetadata,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
 
 // save state animation
-export const fadeOutAnimation: AnimationEntryMetadata = trigger('busyState', [
+export const fadeOutAnimation: AnimationTriggerMetadata = trigger('busyState', [
   state(
     'inactive',
     style({

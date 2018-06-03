@@ -6,15 +6,10 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  trigger,
-  transition,
-  style,
-  animate,
-  state,
   Inject
 } from '@angular/core';
 import { Note } from '../../../core/data/entities/note';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({

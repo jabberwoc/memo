@@ -4,8 +4,8 @@ import { NotesRoutingModule } from './notes-routing.module';
 import { NotesPageComponent } from './notes-page.component';
 import { NotesListComponent } from './notes-list/notes-list.component';
 import { EditorComponent } from './editor/editor.component';
-import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
-import { MomentModule } from 'angular2-moment';
+import { MatDialogModule } from '@angular/material';
+import { MomentModule } from 'ngx-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { TextPipe } from './pipe/text.pipe';
@@ -19,6 +19,7 @@ import { SharedModule } from '../shared/shared.module';
     MomentModule,
     FormsModule,
     ReactiveFormsModule,
+    MatDialogModule,
     SharedModule
   ],
   declarations: [
@@ -35,6 +36,7 @@ import { SharedModule } from '../shared/shared.module';
     EditorComponent,
     FormsModule,
     ReactiveFormsModule
-  ]
+  ],
+  entryComponents: [AddNoteComponent, DeleteNoteComponent]
 })
 export class NotesModule {}

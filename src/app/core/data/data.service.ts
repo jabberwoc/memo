@@ -5,7 +5,8 @@ import * as cuid from 'cuid';
 import docUri from 'docuri';
 import { ElectronService } from 'ngx-electron';
 import { Note } from './entities/note';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
 import {
@@ -28,9 +29,11 @@ export class DataService {
     // sync changes wth state
     this.syncPull = this.pouchDbService
       .getChangeListener()
-      .filter(_ => _.direction === 'pull')
-      .map(_ => this.formatChange(_.change))
-      .filter(_ => _ !== false);
+      .pipe(
+        filter(_ => _.direction === 'pull'),
+        map(_ => this.formatChange(_.change)),
+        filter(_ => _ !== false)
+      );
   }
 
   private formatChange(change: any): any {

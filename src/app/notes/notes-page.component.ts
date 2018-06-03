@@ -1,15 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-  AfterViewInit,
-  HostBinding
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Book } from '../core/data/entities/book';
 import { DataService } from '../core/data/data.service';
@@ -18,8 +7,8 @@ import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, combineLatest, skip } from 'rxjs/operators';
 
 import {
   SetNotesAction,
@@ -59,19 +48,23 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     private menuService: MenuService,
     private store: Store<MemoStore>
   ) {
-    this.notes = this.store.select(_ => _.notes).map(_ => _.sort(Note.modifiedComparer));
-    this.filteredNotes = this.notes.combineLatest(this.noteFilter, (notes, filter) =>
-      notes.filter(n => {
-        return filter ? n.name.toLowerCase().indexOf(filter) !== -1 : true;
-      })
+    this.notes = this.store.select(_ => _.notes).pipe(map(_ => _.sort(Note.modifiedComparer)));
+    this.filteredNotes = this.notes.pipe(
+      combineLatest(this.noteFilter, (notes, filter) =>
+        notes.filter(n => {
+          return filter ? n.name.toLowerCase().indexOf(filter) !== -1 : true;
+        })
+      )
     );
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
-    this.selectedNote = this.notes.combineLatest(this.selectedNoteId, (notes, selectedId) => {
-      return notes.find(_ => _.id === selectedId) || null;
-    });
+    this.selectedNote = this.notes.pipe(
+      combineLatest(this.selectedNoteId, (notes, selectedId) => {
+        return notes.find(_ => _.id === selectedId) || null;
+      })
+    );
     this.store
       .select(_ => _.selectedBook)
-      .skip(1)
+      .pipe(skip(1))
       .subscribe(book => {
         if (book === null) {
           this.router.navigate(['books']);
@@ -131,7 +124,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
         })
         .catch(err => {
           this.router.navigate(['books']);
-          return Observable.empty();
+          // return Observable.empty();
         });
     });
   }

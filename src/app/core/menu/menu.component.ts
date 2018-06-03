@@ -4,7 +4,8 @@ import { MatDialog } from '@angular/material';
 import { LoginComponent } from '../authentication/login/login.component';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 import { DataService } from '../data/data.service';
 import { MenuService, MenuName } from './menu.service';
 
@@ -42,7 +43,7 @@ export class MenuComponent implements OnInit {
 
     this.user = this.authenticationService.loggedInUser;
 
-    this.authenticationService.syncChanges.throttleTime(2000).subscribe(_ => {
+    this.authenticationService.syncChanges.pipe(throttleTime(2000)).subscribe(_ => {
       this.isSyncing = true;
       setTimeout(() => (this.isSyncing = false), 0);
     });

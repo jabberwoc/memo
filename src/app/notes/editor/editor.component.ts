@@ -13,7 +13,8 @@ import {
   HostListener
 } from '@angular/core';
 import { Note } from '../../core/data/entities/note';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
 import { BusyState } from '../../shared/busy/busy-state';
@@ -67,7 +68,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
-    this.debouncer.debounceTime(300).subscribe(change => {
+    this.debouncer.pipe(debounceTime(300)).subscribe(change => {
       change(this.selectedNote);
       this.changeNote.next(this.selectedNote);
     });
