@@ -6,13 +6,18 @@ import { AuthenticationService } from '../authentication/authentication.service'
 import { NavigationItem } from './navigation-item';
 import { Observable } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
-import { DataService } from '../data/data.service';
-import { MenuService, MenuName } from './menu.service';
+import { MenuService } from './menu.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.css'],
+  animations: [
+    trigger('growIn', [
+      transition('void => *', [style({ height: 0 }), animate(300, style({ height: '*' }))])
+    ])
+  ]
 })
 export class MenuComponent implements OnInit {
   user: Observable<string>;

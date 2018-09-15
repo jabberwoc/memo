@@ -9,7 +9,7 @@
     <div [routerLink]="n.routerLink" class="nav-item" [ngClass]="{ 'nav-item-active': n.isSelected,'disabled' : n.isSelected, 'nav-item-info' : n.isInfo }"
       *ngFor="let n of visibleNavigationItems">
 
-      <p *ngIf="n.isSelected" class="sideways">{{ n.name }}</p>
+      <p *ngIf="n.isSelected" [@growIn]="n.isSelected" class="sideways">{{ n.name }}</p>
       <button class="btn-icon fa fa-{{n.icon}}" title="{{n.name}}">
       </button>
     </div>
