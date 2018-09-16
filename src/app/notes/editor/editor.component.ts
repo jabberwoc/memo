@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   OnDestroy,
   AfterViewInit,
   EventEmitter,
@@ -15,7 +14,7 @@ import {
 import { Note } from '../../core/data/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as lodash from 'lodash';
 import { BusyState } from '../../shared/busy/busy-state';
 
@@ -27,13 +26,17 @@ declare var tinymce: any;
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
-  @Output() addNote = new EventEmitter();
-  @Output() changeNote = new EventEmitter<Note>();
+  @Output()
+  addNote = new EventEmitter();
+  @Output()
+  changeNote = new EventEmitter<Note>();
 
-  @ViewChild('noteTitle') private noteTitle: ElementRef;
+  @ViewChild('noteTitle')
+  private noteTitle: ElementRef;
 
   private selectedNoteValue: Note;
-  @Input() isSaving: boolean;
+  @Input()
+  isSaving: boolean;
   get selectedNote(): Note {
     return this.selectedNoteValue;
   }
@@ -126,7 +129,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       resize: false,
 
       plugins: [
-        'advlist autolink lists link image charmap print hr anchor pagebreak',
+        'advlist autolink lists link image charmap hr anchor pagebreak',
         'searchreplace wordcount visualblocks visualchars fullscreen',
         'insertdatetime nonbreaking save contextmenu',
         'paste textcolor colorpicker textpattern imagetools codesample code noneditable table'
@@ -194,6 +197,42 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
     editor.on('keyup', e => this.editorOnKeyup(e));
+
+    this.addPrintPlugin(editor);
+  }
+
+  addPrintPlugin(editor: any): void {
+    editor.addCommand('mcePrint', () => {
+      const win = editor.getWin();
+      const body = win.document.body;
+
+      // create title element to display in print
+      const title = document.createElement('h1');
+      title.classList.add('title-print');
+      title.innerHTML = this.selectedNote.name;
+      // insert
+      body.insertBefore(title, body.firstChild);
+
+      win.print();
+
+      // remove
+      title.remove();
+    });
+
+    editor.addButton('print', {
+      title: 'Print',
+      cmd: 'mcePrint'
+    });
+
+    editor.addShortcut('Meta+P', '', 'mcePrint');
+
+    editor.addMenuItem('print', {
+      text: 'Print',
+      cmd: 'mcePrint',
+      icon: 'print',
+      shortcut: 'Meta+P',
+      context: 'file'
+    });
   }
 
   setContent(content: string): void {
@@ -214,7 +253,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     if (this.titleForm.status === 'VALID') {
       if (titleValue !== this.selectedNote.name) {
-        // this.selectedNote.name = titleValue;
         this.saveNote((note: Note) => (note.name = titleValue));
       }
     } else {
@@ -278,8 +316,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleToolbars(show: boolean) {
-    Array.from(<HTMLCollectionOf<HTMLElement>>document.getElementsByClassName(
-      'mce-toolbar-grp'
+    Array.from(<HTMLCollectionOf<HTMLElement>>(
+      document.getElementsByClassName('mce-toolbar-grp')
     )).forEach(_ => {
       if (show) {
         _.style.display = 'block';

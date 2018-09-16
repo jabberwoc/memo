@@ -1,5 +1,4 @@
 @import 'scrollbar.css';
-
 /* editor toolbar */
 
 .mce-tinymce {
@@ -135,4 +134,16 @@ i.mce-i-todoList:before {
 
 .validation-error {
   background: lightcoral !important;
+}
+
+.title-print {
+  display: none;
+}
+
+@media print {
+  .title-print {
+    display: initial;
+    font-size: 2.5em;
+    color: slategray;
+  }
 }

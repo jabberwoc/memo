@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable ,  BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
 
@@ -10,7 +10,7 @@ export class AuthenticationService {
   keytar: any;
 
   constructor(private pouchDbService: PouchDbService, private electronService: ElectronService) {
-    this.keytar = electronService.remote.require('keytar');
+    this.keytar = this.electronService.remote.require('keytar');
 
     this.syncChanges = pouchDbService.getChangeListener();
     pouchDbService.getErrorListener().subscribe(_ => {

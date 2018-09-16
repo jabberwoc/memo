@@ -1,23 +1,14 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { PouchDbService } from './pouch-db.service';
 import { Book } from './entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
-import { ElectronService } from 'ngx-electron';
 import { Note } from './entities/note';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
-import {
-  SetNotesAction,
-  AddOrUpdateNoteAction,
-  DeleteBookAction,
-  AddOrUpdateBookAction,
-  DeleteNoteAction,
-  AddNoteAction,
-  UpdateBookAction
-} from './store/actions';
+import { DeleteBookAction, DeleteNoteAction } from './store/actions';
 
 @Injectable()
 export class DataService {
@@ -27,13 +18,11 @@ export class DataService {
 
   constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
     // sync changes wth state
-    this.syncPull = this.pouchDbService
-      .getChangeListener()
-      .pipe(
-        filter(_ => _.direction === 'pull'),
-        map(_ => this.formatChange(_.change)),
-        filter(_ => _ !== false)
-      );
+    this.syncPull = this.pouchDbService.getChangeListener().pipe(
+      filter(_ => _.direction === 'pull'),
+      map(_ => this.formatChange(_.change)),
+      filter(_ => _ !== false)
+    );
   }
 
   private formatChange(change: any): any {
@@ -44,7 +33,6 @@ export class DataService {
       return false;
     }
 
-    const deleted = { books: [], notes: [] };
     const books = [];
     const notes = [];
     change.docs.forEach(doc => {
@@ -173,8 +161,6 @@ export class DataService {
   }
 
   updateBookNoteCount(book: Book): Promise<Book> {
-    const id = this.noteUri({ book: book.id });
-
     // update note count
     return this.countNotes(book.id).then(count => {
       book.modified = new Date().toJSON();

@@ -14,7 +14,6 @@ import {
   DeleteBookAction,
   AddOrUpdateBookAction
 } from '../core/data/store/actions';
-import { Router } from '@angular/router';
 import { MenuService, MenuName } from '../core/menu/menu.service';
 
 @Component({
@@ -28,7 +27,6 @@ export class BooksPageComponent implements OnInit {
   books: Observable<Array<Book>>;
 
   constructor(
-    private router: Router,
     private dialog: MatDialog,
     private dataService: DataService,
     private menuService: MenuService,

@@ -1,9 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
 import PouchAuth from 'pouchdb-authentication';
-import { ElectronService } from 'ngx-electron';
-import { Observable ,  Subject } from 'rxjs';
-const path = require('path');
+import { Observable, Subject } from 'rxjs';
 PouchDB.plugin(PouchAuth);
 
 @Injectable()
@@ -11,7 +9,6 @@ export class PouchDbService {
   private isInstantiated: boolean;
   private remoteDatabase: PouchDB.Database<{}>;
   private database: any;
-  private dbName = 'memo';
   private syncHandler: any;
 
   // sync listeners (TOOD: types)
@@ -19,7 +16,7 @@ export class PouchDbService {
   private state: Subject<any> = new Subject<any>();
   private error: Subject<any> = new Subject<any>();
 
-  public constructor(private electronService: ElectronService) {
+  public constructor() {
     if (!this.isInstantiated) {
       this.setupDatabase();
     }
