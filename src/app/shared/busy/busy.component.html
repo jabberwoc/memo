@@ -1,3 +1,3 @@
-<div class="box" [@busyState]="busyState" [hidden]="!isBusy" [ngClass]="{'overlay':overlay}">
+<div class="box" [@busyState]="busyState" [hidden]="!isBusy" [ngClass]="{'overlay':overlay}" [style.background-color]="overlay ? overlay : 'transparent'">
   <div class="loader" [style.width.em]="size" [style.height.em]="size" [style.border-width.em]="size / 10"></div>
 </div>

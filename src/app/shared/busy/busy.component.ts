@@ -9,10 +9,14 @@ import { fadeOutAnimation } from './animations';
   animations: [fadeOutAnimation]
 })
 export class BusyComponent {
-  @Input() size = 5;
-  @Input() overlay = false;
-  @Input() fadeOut = false;
-  @Input() busyState: BusyState;
+  @Input()
+  size = 5;
+  @Input()
+  overlay = false;
+  @Input()
+  fadeOut = false;
+  @Input()
+  busyState: BusyState;
 
   get isBusy(): boolean {
     return this.busyState !== BusyState.INACTIVE;
