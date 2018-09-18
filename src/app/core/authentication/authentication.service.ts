@@ -19,7 +19,8 @@ export class AuthenticationService {
       if (_.error === 'unauthorized' && currentUser !== null) {
         this.loggedInUser.next(null);
 
-        // try auto login for previously logge din user
+        // try auto login for previously logged in user
+        // TODO retry count
         this.autoLogin(currentUser);
       }
     });
