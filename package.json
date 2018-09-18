@@ -1,14 +1,14 @@
 {
   "name": "memo",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "an app for taking notes",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
     "clean": "rm -rf build",
-    "build": "npm run ng build --output-path=build --base-href=./",
-    "build-prod": "npm run ng build --prod --output-path=build --base-href=./",
+    "build": "npm run  -- build --output-path=build --base-href=./",
+    "build-prod": "npm run ng -- build --prod --output-path=build --base-href=./",
     "electron-rebuild": "./node_modules/.bin/electron-rebuild --module-dir build",
     "electron-install": "cp -aL electron/. build && cd build && npm install --production && cd .. && npm run electron-rebuild",
     "build:electron": "npm run clean && npm run build-prod && npm run electron-install",

@@ -1,28 +1,10 @@
-const { app, BrowserWindow, Menu } = require('electron'),
+const {
+  app,
+  BrowserWindow,
+  Menu
+} = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
-
-// const dbName = 'db';
-
-// const PouchDB = require('pouchdb');
-// // PouchDB.debug.enable('*')
-// const dbPath = require('path').join(__dirname, dbName),
-//   db = new PouchDB(dbPath, { auto_compaction: true });
-// global.shared = {
-//   db: db
-// };
-
-// // replicate
-// const remoteUrl = 'http://localhost:5984/' + dbName;
-// const remoteDB = new PouchDB(remoteUrl);
-// db.replicate
-//   .to(remoteDB)
-//   .on('complete', function() {
-//     console.log('replicating to ' + remoteUrl);
-//   })
-//   .on('error', function(err) {
-//     console.log('replication failed. not syncing to remote db.');
-//   });
 
 let win = null;
 
