@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Book } from '../../core/data/entities/book';
-import { Router, ActivatedRoute } from '@angular/router';
-import { DataService } from '../../core/data/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-books-list',
@@ -9,12 +8,14 @@ import { DataService } from '../../core/data/data.service';
   styleUrls: ['./books-list.component.css']
 })
 export class BooksListComponent implements OnInit {
-  @Input() books: Array<Book>;
-  @Output() deleteRequest = new EventEmitter<Book>();
+  @Input()
+  books: Array<Book>;
+  @Output()
+  deleteRequest = new EventEmitter<Book>();
 
   selectedBook: Book;
 
-  constructor(private router: Router, private dataService: DataService) {}
+  constructor(private router: Router) {}
 
   select(book: Book): void {
     this.selectedBook = book;

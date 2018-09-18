@@ -1,5 +1,7 @@
 <ul id="notebookList" class="tiled" *ngIf="books.length > 0">
   <li class="book-item" [ngClass]="{ 'selected': b === selectedBook }" *ngFor="let b of books" (click)="select(b)">
+    <button class="icon icon-trash note-icon btn-icon btn-delete" (click)="deleteBook(b);$event.stopPropagation();"></button>
+
     <div class="book-content">
       <div class="book-title" [ngClass]="{ 'selected': b === selectedBook }">
         <span class="book-title-name">
@@ -7,8 +9,6 @@
           <span class="book-title-count">{{b.count}}</span>
         </span>
       </div>
-
-      <button class="icon icon-trash note-icon btn-icon btn-delete" (click)="deleteBook(b);$event.stopPropagation();"></button>
     </div>
   </li>
 </ul>

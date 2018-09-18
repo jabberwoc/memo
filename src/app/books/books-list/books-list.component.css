@@ -9,41 +9,36 @@
   margin: 4vh;
 }
 
-.tiled > li {
+.tiled>li {
   position: relative;
   width: 200px;
   height: 150px;
-  border: 1px solid slategray;
   border-radius: 0.3em;
   color: white;
   cursor: pointer;
-  background: slategray;
+  background: #333;
   overflow: hidden;
   text-align: center;
 }
 
-.tiled > li:hover {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.tiled > li .btn-delete {
+.tiled>li .btn-delete {
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 5px;
   color: #444;
   cursor: pointer;
   visibility: collapse;
 }
 
-.tiled > li:hover .btn-delete {
+.tiled>li:hover .btn-delete {
   visibility: visible;
 }
 
-.tiled > li .btn-delete:hover {
+.tiled>li .btn-delete:hover {
   color: white;
 }
 
-.tiled > li .list-group-item {
+.tiled>li .list-group-item {
   padding: 5px 10px;
   font-size: 1em;
   color: #888;
@@ -55,10 +50,7 @@
   color: white;
 }
 
-.tiled > li.selected .detail-list {
-  /*top: 50px;
- left: 0;
- transition: all linear .2s;*/
+.tiled>li.selected .detail-list {
   visibility: visible;
 }
 
@@ -94,11 +86,6 @@
 }
 
 .book-detail {
-  /* position: absolute;
-  top:0;
-  right:0;
-  bottom:0;
-  left:0; */
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -107,7 +94,7 @@
   text-align: left;
 }
 
-.book-detail > ul {
+.book-detail>ul {
   list-style-type: none;
   margin: 5px;
   padding: 0 5px;
@@ -115,12 +102,17 @@
 
 .book-content {
   position: absolute;
-  top: 10px;
-  right: 5px;
-  bottom: 5px;
-  left: 5px;
-  margin: 10px;
+  top: 0;
+  right: 20px;
+  bottom: 0;
+  left: 0;
   border-radius: 0.3em;
   background: lightslategray;
+  transition: right 0.15s ease-out;
   cursor: pointer;
+}
+
+.tiled>li:hover .book-content {
+  right: 40px;
+  transition: right 0.15s ease-in;
 }

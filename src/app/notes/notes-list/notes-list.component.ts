@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../core/data/entities/note';
 
 @Component({
@@ -8,12 +7,17 @@ import { Note } from '../../core/data/entities/note';
   styleUrls: ['./notes-list.component.css']
 })
 export class NotesListComponent implements OnInit {
-  @Input() bookTitle: string;
-  @Input() notes: Array<Note>;
-  @Input() selectedNoteId: string;
+  @Input()
+  bookTitle: string;
+  @Input()
+  notes: Array<Note>;
+  @Input()
+  selectedNoteId: string;
 
-  @Output() selectNote = new EventEmitter<string>();
-  @Output() deleteNote = new EventEmitter<Note>();
+  @Output()
+  selectNote = new EventEmitter<string>();
+  @Output()
+  deleteNote = new EventEmitter<Note>();
 
   constructor() {}
 

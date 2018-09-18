@@ -24,7 +24,7 @@
     "e2e": "ng e2e",
     "electron": "node_modules/.bin/electron . --remote-debugging-port=9222",
     "start": "npm run build && npm run electron",
-    "dev": "npm run electron & npm run ng serve --aot"
+    "dev": "npm run electron & npm run ng -- serve --aot"
   },
   "private": true,
   "dependencies": {
