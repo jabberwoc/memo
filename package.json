@@ -7,7 +7,7 @@
   "scripts": {
     "ng": "ng",
     "clean": "rm -rf build",
-    "build": "npm run  -- build --output-path=build --base-href=./",
+    "build": "npm run ng -- build --output-path=build --base-href=./",
     "build-prod": "npm run ng -- build --prod --output-path=build --base-href=./",
     "electron-rebuild": "./node_modules/.bin/electron-rebuild --module-dir build",
     "electron-install": "cp -aL electron/. build && cd build && npm install --production && cd .. && npm run electron-rebuild",
@@ -19,9 +19,9 @@
     "package:debian": "node_modules/.bin/electron-installer-debian --arch amd64 --config deb.json",
     "package:mac": "node_modules/.bin/electron-installer-dmg dist/memo-darwin-x64/memo.app memo",
     "package:win": "node_modules/.bin/electron-installer-windows --src dist/memo-win32-x64/ --dest dist/installers/",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
+    "test": "npm run ng test",
+    "lint": "npm run ng lint",
+    "e2e": "npm run ng e2e",
     "electron": "node_modules/.bin/electron . --remote-debugging-port=9222",
     "start": "npm run build && npm run electron",
     "dev": "npm run electron & npm run ng -- serve --aot"
