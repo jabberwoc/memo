@@ -1,28 +1,31 @@
 <div class="busy-container">
-
-  <div class="dialog-header">
-    <h1 class="title">login</h1>
-  </div>
-  <div class="dialog-content">
-    <div class="form-group">
-      <input type="text" class="form-control" name="username" placeholder="username" [(ngModel)]="model.username" (keyup.enter)="loginButton.click()"
-        #username="ngModel" required />
+  <form [formGroup]="loginForm" (ngSubmit)="login()" #ngForm>
+    <div class="dialog-header">
+      <h1 class="title">login</h1>
     </div>
-    <div class="form-group">
-      <input type="password" class="form-control" name="password" placeholder="password" [(ngModel)]="model.password" (keyup.enter)="loginButton.click()"
-        #password="ngModel" required />
+    <div class="dialog-content">
+      <div class="form-group">
+        <small [@growIn] class="error" *ngIf="username.invalid && (username.dirty || username.touched)">
+          Username required
+        </small>
+        <input type="text" class="form-control" name="username" placeholder="username" formControlName="username" />
+      </div>
+      <div class="form-group">
+        <small [@growIn] class="error" *ngIf="password.invalid && (password.dirty || password.touched)">
+          Password required
+        </small>
+        <input type="password" class="form-control" name="password" placeholder="password" formControlName="password" />
+      </div>
+      <label class="checkbox">Remember me
+        <input type="checkbox" id="autoLogin" name="autoLogin" value="autoLogin" formControlName="autoLogin">
+        <span class="checkmark"></span>
+      </label>
     </div>
-    <label class="checkbox">Remember me
-      <input type="checkbox" id="autoLogin" name="autoLogin" value="autoLogin" [(ngModel)]="model.autoLogin">
-      <span class="checkmark"></span>
-    </label>
 
-    <div *ngIf="error" class="error">{{ error }}</div>
-  </div>
-
-  <div class="dialog-buttons">
-    <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()">Cancel</button>
-    <button [disabled]="loading" class="btn btn-plain btn-ok btn-right" (click)="login()" tabindex="2" #loginButton>Login</button>
-  </div>
-  <app-busy [isBusy]="loading" [overlay]="true"></app-busy>
+    <div class="dialog-buttons">
+      <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()" tabindex="3">Cancel</button>
+      <button type="submit" [disabled]="loginForm.invalid" class="btn btn-plain btn-ok btn-right" #loginButton>Login</button>
+    </div>
+    <app-busy [isBusy]="loading" [overlay]="true"></app-busy>
+  </form>
 </div>

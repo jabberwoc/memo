@@ -14,7 +14,7 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { AuthGuard } from './authentication/guard/auth.guard';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { MenuService } from './menu/menu.service';
 
@@ -24,7 +24,7 @@ import { MenuService } from './menu/menu.service';
     CoreRoutingModule,
     NgxElectronModule,
     NgxFsModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,

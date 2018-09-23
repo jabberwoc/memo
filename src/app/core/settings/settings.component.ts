@@ -5,6 +5,7 @@ import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
 import { BookDto, Book } from '../data/entities/book';
 import { Dictionary } from 'lodash';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
@@ -14,6 +15,7 @@ import { Dictionary } from 'lodash';
 export class SettingsComponent implements OnInit {
   pageTitle = 'Settings';
   configItems: Dictionary<string> = {};
+  remoteUrl = new FormControl('');
 
   constructor(
     private router: Router,
