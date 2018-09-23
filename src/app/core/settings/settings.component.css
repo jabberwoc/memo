@@ -8,7 +8,7 @@ section {
   align-items: center;
 }
 
-section > header {
+section>header {
   color: #888;
 }
 
@@ -35,44 +35,59 @@ header .left {
   height: 3em;
 }
 
-.panel > :first-child {
+.panel> :first-child {
   border-top: 0;
 }
 
-.container > * {
+.container>* {
   align-items: center;
   display: flex;
 }
 
-.container > .left {
+.container>.left {
   flex: 2;
   background: slategray;
   font-size: 1.2em;
   padding-left: 1em;
 }
 
-.container > .right {
+.container>.right {
   flex: 1;
   text-align: right;
   background: gray;
   border-left: 1px solid darkgray;
 }
 
-.panel > :first-child > .left {
+.container>.right>.status {
+  height: 100%;
+  display: table;
+  padding: 5px;
+}
+
+.status>.icon {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.status-error:after {
+  font-family: FontAwesome;
+  content: '\f071';
+  color: #bd3d3a;
+}
+
+.status-ok:after {
+  font-family: FontAwesome;
+  content: '\f00c';
+  color: #ad7;
+}
+
+.panel> :first-child>.left {
   border-top-left-radius: 4px;
 }
 
-.panel > :first-child > .right {
+.panel> :first-child>.right {
   border-top-right-radius: 4px;
 }
-
-/* .panel > :last-child > .left {
-  border-bottom-left-radius: 4px;
-}
-
-.panel > :last-child > .right {
-  border-bottom-right-radius: 4px;
-} */
 
 .container button {
   width: 100%;
@@ -91,4 +106,15 @@ header .left {
   background: white;
   border: 0;
   border-radius: 0;
+}
+
+.container input {
+  color: white !important;
+  background-color: gray !important;
+  text-overflow: ellipsis;
+}
+
+.container input:focus {
+  color: #333 !important;
+  background-color: lightgray !important;
 }

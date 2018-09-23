@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { MenuService } from './menu/menu.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { MenuService } from './menu/menu.service';
     NgxElectronModule,
     NgxFsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,

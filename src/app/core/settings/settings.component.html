@@ -24,7 +24,9 @@
     <li class="container">
       <div class="left">Remote Url</div>
       <div class="right">
-        <input class="form-control" type="text" placeholder="Enter URL" [formControl]="remoteUrl" (keydown.enter)="setConfigValue('remoteUrl')">
+        <input class="form-control" type="text" placeholder="Enter URL" [formControl]="remoteUrl" (blur)="resetRemoteUrl();"
+          (keydown.enter)="setRemoteUrl();$event.target.blur()" title="{{remoteUrl.value}}">
+        <div class="status"><span class="icon" [class.status-error]="!isRemoteUrlOk" [class.status-ok]="isRemoteUrlOk"></span></div>
       </div>
     </li>
   </ul>

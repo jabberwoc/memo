@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
-import { BookDto, Book } from '../data/entities/book';
+import { BookDto } from '../data/entities/book';
 import { Dictionary } from 'lodash';
 import { FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-settings',
@@ -16,13 +17,16 @@ export class SettingsComponent implements OnInit {
   pageTitle = 'Settings';
   configItems: Dictionary<string> = {};
   remoteUrl = new FormControl('');
+  // TODO status
+  isRemoteUrlOk = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService,
     private electronService: ElectronService,
-    private fsService: FsService
+    private fsService: FsService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -35,6 +39,8 @@ export class SettingsComponent implements OnInit {
       remoteUrl = '';
     }
     this.configItems['remoteUrl'] = remoteUrl;
+    this.remoteUrl.setValue(remoteUrl);
+    this.validateRemoteUrl();
   }
 
   navigateBack(): void {
@@ -46,7 +52,33 @@ export class SettingsComponent implements OnInit {
   }
 
   setConfigValue(key: string): void {
+    console.log('key:' + key);
+    console.log('value:' + this.configItems[key]);
     localStorage.setItem(key, this.configItems[key]);
+  }
+
+  setRemoteUrl(): void {
+    const remoteUrlKey = 'remoteUrl';
+    if (this.remoteUrl.invalid || this.configItems[remoteUrlKey] === this.remoteUrl.value) {
+      return;
+    }
+    this.configItems[remoteUrlKey] = this.remoteUrl.value;
+    this.setConfigValue(remoteUrlKey);
+    this.validateRemoteUrl();
+  }
+
+  resetRemoteUrl() {
+    this.remoteUrl.setValue(this.configItems['remoteUrl']);
+  }
+
+  validateRemoteUrl(): void {
+    console.log('Validating remoteUrl...');
+    this.http.get(this.configItems['remoteUrl'], { observe: 'response' }).subscribe(
+      response => {
+        this.isRemoteUrlOk = response.ok;
+      },
+      error => (this.isRemoteUrlOk = false)
+    );
   }
 
   export(): void {
