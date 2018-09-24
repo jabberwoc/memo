@@ -37,13 +37,14 @@ nav {
   writing-mode: vertical-rl;
   transform: rotate(-180deg);
   margin: 0.5em auto 0 auto;
+  overflow: hidden;
 }
 
-.nav-item>* {
+.nav-item > * {
   margin: 0.2em auto;
 }
 
-.nav-item>p {
+.nav-item > p {
   font-size: 1.2em;
 }
 

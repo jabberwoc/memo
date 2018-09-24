@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './books-list.component.html',
   styleUrls: ['./books-list.component.css']
 })
-export class BooksListComponent implements OnInit {
+export class BooksListComponent {
   @Input()
   books: Array<Book>;
   @Output()
@@ -24,7 +24,6 @@ export class BooksListComponent implements OnInit {
   }
 
   open(book: Book): void {
-    // TODO
     console.log('opening book: ' + book.id + ', name: ' + book.name);
     this.router.navigate(['notes', book.id]);
   }
@@ -32,6 +31,4 @@ export class BooksListComponent implements OnInit {
   deleteBook(book: Book) {
     this.deleteRequest.next(book);
   }
-
-  ngOnInit() {}
 }
