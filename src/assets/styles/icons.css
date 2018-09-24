@@ -12,3 +12,8 @@
   font-family: FontAwesome;
   content: '\f0fe';
 }
+
+.icon-plus-simple:before {
+  font-family: FontAwesome;
+  content: '\f067';
+}

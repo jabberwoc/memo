@@ -21,13 +21,13 @@ textarea {
   color: #eee;
 }
 
-.placeholder-content > .text {
+.placeholder-content>.text {
   font-size: 4em;
 }
 
-.placeholder-content > .add-note {
+.placeholder-content>.add-note {
   cursor: pointer;
-  border: 2px solid;
+  border: 3px solid;
   border-radius: 0.1em;
   font-size: 6em;
   line-height: 1em;
@@ -37,31 +37,11 @@ textarea {
   margin: 0.4em auto 0 auto;
 }
 
-.placeholder-content > .add-note span {
+.placeholder-content>.add-note span {
   cursor: pointer;
 }
 
-.placeholder-content > .add-note:hover {
+.placeholder-content>.add-note:hover {
   background: slategray;
   color: white;
 }
-
-/* .loader {
-  display: inline-block;
-  border: 2px solid slategray;
-  border-top: 2px solid #ddd;
-  animation: spin 2s linear infinite;
-  border-radius: 50%;
-  width: 1.5em;
-  height: 1.5em;
-  margin: auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-} */
