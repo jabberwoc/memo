@@ -7,6 +7,7 @@ import { BookDto } from '../data/entities/book';
 import { Dictionary } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ConnectionState } from './connection-state';
 
 @Component({
   selector: 'app-settings',
@@ -17,8 +18,8 @@ export class SettingsComponent implements OnInit {
   pageTitle = 'Settings';
   configItems: Dictionary<string> = {};
   remoteUrl = new FormControl('');
-  // TODO status
-  isRemoteUrlOk = false;
+  remoteUrlState = ConnectionState.NONE;
+  connectionState = ConnectionState;
 
   constructor(
     private router: Router,
@@ -52,14 +53,12 @@ export class SettingsComponent implements OnInit {
   }
 
   setConfigValue(key: string): void {
-    console.log('key:' + key);
-    console.log('value:' + this.configItems[key]);
     localStorage.setItem(key, this.configItems[key]);
   }
 
   setRemoteUrl(): void {
     const remoteUrlKey = 'remoteUrl';
-    if (this.remoteUrl.invalid || this.configItems[remoteUrlKey] === this.remoteUrl.value) {
+    if (this.configItems[remoteUrlKey] === this.remoteUrl.value) {
       return;
     }
     this.configItems[remoteUrlKey] = this.remoteUrl.value;
@@ -67,17 +66,22 @@ export class SettingsComponent implements OnInit {
     this.validateRemoteUrl();
   }
 
-  resetRemoteUrl() {
+  resetRemoteUrl(): void {
     this.remoteUrl.setValue(this.configItems['remoteUrl']);
   }
 
   validateRemoteUrl(): void {
+    if (!this.configItems['remoteUrl']) {
+      this.remoteUrlState = ConnectionState.NONE;
+      return;
+    }
+
     console.log('Validating remoteUrl...');
     this.http.get(this.configItems['remoteUrl'], { observe: 'response' }).subscribe(
       response => {
-        this.isRemoteUrlOk = response.ok;
+        this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
       },
-      error => (this.isRemoteUrlOk = false)
+      () => (this.remoteUrlState = ConnectionState.ERROR)
     );
   }
 
