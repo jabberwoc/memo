@@ -2,6 +2,7 @@
 @import '../node_modules/photonkit/dist/css/photon.css';
 /* @import '../node_modules/font-awesome/css/font-awesome.min.css'; */
 @import '~font-awesome/css/font-awesome.css';
+@import 'assets/styles/icons.css';
 @import 'assets/styles/editor.css';
 @import 'assets/styles/dialog.css';
 @import 'assets/styles/scrollbar.css';
@@ -10,23 +11,14 @@
 
 html,
 body {
-  /* height: 100%; */
   margin: 0;
   padding: 0;
   font-weight: 100;
 }
 
 section {
-  /* display: flex;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0; */
-
   display: flex;
   flex: 1;
-  /* background: blue; */
   position: relative;
 }
 
@@ -78,10 +70,15 @@ body {
 }
 
 .btn-icon {
-  font-size: 1.5em;
   border: 0;
   background: transparent;
   cursor: pointer;
+  display: inline-block;
+  font: normal normal normal 1.6em/1 FontAwesome;
+  /* font-size: 1.6em; */
+  /* font-size: inherit; */
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
 }
 
 .btn-icon span {
@@ -94,6 +91,10 @@ body {
 
 .btn-delete:hover {
   color: #f04949;
+}
+
+.btn-edit:hover {
+  color: slategray;
 }
 
 .btn-section:hover {

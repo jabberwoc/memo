@@ -1,6 +1,7 @@
 <ul id="notebookList" class="tiled" *ngIf="books.length > 0">
   <li class="book-item" [ngClass]="{ 'selected': b === selectedBook }" *ngFor="let b of books" (click)="select(b)">
-    <button class="icon icon-trash note-icon btn-icon btn-delete" (click)="deleteBook(b);$event.stopPropagation();"></button>
+    <button class="icon-edit btn-icon btn-edit" (click)="deleteBook(b);$event.stopPropagation();"></button>
+    <button class="icon-delete btn-icon btn-delete" (click)="deleteBook(b);$event.stopPropagation();"></button>
 
     <div class="book-content">
       <div class="book-title" [ngClass]="{ 'selected': b === selectedBook }">

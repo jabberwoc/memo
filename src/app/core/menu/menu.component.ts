@@ -33,7 +33,7 @@ export class MenuComponent implements OnInit {
     private menuService: MenuService,
     private authenticationService: AuthenticationService
   ) {
-    this.navigationItems = menuService.navigationItems;
+    this.navigationItems = this.menuService.navigationItems;
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
   }
 

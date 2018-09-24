@@ -9,7 +9,7 @@
   margin: 4vh;
 }
 
-.tiled>li {
+.tiled > li {
   position: relative;
   width: 200px;
   height: 150px;
@@ -21,24 +21,43 @@
   text-align: center;
 }
 
-.tiled>li .btn-delete {
+.tiled > li .btn-delete {
   position: absolute;
-  bottom: 0;
+  bottom: 5px;
   right: 5px;
-  color: #444;
+  color: #555;
   cursor: pointer;
   visibility: collapse;
+  font-size: 1.8em;
 }
 
-.tiled>li:hover .btn-delete {
+.tiled > li:hover .btn-delete {
   visibility: visible;
 }
 
-.tiled>li .btn-delete:hover {
+.tiled > li .btn-delete:hover {
   color: white;
 }
 
-.tiled>li .list-group-item {
+.tiled > li .btn-edit {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #555;
+  cursor: pointer;
+  visibility: collapse;
+  font-size: 1.8em;
+}
+
+.tiled > li:hover .btn-edit {
+  visibility: visible;
+}
+
+.tiled > li .btn-edit:hover {
+  color: white;
+}
+
+.tiled > li .list-group-item {
   padding: 5px 10px;
   font-size: 1em;
   color: #888;
@@ -50,7 +69,7 @@
   color: white;
 }
 
-.tiled>li.selected .detail-list {
+.tiled > li.selected .detail-list {
   visibility: visible;
 }
 
@@ -95,7 +114,7 @@
   text-align: left;
 }
 
-.book-detail>ul {
+.book-detail > ul {
   list-style-type: none;
   margin: 5px;
   padding: 0 5px;
@@ -113,7 +132,7 @@
   cursor: pointer;
 }
 
-.tiled>li:hover .book-content {
+.tiled > li:hover .book-content {
   right: 40px;
   transition: right 0.15s ease-in;
 }

@@ -1,0 +1,14 @@
+.icon-edit:before {
+  font-family: FontAwesome;
+  content: '\f040';
+}
+
+.icon-delete:before {
+  font-family: FontAwesome;
+  content: '\f1f8';
+}
+
+.icon-plus:before {
+  font-family: FontAwesome;
+  content: '\f0fe';
+}
