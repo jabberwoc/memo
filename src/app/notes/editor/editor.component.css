@@ -27,21 +27,14 @@ textarea {
 
 .placeholder-content>.add-note {
   cursor: pointer;
-  border: 3px solid;
-  border-radius: 0.1em;
   font-size: 6em;
   line-height: 1em;
   width: 1.2em;
   height: 1.2em;
   display: block;
-  margin: 0.4em auto 0 auto;
-}
-
-.placeholder-content>.add-note span {
-  cursor: pointer;
+  margin: 0 auto;
 }
 
 .placeholder-content>.add-note:hover {
-  background: slategray;
-  color: white;
+  color: lightslategray;
 }

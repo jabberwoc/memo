@@ -28,7 +28,7 @@
   color: #555;
   cursor: pointer;
   visibility: collapse;
-  font-size: 1.8em;
+  font-size: 1.6em;
 }
 
 .tiled>li:hover .btn-delete {
@@ -46,7 +46,7 @@
   color: #555;
   cursor: pointer;
   visibility: collapse;
-  font-size: 1.8em;
+  font-size: 1.6em;
 }
 
 .tiled>li:hover .btn-edit {

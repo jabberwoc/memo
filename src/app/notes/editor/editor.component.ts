@@ -164,7 +164,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = function() {
+      reader.onload = () => {
         // Note: Now we need to register the blob in TinyMCEs image blob
         // registry. In the next release this part hopefully won't be
         // necessary, as we are looking to handle it internally.

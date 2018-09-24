@@ -9,12 +9,13 @@
         <span id="bookTitle" class="dark-themed">{{book?.name}}</span>
       </div>
 
-      <div class="note-filter">
-        <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async" (ngModelChange)="filter($event)">
+      <div class="note-filter" *ngIf="(notes | async).length">
+        <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async"
+          (ngModelChange)="filter($event)">
       </div>
     </header>
-    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book?.name" (selectNote)="selectNote($event)"
-      (deleteNote)="deleteNote($event)">
+    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book?.name"
+      (selectNote)="selectNote($event)" (deleteNote)="deleteNote($event)">
     </app-notes-list>
 
   </div>
