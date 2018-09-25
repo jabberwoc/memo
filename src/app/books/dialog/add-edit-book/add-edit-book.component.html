@@ -1,0 +1,20 @@
+<form [formGroup]="loginForm" #ngForm>
+  <div class="dialog-header">
+    <h1 class="title">{{ mode === dialogMode.ADD ? 'add book' : 'edit book name' }}</h1>
+  </div>
+
+  <div class="dialog-content">
+    <div class="form-group">
+      <small [@growIn] class="error" *ngIf="name.invalid && (name.dirty || name.touched)">
+        Name required
+      </small>
+      <input type="text" class="form-control" name="name" placeholder="Name" formControlName="name" />
+    </div>
+  </div>
+
+  <div class="dialog-buttons">
+    <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()" tabindex="3">Cancel</button>
+    <button type="submit" [disabled]="name.invalid" class="btn btn-plain btn-ok btn-right" (click)="dialogRef.close(nameInput.value)"
+      tabindex="2" #okButton>Ok</button>
+  </div>
+</form>
