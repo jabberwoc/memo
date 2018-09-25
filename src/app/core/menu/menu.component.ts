@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { DialogMode } from '../../books/dialog/add-edit-book/dialog-mode';
 
 @Component({
   selector: 'app-menu',

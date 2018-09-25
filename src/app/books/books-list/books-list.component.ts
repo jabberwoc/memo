@@ -12,6 +12,8 @@ export class BooksListComponent {
   books: Array<Book>;
   @Output()
   deleteRequest = new EventEmitter<Book>();
+  @Output()
+  editRequest = new EventEmitter<Book>();
 
   selectedBook: Book;
 
@@ -30,5 +32,9 @@ export class BooksListComponent {
 
   deleteBook(book: Book) {
     this.deleteRequest.next(book);
+  }
+
+  editBook(book: Book) {
+    this.editRequest.next(book);
   }
 }

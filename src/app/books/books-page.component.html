@@ -5,6 +5,6 @@
     </h1>
   </header>
 
-  <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)"></app-books-list>
+  <app-books-list [books]="books | async" (deleteRequest)="deleteBook($event)" (editRequest)="editBook($event)"></app-books-list>
 
 </section>

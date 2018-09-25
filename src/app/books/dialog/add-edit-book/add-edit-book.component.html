@@ -1,6 +1,6 @@
-<form [formGroup]="loginForm" #ngForm>
+<form [formGroup]="addEditForm" (ngSubmit)="submit()" #ngForm>
   <div class="dialog-header">
-    <h1 class="title">{{ mode === dialogMode.ADD ? 'add book' : 'edit book name' }}</h1>
+    <h1 class="title">{{ title }}</h1>
   </div>
 
   <div class="dialog-content">
@@ -13,8 +13,7 @@
   </div>
 
   <div class="dialog-buttons">
-    <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()" tabindex="3">Cancel</button>
-    <button type="submit" [disabled]="name.invalid" class="btn btn-plain btn-ok btn-right" (click)="dialogRef.close(nameInput.value)"
-      tabindex="2" #okButton>Ok</button>
+    <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()">Cancel</button>
+    <button type="submit" [disabled]="name.invalid" class="btn btn-plain btn-ok btn-right" #okButton>Ok</button>
   </div>
 </form>

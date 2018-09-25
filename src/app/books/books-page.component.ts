@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DataService } from '../core/data/data.service';
 import { Book } from '../core/data/entities/book';
-import { AddBookComponent } from './dialog/add-book/add-book.component';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
 import { Store } from '@ngrx/store';
 import { MemoStore } from '../core/data/store/memo-store';
@@ -12,9 +11,12 @@ import {
   AddBookAction,
   SetBooksAction,
   DeleteBookAction,
-  AddOrUpdateBookAction
+  AddOrUpdateBookAction,
+  UpdateBookAction
 } from '../core/data/store/actions';
 import { MenuService, MenuName } from '../core/menu/menu.service';
+import { AddEditBookComponent } from './dialog/add-edit-book/add-edit-book.component';
+import { DialogMode } from './dialog/add-edit-book/dialog-mode';
 
 @Component({
   selector: 'app-books-page',
@@ -43,7 +45,9 @@ export class BooksPageComponent implements OnInit {
   }
 
   addBook(): void {
-    const dialogRef = this.dialog.open(AddBookComponent);
+    const dialogRef = this.dialog.open(AddEditBookComponent, {
+      data: { mode: DialogMode.ADD }
+    });
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name) {
@@ -56,6 +60,30 @@ export class BooksPageComponent implements OnInit {
             console.log('error creating book: ' + ok);
           }
         });
+      }
+    });
+  }
+
+  editBook(book: Book): void {
+    const dialogRef = this.dialog.open(AddEditBookComponent, {
+      data: { mode: DialogMode.EDIT, name: book.name }
+    });
+
+    dialogRef.afterClosed().subscribe((name: string) => {
+      if (name && name !== book.name) {
+        book.name = name;
+        this.updateBook(book);
+      }
+    });
+  }
+
+  updateBook(book: Book) {
+    this.dataService.updateBook(book).then(ok => {
+      if (ok) {
+        console.log('book updated: [' + book.id + '] ' + book.name);
+        this.store.dispatch(new UpdateBookAction(book));
+      } else {
+        console.log('error updating book: ' + ok);
       }
     });
   }

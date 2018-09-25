@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { FormControl, Validators } from '@angular/forms';
+import { DialogMode } from './dialog-mode';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-edit-book',
@@ -15,27 +16,49 @@ import { FormControl, Validators } from '@angular/forms';
   ]
 })
 export class AddEditBookComponent {
-  name = new FormControl('', [Validators.required]);
+  addEditForm = new FormGroup({
+    name: new FormControl('', [Validators.required])
+  });
+  get name(): AbstractControl {
+    return this.addEditForm.get('name');
+  }
   mode: DialogMode;
-  dialogMode = DialogMode;
+  title: string;
 
   constructor(
     public dialogRef: MatDialogRef<AddEditBookComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.setMode(data.mode);
+    this.setMode(data);
   }
 
-  setMode(mode: DialogMode): void {
-    this.mode = mode;
+  setMode(data: AddEditData): void {
+    this.mode = data.mode;
+
+    switch (this.mode) {
+      case DialogMode.ADD:
+        this.title = 'add book';
+        break;
+      case DialogMode.EDIT:
+        this.title = 'edit book name';
+        this.name.setValue(data.name);
+        break;
+    }
   }
 
-  onCancel(): void {
+  cancel(): void {
     this.dialogRef.close();
+  }
+
+  submit(): void {
+    if (this.name.invalid) {
+      return;
+    }
+    this.dialogRef.close(this.name.value);
   }
 }
 
-export enum DialogMode {
-  ADD = 'add',
-  EDIT = 'edit'
+export interface AddEditData {
+  mode: DialogMode;
+  name: string;
 }

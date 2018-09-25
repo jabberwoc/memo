@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(
-    private router: Router,
     private authenticationService: AuthenticationService,
     public dialogRef: MatDialogRef<LoginComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any

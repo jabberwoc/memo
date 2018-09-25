@@ -160,6 +160,17 @@ export class DataService {
     });
   }
 
+  updateBook(book: Book): Promise<boolean> {
+    const id = this.bookUri({ book: book.id });
+    book.modified = new Date().toJSON();
+    return this.pouchDbService.put(id, {
+      id: book.id,
+      name: book.name,
+      count: book.count,
+      modified: book.modified
+    });
+  }
+
   updateBookNoteCount(book: Book): Promise<Book> {
     // update note count
     return this.countNotes(book.id).then(count => {
