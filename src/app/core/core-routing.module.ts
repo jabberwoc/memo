@@ -1,23 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
+import { RoutingInterceptorService } from './routing/routing-interceptor.service';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'books',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    canActivate: [RoutingInterceptorService],
+    children: []
   },
   {
     path: 'books',
-    // component: BooksPageComponent,
     loadChildren: '../books/books.module#BooksModule'
   },
   {
     path: 'notes',
-    // path: 'notes/:bookId',
-    // path: 'notes/:bookId/:noteId/:noteName',
-    // component: NotesPageComponent
     loadChildren: '../notes/notes.module#NotesModule'
   },
   {

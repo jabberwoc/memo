@@ -1,14 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatDialog } from '@angular/material';
-import { LoginComponent } from '../authentication/login/login.component';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd } from '@angular/router';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
 import { Observable } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { DialogMode } from '../../books/dialog/add-edit-book/dialog-mode';
 
 @Component({
   selector: 'app-menu',
@@ -29,8 +26,6 @@ export class MenuComponent implements OnInit {
   selectedNavigationItem: NavigationItem;
 
   constructor(
-    private router: Router,
-    private dialog: MatDialog,
     private menuService: MenuService,
     private authenticationService: AuthenticationService
   ) {
@@ -39,7 +34,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.events.subscribe(e => {
+    this.menuService.OnNavigated.subscribe(e => {
       if (e instanceof NavigationEnd) {
         console.log('navigation event url: ' + e.urlAfterRedirects);
 
@@ -70,8 +65,6 @@ export class MenuComponent implements OnInit {
   }
 
   login(): void {
-    const dialogRef = this.dialog.open(LoginComponent);
-
     // dialogRef.afterClosed().subscribe(() => {
     //   // TODO ?
     // });

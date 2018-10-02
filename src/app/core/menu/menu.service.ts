@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { NavigationItem } from './navigation-item';
+import { Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable()
 export class MenuService {
@@ -8,14 +11,27 @@ export class MenuService {
     new NavigationItem(MenuName.BOOKS, 'book', '/books'),
     new NavigationItem(MenuName.SETTINGS, 'cog', '/settings')
   ];
+  OnNavigated: Observable<NavigationEnd>;
 
-  constructor() {}
+  constructor(private router: Router) {
+    this.OnNavigated = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(ne => <NavigationEnd>ne)
+    );
+
+    this.OnNavigated.subscribe(e => this.saveRoutingUrl(e.urlAfterRedirects));
+  }
 
   registerMenuAction(name: MenuName, action: () => void): void {
     const target = this.navigationItems.find(_ => _.name === name);
     if (target) {
       target.action = action;
     }
+  }
+
+  saveRoutingUrl(url: string): void {
+    console.log('saving last active route url: ' + url);
+    localStorage.setItem('previousRoute', url);
   }
 }
 

@@ -9,22 +9,10 @@ const routes: Routes = [
     path: '',
     component: BooksPageComponent
   },
-  // {
-  //   path: 'books',
-  //   component: BooksPageComponent
-  // },
   {
     path: ':id',
     component: BooksPageComponent
   }
-  // {
-  //   path: 'notes/:bookId',
-  //   loadChildren: '../notes/notes.module#NotesModule'
-  // }
-  // {
-  //   path: 'notes/:bookId/:noteId/:noteName',
-  //   component: NotesPageComponent
-  // }
 ];
 
 @NgModule({

@@ -11,7 +11,6 @@ import { notes, selectedNoteId, books, selectedBook } from './data/store/memo-st
 import { DataService } from './data/data.service';
 import { PouchDbService } from './data/pouch-db.service';
 import { AuthenticationService } from './authentication/authentication.service';
-import { AuthGuard } from './authentication/guard/auth.guard';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +34,7 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   declarations: [LoginComponent, SettingsComponent, MenuComponent],
   exports: [RouterModule, MenuComponent],
-  providers: [DataService, PouchDbService, AuthenticationService, AuthGuard, MenuService],
+  providers: [DataService, PouchDbService, AuthenticationService, MenuService],
   entryComponents: [LoginComponent]
 })
 export class CoreModule {}

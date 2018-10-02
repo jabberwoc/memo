@@ -122,9 +122,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
           this.store.dispatch(new SelectBookAction(book));
           console.log('selected book: ' + book.name + '... loading notes..');
         })
-        .catch(err => {
+        .catch(_ => {
           this.router.navigate(['books']);
-          // return Observable.empty();
         });
     });
   }
