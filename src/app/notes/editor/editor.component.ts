@@ -15,7 +15,6 @@ import { Note } from '../../core/data/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import * as lodash from 'lodash';
 import { BusyState } from '../../shared/busy/busy-state';
 
 declare var tinymce: any;
@@ -69,7 +68,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
 
-  constructor(private renderer: Renderer2, private ngZone: NgZone, private fb: FormBuilder) {
+  constructor(private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
     this.debouncer.pipe(debounceTime(300)).subscribe(change => {
       change(this.selectedNote);
@@ -94,7 +93,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  zone(fn: (...args: any[]) => void, applyThis?: any, applyArgs?: any[]): void {
+  zone(fn: (...args: any[]) => void): void {
     if (NgZone.isInAngularZone()) {
       fn();
     } else {
@@ -107,7 +106,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       if (change) {
         this.debouncer.next(change);
       } else {
-        this.debouncer.next((note: Note) => {});
+        this.debouncer.next(() => {});
       }
     });
   }
@@ -154,7 +153,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   // TODO
-  filePickerCallback(cb, value, meta): void {
+  filePickerCallback(cb): void {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -170,7 +169,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         // necessary, as we are looking to handle it internally.
         const id = 'blobid' + new Date().getTime();
         const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-        const base64 = reader.result.split(',')[1];
+        const base64 = (<string>reader.result).split(',')[1];
         const blobInfo = blobCache.create(id, file, base64);
         blobCache.add(blobInfo);
 
@@ -196,7 +195,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('postRender', () => this.editorOnPostRender());
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
-    editor.on('keyup', e => this.editorOnKeyup(e));
+    editor.on('keyup', e => this.editorOnKeyup());
 
     this.addPrintPlugin(editor);
   }
@@ -301,7 +300,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.toggleToolbars(false);
   }
 
-  editorOnKeyup(e: any): void {
+  editorOnKeyup(): void {
     // if ((e.ctrlKey) && (e.keyCode === this.vKey)) {
     //   // paste from keyboard do nothing. let paste event handle it
     //   return;

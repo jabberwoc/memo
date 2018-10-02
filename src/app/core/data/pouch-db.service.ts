@@ -8,8 +8,8 @@ PouchDB.plugin(PouchAuth);
 export class PouchDbService {
   private isInstantiated: boolean;
   private remoteDatabase: PouchDB.Database<{}>;
-  private database: any;
-  private syncHandler: any;
+  private database: PouchDB.Database<{}>;
+  private syncHandler: PouchDB.Replication.Sync<{}>;
 
   // sync listeners (TOOD: types)
   private change: Subject<any> = new Subject<any>();
@@ -27,31 +27,42 @@ export class PouchDbService {
     this.isInstantiated = true;
   }
 
-  public all(start: string, end: string, includeDocs: boolean) {
-    return this.database.allDocs({
-      startkey: start,
-      endkey: end,
-      include_docs: includeDocs
-    });
+  public all(
+    start: string,
+    end: string,
+    includeDocs: boolean
+  ): Promise<
+    Array<{
+      doc?: any;
+      id: string;
+    }>
+  > {
+    return this.database
+      .allDocs({
+        startkey: start,
+        endkey: end,
+        include_docs: includeDocs
+      })
+      .then(result => result.rows);
   }
 
-  public get(id: string) {
+  public get(id: string): any {
     return this.database.get(id);
   }
 
-  public put(id: string, document: any) {
+  public put(id: string, document: any): Promise<boolean> {
     document._id = id;
     return this.get(id).then(
       result => {
         document._rev = result._rev;
-        return this.database.put(document);
+        return this.database.put(document).then(_ => _.ok);
       },
       error => {
         if (error.status === 404) {
-          return this.database.put(document);
+          return this.database.put(document).then(_ => _.ok);
         } else {
-          return new Promise((resolve, reject) => {
-            reject(error);
+          return new Promise<boolean>((resolve, reject) => {
+            return reject(error);
           });
         }
       }
@@ -98,7 +109,7 @@ export class PouchDbService {
     return this.remoteDatabase.logOut();
   }
 
-  private sync() {
+  private sync(): void {
     if (!this.remoteDatabase) {
       return;
     }
@@ -139,7 +150,7 @@ export class PouchDbService {
     return this.error;
   }
 
-  private convertToHex(value: string) {
+  private convertToHex(value: string): string {
     let hex = '';
     for (let i = 0; i < value.length; i++) {
       hex += '' + value.charCodeAt(i).toString(16);
