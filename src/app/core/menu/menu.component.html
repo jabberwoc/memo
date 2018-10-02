@@ -19,8 +19,10 @@
     <div class="nav-item" *ngIf="user | async">
       <div class="sync-wrapper">
         <app-busy [isBusy]="isSyncing" [size]="1.5" [fadeOut]="true"></app-busy>
+        <!-- TODO -->
+        <span>{{(user | async).isLoggedIn ? 'check': 'nope'}}</span>
       </div>
-      <p class="sideways">{{ user | async }}</p>
+      <p class="sideways">{{ (user | async).name }}</p>
       <button class="btn-icon fa fa-sign-out" title="logout" (click)="logout()">
       </button>
     </div>

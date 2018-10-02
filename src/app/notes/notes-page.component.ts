@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Book } from '../core/data/entities/book';
+import { Book } from '../core/data/model/entities/book';
 import { DataService } from '../core/data/data.service';
-import { Note } from '../core/data/entities/note';
+import { Note } from '../core/data/model/entities/note';
 import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
@@ -75,6 +75,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       });
 
     this.dataService.syncPull.subscribe(change => this.updateState(change));
+    this.dataService.reset.subscribe(_ => this.closeBook());
 
     // register 'add note' action in menu
     this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
@@ -115,17 +116,19 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   initRouting(): void {
-    this.route.paramMap.subscribe(params => {
-      this.dataService
-        .getBook(params.get('bookId'))
-        .then(book => {
-          this.store.dispatch(new SelectBookAction(book));
-          console.log('selected book: ' + book.name + '... loading notes..');
-        })
-        .catch(_ => {
-          this.router.navigate(['books']);
-        });
-    });
+    this.route.paramMap.subscribe(params => this.openBook(params.get('bookId')));
+  }
+
+  openBook(bookId: string): void {
+    this.dataService
+      .getBook(bookId)
+      .then(book => {
+        this.store.dispatch(new SelectBookAction(book));
+        console.log('selected book: ' + book.name + '... loading notes..');
+      })
+      .catch(_ => {
+        this.router.navigate(['books']);
+      });
   }
 
   loadNotes(bookId: string): void {

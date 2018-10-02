@@ -6,6 +6,9 @@ import { Observable } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { MemoUser } from '../data/model/memo-user';
+import { MatDialog } from '@angular/material';
+import { LoginComponent } from '../authentication/login/login.component';
 
 @Component({
   selector: 'app-menu',
@@ -18,7 +21,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
   ]
 })
 export class MenuComponent implements OnInit {
-  user: Observable<string>;
+  user: Observable<MemoUser>;
   isSyncing = false;
 
   private navigationItems: Array<NavigationItem>;
@@ -27,7 +30,8 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private menuService: MenuService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private dialog: MatDialog
   ) {
     this.navigationItems = this.menuService.navigationItems;
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
@@ -42,7 +46,7 @@ export class MenuComponent implements OnInit {
       }
     });
 
-    this.user = this.authenticationService.loggedInUser;
+    this.user = this.authenticationService.currentUser;
 
     this.authenticationService.syncChanges.pipe(throttleTime(2000)).subscribe(_ => {
       this.isSyncing = true;
@@ -65,9 +69,10 @@ export class MenuComponent implements OnInit {
   }
 
   login(): void {
-    // dialogRef.afterClosed().subscribe(() => {
-    //   // TODO ?
-    // });
+    const dialogRef = this.dialog.open(LoginComponent);
+    dialogRef.afterClosed().subscribe(() => {
+      // TODO notification
+    });
   }
 
   logout(): void {

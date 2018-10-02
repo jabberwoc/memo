@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { Note } from '../entities/note';
-import { Book } from '../entities/book';
+import { Note } from '../model/entities/note';
+import { Book } from '../model/entities/book';
 
 // note actions
 export const SET_NOTES = 'SET_NOTES';

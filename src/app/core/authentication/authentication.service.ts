@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
+import { MemoUser } from '../data/model/memo-user';
 
 @Injectable()
 export class AuthenticationService {
-  loggedInUser = new BehaviorSubject<string>(null);
+  currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
   keytar: any;
 
@@ -14,14 +15,17 @@ export class AuthenticationService {
 
     this.syncChanges = pouchDbService.getChangeListener();
     pouchDbService.getErrorListener().subscribe(_ => {
+      console.log('error syncing remote:');
+      console.log(_);
+
       // was logged in
-      const currentUser = this.loggedInUser.value;
+      const currentUser = this.currentUser.value;
       if (_.error === 'unauthorized' && currentUser !== null) {
-        this.loggedInUser.next(null);
+        this.currentUser.next(null);
 
         // try auto login for previously logged in user
         // TODO retry count
-        this.autoLogin(currentUser);
+        this.autoLogin(currentUser.name);
       }
     });
 
@@ -42,39 +46,52 @@ export class AuthenticationService {
     });
   }
 
-  login(
-    username: string,
-    password: string,
-    autoLogin: boolean
-  ): Promise<PouchDB.Authentication.LoginResponse> {
+  login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
     // TODO
     const remoteUrl = localStorage.getItem('remoteUrl');
     if (!remoteUrl) {
       return Promise.reject('Remote Url not set');
     }
-    return this.pouchDbService.login(remoteUrl, username, password).then(response => {
-      if (response.ok) {
-        if (autoLogin) {
-          // user logged in
-          this.keytar.setPassword('memo', username, password);
-          localStorage.setItem('auto-login', username);
+
+    let user: MemoUser = null;
+
+    return this.pouchDbService
+      .login(remoteUrl, username, password)
+      .then(response => {
+        if (response.ok) {
+          // syncing with remote
+          if (autoLogin) {
+            this.keytar.setPassword('memo', username, password);
+            localStorage.setItem('auto-login', username);
+          } else {
+            localStorage.setItem('auto-login', null);
+          }
+
+          user = new MemoUser(response.name, true);
+          this.currentUser.next(user);
+          console.log('user ' + response.name + ' successfully logged in.');
         } else {
-          localStorage.setItem('auto-login', null);
+          // not syncing
+          console.log('user ' + username + ' failed to log in.');
+          user = new MemoUser(username, false);
+          this.currentUser.next(user);
         }
 
-        this.loggedInUser.next(response.name);
-        console.log('user ' + response.name + ' successfully logged in.');
-        return response;
-      }
-    });
+        return user;
+      })
+      .catch(error => {
+        console.log('user ' + username + ' failed to log in:');
+        console.log(error);
+        return user;
+      });
   }
 
   logout() {
     return this.pouchDbService.logout().then(response => {
       if (response.ok) {
         localStorage.setItem('auto-login', null);
-        this.loggedInUser.next(null);
-        console.log('user ' + this.loggedInUser.getValue() + ' successfully logged out.');
+        this.currentUser.next(null);
+        console.log('user ' + this.currentUser.getValue() + ' successfully logged out.');
         return response;
       }
     });

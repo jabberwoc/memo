@@ -54,10 +54,11 @@ export class LoginComponent implements OnInit {
     this.authenticationService
       .login(this.username.value, this.password.value, this.loginForm.get('autoLogin').value)
       .then(
-        response => {
+        user => {
           this.loading = false;
-          // TODO
-          console.log(response);
+
+          console.log('current user:');
+          console.log(user);
           this.dialogRef.close();
         },
         error => {

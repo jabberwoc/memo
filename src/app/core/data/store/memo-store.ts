@@ -1,5 +1,5 @@
-import { Note } from '../entities/note';
-import { Book } from '../entities/book';
+import { Note } from '../model/entities/note';
+import { Book } from '../model/entities/book';
 import * as StoreActions from './actions';
 import {
   SET_NOTES,

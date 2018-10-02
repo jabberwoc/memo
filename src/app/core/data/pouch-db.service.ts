@@ -7,14 +7,17 @@ PouchDB.plugin(PouchAuth);
 @Injectable()
 export class PouchDbService {
   private isInstantiated: boolean;
+  private localDatabase: PouchDB.Database<{}>;
   private remoteDatabase: PouchDB.Database<{}>;
-  private database: PouchDB.Database<{}>;
+  private offlineDatabase: PouchDB.Database<{}>;
   private syncHandler: PouchDB.Replication.Sync<{}>;
 
   // sync listeners (TOOD: types)
   private change: Subject<any> = new Subject<any>();
   private state: Subject<any> = new Subject<any>();
   private error: Subject<any> = new Subject<any>();
+
+  private databaseReset: Subject<void> = new Subject();
 
   public constructor() {
     if (!this.isInstantiated) {
@@ -23,7 +26,8 @@ export class PouchDbService {
   }
 
   setupDatabase() {
-    this.database = new PouchDB('memo', { auto_compaction: true });
+    this.localDatabase = new PouchDB('memo', { auto_compaction: true });
+    this.databaseReset.next();
     this.isInstantiated = true;
   }
 
@@ -37,7 +41,7 @@ export class PouchDbService {
       id: string;
     }>
   > {
-    return this.database
+    return this.localDatabase
       .allDocs({
         startkey: start,
         endkey: end,
@@ -47,7 +51,7 @@ export class PouchDbService {
   }
 
   public get(id: string): any {
-    return this.database.get(id);
+    return this.localDatabase.get(id);
   }
 
   public put(id: string, document: any): Promise<boolean> {
@@ -55,11 +59,11 @@ export class PouchDbService {
     return this.get(id).then(
       result => {
         document._rev = result._rev;
-        return this.database.put(document).then(_ => _.ok);
+        return this.localDatabase.put(document).then(_ => _.ok);
       },
       error => {
         if (error.status === 404) {
-          return this.database.put(document).then(_ => _.ok);
+          return this.localDatabase.put(document).then(_ => _.ok);
         } else {
           return new Promise<boolean>((resolve, reject) => {
             return reject(error);
@@ -70,12 +74,12 @@ export class PouchDbService {
   }
 
   public bulkCreate(documents: any[]) {
-    return this.database.bulkDocs(documents);
+    return this.localDatabase.bulkDocs(documents);
   }
 
   public remove(id: string) {
-    return this.database.get(id).then(doc => {
-      return this.database.remove(doc);
+    return this.localDatabase.get(id).then(doc => {
+      return this.localDatabase.remove(doc);
     });
   }
 
@@ -88,18 +92,25 @@ export class PouchDbService {
       return;
     }
 
-    this.remoteDatabase = new PouchDB(remoteUrl + '/userdb-' + this.convertToHex(username), {
+    const userDbName = 'userdb-' + this.convertToHex(username);
+    this.localDatabase = new PouchDB('memo-' + userDbName, { auto_compaction: true });
+    this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
       skip_setup: true
     });
     return this.remoteDatabase.logIn(username, password).then(response => {
       if (response.ok) {
+        console.log('login response:');
+        console.log(response);
         this.sync();
-        return response;
       }
+      return response;
     });
   }
 
   public logout(): Promise<PouchDB.Core.BasicResponse> {
+    // TODO log out locally
+    this.localDatabase = this.offlineDatabase;
+
     if (!this.remoteDatabase) {
       // not syncing
       return;
@@ -114,7 +125,7 @@ export class PouchDbService {
       return;
     }
 
-    this.syncHandler = this.database.sync(this.remoteDatabase, {
+    this.syncHandler = this.localDatabase.sync(this.remoteDatabase, {
       live: true,
       retry: true
     });
@@ -140,6 +151,10 @@ export class PouchDbService {
       console.error('Remote sync error: ' + JSON.stringify(error));
       this.error.next(error);
     });
+  }
+
+  public getDatabaseResetListener(): Observable<void> {
+    return this.databaseReset;
   }
 
   public getChangeListener(): Observable<any> {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DataService } from '../core/data/data.service';
-import { Book } from '../core/data/entities/book';
+import { Book } from '../core/data/model/entities/book';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
 import { Store } from '@ngrx/store';
 import { MemoStore } from '../core/data/store/memo-store';
@@ -38,6 +38,7 @@ export class BooksPageComponent implements OnInit {
     this.menuService.registerMenuAction(MenuName.BOOKS, () => this.addBook());
 
     this.dataService.syncPull.subscribe(change => this.updateState(change));
+    this.dataService.reset.subscribe(_ => this.loadBooks());
   }
 
   updateState(change: any): void {
