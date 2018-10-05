@@ -1,8 +1,9 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import PouchDB from 'pouchdb';
 import PouchAuth from 'pouchdb-authentication';
+import PouchAllDBs from 'pouchdb-all-dbs';
 import { Observable, Subject } from 'rxjs';
-PouchDB.plugin(PouchAuth);
+PouchDB.plugin(PouchAuth).plugin(PouchAllDBs);
 
 @Injectable()
 export class PouchDbService {
@@ -19,6 +20,8 @@ export class PouchDbService {
 
   private databaseReset: Subject<void> = new Subject();
 
+  private readonly USER_DB_PREFIX = 'memo-userdb-';
+
   public constructor() {
     if (!this.isInstantiated) {
       this.setupDatabase();
@@ -26,8 +29,10 @@ export class PouchDbService {
   }
 
   setupDatabase() {
-    this.localDatabase = new PouchDB('memo', { auto_compaction: true });
-    this.databaseReset.next();
+    this.offlineDatabase = new PouchDB('memo', { auto_compaction: true });
+
+    // offline database is default
+    this.openLocalDatabase();
     this.isInstantiated = true;
   }
 
@@ -83,41 +88,56 @@ export class PouchDbService {
     });
   }
 
-  public login(
-    remoteUrl: string,
+  public async login(
     username: string,
-    password: string
-  ): Promise<PouchDB.Authentication.LoginResponse> {
-    if (!remoteUrl) {
-      return;
-    }
-
-    const userDbName = 'userdb-' + this.convertToHex(username);
-    this.localDatabase = new PouchDB('memo-' + userDbName, { auto_compaction: true });
-    this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
-      skip_setup: true
-    });
-    return this.remoteDatabase.logIn(username, password).then(response => {
+    password: string,
+    alwaysOpenLocal: boolean = false
+  ): Promise<{ remote: boolean; local: boolean }> {
+    const success = await this.openRemoteDatabase(username);
+    if (success) {
+      const response = await this.remoteDatabase.logIn(username, password);
       if (response.ok) {
         console.log('login response:');
         console.log(response);
-        this.sync();
+        if (await this.openLocalDatabase(username, true)) {
+          this.sync();
+          return { remote: true, local: true };
+        }
+        throw new Error('logged in to remote database but failed to open/create local database');
       }
-      return response;
-    });
+
+      // return { remote: false, local: false };
+    }
+
+    if (alwaysOpenLocal) {
+      return { remote: false, local: await this.openLocalDatabase(username) };
+    }
   }
 
   public logout(): Promise<PouchDB.Core.BasicResponse> {
-    // TODO log out locally
-    this.localDatabase = this.offlineDatabase;
-
     if (!this.remoteDatabase) {
       // not syncing
-      return;
+      return Promise.reject('not syncing');
     }
 
-    this.syncHandler.cancel();
-    return this.remoteDatabase.logOut();
+    return this.remoteDatabase
+      .logOut()
+      .then(response => {
+        if (response.ok) {
+          this.openLocalDatabase();
+        }
+        return response;
+      })
+      .catch(error => {
+        console.log(error);
+        return Promise.reject('logOut failed');
+      });
+  }
+
+  public cancelSync(): void {
+    if (this.syncHandler) {
+      this.syncHandler.cancel();
+    }
   }
 
   private sync(): void {
@@ -165,11 +185,91 @@ export class PouchDbService {
     return this.error;
   }
 
+  private GetAllUserDbs(): Promise<Array<string>> {
+    return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
+  }
+
+  private openLocalDatabase(user: string = null, create: boolean = false): Promise<boolean> {
+    if (!user) {
+      this.cancelSync();
+      // open default database
+      this.localDatabase = this.offlineDatabase;
+      console.log('opened offline database');
+      this.databaseReset.next();
+      return Promise.resolve(true);
+    }
+
+    if (create) {
+      this.localDatabase = new PouchDB(this.USER_DB_PREFIX + this.convertToHex(user), {
+        auto_compaction: true
+      });
+      console.log(
+        'opened user database ' +
+          this.USER_DB_PREFIX +
+          this.convertToHex(user) +
+          ' for user: ' +
+          user
+      );
+      this.databaseReset.next();
+      return Promise.resolve(true);
+    }
+
+    // find user database
+    return this.GetAllUserDbs().then(dbs => {
+      const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
+      if (existingDb) {
+        this.cancelSync();
+        this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
+        console.log(
+          'opened existing user database ' +
+            this.USER_DB_PREFIX +
+            this.convertToHex(user) +
+            ' for user: ' +
+            user
+        );
+        this.databaseReset.next();
+        return true;
+      }
+      return false;
+    });
+  }
+
+  private openRemoteDatabase(username: string): Promise<boolean> {
+    const remoteUrl = localStorage.getItem('remoteUrl');
+    if (!remoteUrl) {
+      return Promise.resolve(false);
+    }
+
+    const userDbName = 'userdb-' + this.convertToHex(username);
+    this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
+      skip_setup: true
+    });
+
+    return this.remoteDatabase
+      .info()
+      .then(i => {
+        if (i.db_name === userDbName) {
+          console.log('opened remote database ' + userDbName + ' for user: ' + username);
+          return true;
+        }
+        return false;
+      })
+      .catch(_ => false);
+  }
+
   private convertToHex(value: string): string {
     let hex = '';
     for (let i = 0; i < value.length; i++) {
       hex += '' + value.charCodeAt(i).toString(16);
     }
     return hex;
+  }
+
+  private hexToString(hex: string): string {
+    let string = '';
+    for (let i = 0; i < hex.length; i += 2) {
+      string += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return string;
   }
 }

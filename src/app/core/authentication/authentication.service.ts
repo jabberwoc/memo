@@ -47,18 +47,13 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
-    // TODO
-    const remoteUrl = localStorage.getItem('remoteUrl');
-    if (!remoteUrl) {
-      return Promise.reject('Remote Url not set');
-    }
-
     let user: MemoUser = null;
 
     return this.pouchDbService
-      .login(remoteUrl, username, password)
-      .then(response => {
-        if (response.ok) {
+      .login(username, password, true)
+      .then(ok => {
+        console.log(ok);
+        if (ok.remote) {
           // syncing with remote
           if (autoLogin) {
             this.keytar.setPassword('memo', username, password);
@@ -67,22 +62,24 @@ export class AuthenticationService {
             localStorage.setItem('auto-login', null);
           }
 
-          user = new MemoUser(response.name, true);
+          user = new MemoUser(username, true);
           this.currentUser.next(user);
-          console.log('user ' + response.name + ' successfully logged in.');
+          console.log('user ' + username + ' successfully logged in.');
         } else {
           // not syncing
-          console.log('user ' + username + ' failed to log in.');
-          user = new MemoUser(username, false);
-          this.currentUser.next(user);
+          if (ok.local) {
+            console.log('user ' + username + ' failed to log in. local log-in only!');
+            user = new MemoUser(username, false);
+            this.currentUser.next(user);
+          }
         }
 
         return user;
       })
-      .catch(error => {
+      .catch(err => {
         console.log('user ' + username + ' failed to log in:');
-        console.log(error);
-        return user;
+        console.log(err);
+        return null;
       });
   }
 

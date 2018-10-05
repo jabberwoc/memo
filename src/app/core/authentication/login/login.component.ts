@@ -54,11 +54,8 @@ export class LoginComponent implements OnInit {
     this.authenticationService
       .login(this.username.value, this.password.value, this.loginForm.get('autoLogin').value)
       .then(
-        user => {
+        _ => {
           this.loading = false;
-
-          console.log('current user:');
-          console.log(user);
           this.dialogRef.close();
         },
         error => {
