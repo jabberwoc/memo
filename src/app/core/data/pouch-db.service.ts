@@ -93,20 +93,16 @@ export class PouchDbService {
     password: string,
     alwaysOpenLocal: boolean = false
   ): Promise<{ remote: boolean; local: boolean }> {
-    const success = await this.openRemoteDatabase(username);
+    const success = await this.openRemoteDatabase(username, password);
     if (success) {
       const response = await this.remoteDatabase.logIn(username, password);
       if (response.ok) {
-        console.log('login response:');
-        console.log(response);
         if (await this.openLocalDatabase(username, true)) {
           this.sync();
           return { remote: true, local: true };
         }
         throw new Error('logged in to remote database but failed to open/create local database');
       }
-
-      // return { remote: false, local: false };
     }
 
     if (alwaysOpenLocal) {
@@ -129,7 +125,7 @@ export class PouchDbService {
         return response;
       })
       .catch(error => {
-        console.log(error);
+        console.log('logOut failed: ' + error);
         return Promise.reject('logOut failed');
       });
   }
@@ -194,22 +190,16 @@ export class PouchDbService {
       this.cancelSync();
       // open default database
       this.localDatabase = this.offlineDatabase;
-      console.log('opened offline database');
       this.databaseReset.next();
       return Promise.resolve(true);
     }
 
     if (create) {
-      this.localDatabase = new PouchDB(this.USER_DB_PREFIX + this.convertToHex(user), {
+      const userHex = this.convertToHex(user);
+      this.localDatabase = new PouchDB(this.USER_DB_PREFIX + userHex, {
         auto_compaction: true
       });
-      console.log(
-        'opened user database ' +
-          this.USER_DB_PREFIX +
-          this.convertToHex(user) +
-          ' for user: ' +
-          user
-      );
+      console.log('opened user database ' + this.USER_DB_PREFIX + userHex + ' for user: ' + user);
       this.databaseReset.next();
       return Promise.resolve(true);
     }
@@ -234,7 +224,7 @@ export class PouchDbService {
     });
   }
 
-  private openRemoteDatabase(username: string): Promise<boolean> {
+  private openRemoteDatabase(username: string, password: string): Promise<boolean> {
     const remoteUrl = localStorage.getItem('remoteUrl');
     if (!remoteUrl) {
       return Promise.resolve(false);
@@ -246,14 +236,8 @@ export class PouchDbService {
     });
 
     return this.remoteDatabase
-      .info()
-      .then(i => {
-        if (i.db_name === userDbName) {
-          console.log('opened remote database ' + userDbName + ' for user: ' + username);
-          return true;
-        }
-        return false;
-      })
+      .logIn(username, password)
+      .then(response => response.ok)
       .catch(_ => false);
   }
 
