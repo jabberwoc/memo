@@ -21,9 +21,9 @@
         <app-busy [isBusy]="isSyncing" [size]="1.5" [fadeOut]="true"></app-busy>
       </div>
 
-      <button id="sync-ok" *ngIf="(user | async).isLoggedIn" class="smaller btn-icon fa fa-check-circle" title="online"></button>
-      <button id="sync-warning" *ngIf="!(user | async).isLoggedIn" class="smaller btn-icon fa fa-exclamation-circle"
-        title="offline"></button>
+      <button id="sync-ok" *ngIf="isUserSessionAlive | async" class="smaller btn-icon fa fa-check-circle" title="online"></button>
+      <button id="sync-warning" *ngIf="!(isUserSessionAlive | async)" class="smaller btn-icon fa fa-exclamation-circle"
+        title="offline" (click)="login()"></button>
       <p class="sideways">{{ (user | async).name }}</p>
       <button class="btn-icon fa fa-user-circle" title="logout" (click)="logout()">
       </button>

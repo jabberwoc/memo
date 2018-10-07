@@ -1,20 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, timer, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
 import { MemoUser } from '../data/model/memo-user';
+import { RemoteState } from './remote-state';
 
 @Injectable()
 export class AuthenticationService {
   currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
-  keytar: any;
+  private keytar: any;
+  remoteState: Observable<RemoteState>;
+  private aliveSubscription: Subscription;
+  private isAliveSubject = new Subject<boolean>();
+  get isAlive(): Observable<boolean> {
+    return this.isAliveSubject;
+  }
 
   constructor(private pouchDbService: PouchDbService, private electronService: ElectronService) {
     this.keytar = this.electronService.remote.require('keytar');
 
-    this.syncChanges = pouchDbService.getChangeListener();
-    pouchDbService.getErrorListener().subscribe(_ => {
+    this.syncChanges = this.pouchDbService.onChange;
+    this.remoteState = this.pouchDbService.onStateChange;
+    pouchDbService.onError.subscribe(_ => {
       console.log('error syncing remote:');
       console.log(_);
 
@@ -34,6 +43,24 @@ export class AuthenticationService {
     if (user) {
       this.autoLogin(user);
     }
+
+    this.setupRemoteAliveCheck();
+  }
+
+  private setupRemoteAliveCheck(): void {
+    this.currentUser.subscribe(user => {
+      if (this.aliveSubscription) {
+        this.aliveSubscription.unsubscribe();
+      }
+
+      if (user == null) {
+        return;
+      }
+
+      this.aliveSubscription = timer(0, 5000).subscribe(async _ =>
+        this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive(user.name))
+      );
+    });
   }
 
   autoLogin(user: string): void {

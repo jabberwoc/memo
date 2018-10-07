@@ -3,10 +3,13 @@ import PouchDB from 'pouchdb';
 import PouchAuth from 'pouchdb-authentication';
 import PouchAllDBs from 'pouchdb-all-dbs';
 import { Observable, Subject } from 'rxjs';
+import { RemoteState } from '../authentication/remote-state';
 PouchDB.plugin(PouchAuth).plugin(PouchAllDBs);
 
 @Injectable()
 export class PouchDbService {
+  private readonly USER_DB_PREFIX = 'memo-userdb-';
+
   private isInstantiated: boolean;
   private localDatabase: PouchDB.Database<{}>;
   private remoteDatabase: PouchDB.Database<{}>;
@@ -14,13 +17,25 @@ export class PouchDbService {
   private syncHandler: PouchDB.Replication.Sync<{}>;
 
   // sync listeners (TOOD: types)
-  private change: Subject<any> = new Subject<any>();
-  private state: Subject<any> = new Subject<any>();
+  private change: Subject<PouchDB.Replication.SyncResult<{}>> = new Subject<
+    PouchDB.Replication.SyncResult<{}>
+  >();
+  private stateChange: Subject<RemoteState> = new Subject<RemoteState>();
   private error: Subject<any> = new Subject<any>();
-
   private databaseReset: Subject<void> = new Subject();
 
-  private readonly USER_DB_PREFIX = 'memo-userdb-';
+  public get onDatabaseReset(): Observable<void> {
+    return this.databaseReset;
+  }
+  public get onChange(): Observable<PouchDB.Replication.SyncResult<{}>> {
+    return this.change;
+  }
+  public get onError(): Observable<any> {
+    return this.error;
+  }
+  public get onStateChange(): Observable<RemoteState> {
+    return this.stateChange;
+  }
 
   public constructor() {
     if (!this.isInstantiated) {
@@ -153,15 +168,16 @@ export class PouchDbService {
     });
     this.syncHandler.on('paused', () => {
       console.log('Remote sync: connection paused.');
-      this.state.next('connection paused');
+      this.stateChange.next(RemoteState.PAUSED);
     });
     this.syncHandler.on('active', () => {
       console.log('Remote sync: connection resumed.');
-      this.state.next('connection resumed');
+      this.stateChange.next(RemoteState.ACTIVE);
     });
     this.syncHandler.on('complete', info => {
       console.log('Remote sync: connection closed.');
-      this.state.next(info);
+      console.log(info);
+      this.stateChange.next(RemoteState.COMPLETED);
     });
     this.syncHandler.on('error', error => {
       console.error('Remote sync error: ' + JSON.stringify(error));
@@ -169,16 +185,18 @@ export class PouchDbService {
     });
   }
 
-  public getDatabaseResetListener(): Observable<void> {
-    return this.databaseReset;
-  }
-
-  public getChangeListener(): Observable<any> {
-    return this.change;
-  }
-
-  public getErrorListener(): Observable<any> {
-    return this.error;
+  public isRemoteAlive(user?: string): Promise<boolean> {
+    return this.remoteDatabase
+      .getSession()
+      .then(_ => {
+        if (_.ok && _.userCtx) {
+          if (user) {
+            return _.userCtx.name === user;
+          }
+          return _.userCtx.name ? true : false;
+        }
+      })
+      .catch(_ => false);
   }
 
   private GetAllUserDbs(): Promise<Array<string>> {

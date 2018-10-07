@@ -19,12 +19,12 @@ export class DataService {
 
   constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
     // sync changes wth state
-    this.syncPull = this.pouchDbService.getChangeListener().pipe(
+    this.syncPull = this.pouchDbService.onChange.pipe(
       filter(_ => _.direction === 'pull'),
       map(_ => this.formatChange(_.change)),
       filter(_ => _ !== false)
     );
-    this.reset = this.pouchDbService.getDatabaseResetListener();
+    this.reset = this.pouchDbService.onDatabaseReset;
   }
 
   private formatChange(change: any): any {

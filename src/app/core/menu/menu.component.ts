@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd } from '@angular/router';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
-import { Observable } from 'rxjs';
-import { throttleTime } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { throttleTime, combineLatest } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MemoUser } from '../data/model/memo-user';
 import { MatDialog } from '@angular/material';
 import { LoginComponent } from '../authentication/login/login.component';
+import { RemoteState } from '../authentication/remote-state';
 
 @Component({
   selector: 'app-menu',
@@ -20,13 +21,17 @@ import { LoginComponent } from '../authentication/login/login.component';
     ])
   ]
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   user: Observable<MemoUser>;
   isSyncing = false;
 
   private navigationItems: Array<NavigationItem>;
   visibleNavigationItems: Array<NavigationItem>;
   selectedNavigationItem: NavigationItem;
+  private syncSub: Subscription;
+  state: Observable<RemoteState>;
+  REMOTE_STATES = RemoteState;
+  isUserSessionAlive: Observable<boolean>;
 
   constructor(
     private menuService: MenuService,
@@ -35,6 +40,19 @@ export class MenuComponent implements OnInit {
   ) {
     this.navigationItems = this.menuService.navigationItems;
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
+
+    this.user = this.authenticationService.currentUser;
+    this.isUserSessionAlive = this.user.pipe(
+      combineLatest(
+        this.authenticationService.isAlive,
+        (user, alive) => user !== null && user.isLoggedIn && alive
+      )
+    );
+
+    this.syncSub = this.authenticationService.syncChanges.pipe(throttleTime(2000)).subscribe(_ => {
+      this.isSyncing = true;
+      setTimeout(() => (this.isSyncing = false), 0);
+    });
   }
 
   ngOnInit() {
@@ -45,13 +63,12 @@ export class MenuComponent implements OnInit {
         this.selectNavigationItem(e.urlAfterRedirects);
       }
     });
+  }
 
-    this.user = this.authenticationService.currentUser;
-
-    this.authenticationService.syncChanges.pipe(throttleTime(2000)).subscribe(_ => {
-      this.isSyncing = true;
-      setTimeout(() => (this.isSyncing = false), 0);
-    });
+  ngOnDestroy(): void {
+    if (this.syncSub) {
+      this.syncSub.unsubscribe();
+    }
   }
 
   private selectNavigationItem(path: string): void {
