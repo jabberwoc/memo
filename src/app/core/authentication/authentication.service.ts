@@ -52,7 +52,6 @@ export class AuthenticationService {
     return this.pouchDbService
       .login(username, password, true)
       .then(ok => {
-        console.log(ok);
         if (ok.remote) {
           // syncing with remote
           if (autoLogin) {

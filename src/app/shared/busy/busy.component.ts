@@ -16,7 +16,7 @@ export class BusyComponent {
   @Input()
   fadeOut = false;
   @Input()
-  busyState: BusyState;
+  busyState: BusyState = BusyState.INACTIVE;
 
   get isBusy(): boolean {
     return this.busyState !== BusyState.INACTIVE;
@@ -26,7 +26,7 @@ export class BusyComponent {
     if (value) {
       this.busyState = BusyState.ACTIVE;
     } else {
-      if (this.fadeOut) {
+      if (this.fadeOut && this.busyState !== BusyState.INACTIVE) {
         this.busyState = BusyState.FADE_OUT;
         setTimeout(() => (this.busyState = BusyState.INACTIVE), 0);
       } else {

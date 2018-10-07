@@ -40,11 +40,11 @@ nav {
   overflow: hidden;
 }
 
-.nav-item > * {
+.nav-item>* {
   margin: 0.2em auto;
 }
 
-.nav-item > p {
+.nav-item>p {
   font-size: 1.2em;
 }
 
@@ -60,4 +60,16 @@ nav .nav-item {
 
 .sync-wrapper {
   height: 1.5em;
+}
+
+.smaller {
+  font-size: 1em;
+}
+
+#sync-ok {
+  color: #c0eb75;
+}
+
+#sync-warning {
+  color: #ffc078;
 }
