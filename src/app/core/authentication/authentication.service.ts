@@ -1,27 +1,40 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, timer, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
+import { MemoUser } from '../data/model/memo-user';
+import { RemoteState } from './remote-state';
 
 @Injectable()
 export class AuthenticationService {
-  loggedInUser = new BehaviorSubject<string>(null);
+  currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
-  keytar: any;
+  private keytar: any;
+  remoteState: Observable<RemoteState>;
+  private aliveSubscription: Subscription;
+  private isAliveSubject = new Subject<boolean>();
+  get isAlive(): Observable<boolean> {
+    return this.isAliveSubject.asObservable();
+  }
 
   constructor(private pouchDbService: PouchDbService, private electronService: ElectronService) {
     this.keytar = this.electronService.remote.require('keytar');
 
-    this.syncChanges = pouchDbService.getChangeListener();
-    pouchDbService.getErrorListener().subscribe(_ => {
+    this.syncChanges = this.pouchDbService.onChange;
+    this.remoteState = this.pouchDbService.onStateChange;
+    pouchDbService.onError.subscribe(_ => {
+      console.log('error syncing remote:');
+      console.log(_);
+
       // was logged in
-      const currentUser = this.loggedInUser.value;
+      const currentUser = this.currentUser.value;
       if (_.error === 'unauthorized' && currentUser !== null) {
-        this.loggedInUser.next(null);
+        this.currentUser.next(null);
 
         // try auto login for previously logged in user
         // TODO retry count
-        this.autoLogin(currentUser);
+        this.autoLogin(currentUser.name);
       }
     });
 
@@ -30,6 +43,24 @@ export class AuthenticationService {
     if (user) {
       this.autoLogin(user);
     }
+
+    this.setupRemoteAliveCheck();
+  }
+
+  private setupRemoteAliveCheck(): void {
+    this.currentUser.subscribe(user => {
+      if (this.aliveSubscription) {
+        this.aliveSubscription.unsubscribe();
+      }
+
+      if (user == null) {
+        return;
+      }
+
+      this.aliveSubscription = timer(0, 5000).subscribe(async _ =>
+        this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive(user.name))
+      );
+    });
   }
 
   autoLogin(user: string): void {
@@ -42,39 +73,48 @@ export class AuthenticationService {
     });
   }
 
-  login(
-    username: string,
-    password: string,
-    autoLogin: boolean
-  ): Promise<PouchDB.Authentication.LoginResponse> {
-    // TODO
-    const remoteUrl = localStorage.getItem('remoteUrl');
-    if (!remoteUrl) {
-      return Promise.reject('Remote Url not set');
-    }
-    return this.pouchDbService.login(remoteUrl, username, password).then(response => {
-      if (response.ok) {
-        if (autoLogin) {
-          // user logged in
-          this.keytar.setPassword('memo', username, password);
-          localStorage.setItem('auto-login', username);
+  login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
+    let user: MemoUser = null;
+
+    return this.pouchDbService
+      .login(username, password, true)
+      .then(ok => {
+        if (ok.remote) {
+          // syncing with remote
+          if (autoLogin) {
+            this.keytar.setPassword('memo', username, password);
+            localStorage.setItem('auto-login', username);
+          } else {
+            localStorage.setItem('auto-login', null);
+          }
+
+          user = new MemoUser(username, true);
+          this.currentUser.next(user);
+          console.log('user ' + username + ' successfully logged in.');
         } else {
-          localStorage.setItem('auto-login', null);
+          // not syncing
+          if (ok.local) {
+            console.log('user ' + username + ' failed to log in. local log-in only!');
+            user = new MemoUser(username, false);
+            this.currentUser.next(user);
+          }
         }
 
-        this.loggedInUser.next(response.name);
-        console.log('user ' + response.name + ' successfully logged in.');
-        return response;
-      }
-    });
+        return user;
+      })
+      .catch(err => {
+        console.log('user ' + username + ' failed to log in:');
+        console.log(err);
+        return null;
+      });
   }
 
   logout() {
     return this.pouchDbService.logout().then(response => {
       if (response.ok) {
         localStorage.setItem('auto-login', null);
-        this.loggedInUser.next(null);
-        console.log('user ' + this.loggedInUser.getValue() + ' successfully logged out.');
+        this.currentUser.next(null);
+        console.log('user ' + this.currentUser.getValue() + ' successfully logged out.');
         return response;
       }
     });

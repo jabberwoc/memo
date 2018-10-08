@@ -11,7 +11,7 @@ import {
   NgZone,
   HostListener
 } from '@angular/core';
-import { Note } from '../../core/data/entities/note';
+import { Note } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';

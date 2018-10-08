@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Note } from '../../core/data/entities/note';
+import { Note } from '../../core/data/model/entities/note';
 
 @Component({
   selector: 'app-notes-list',

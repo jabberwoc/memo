@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { PouchDbService } from './pouch-db.service';
-import { Book } from './entities/book';
+import { Book } from './model/entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
-import { Note } from './entities/note';
-import { Observable } from 'rxjs';
+import { Note } from './model/entities/note';
+import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
@@ -15,14 +15,16 @@ export class DataService {
   private noteUri = docUri.route('note/:book/(:note)');
   private bookUri = docUri.route('book/(:book)');
   syncPull: Observable<any>;
+  reset: Observable<void>;
 
   constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
     // sync changes wth state
-    this.syncPull = this.pouchDbService.getChangeListener().pipe(
+    this.syncPull = this.pouchDbService.onChange.pipe(
       filter(_ => _.direction === 'pull'),
       map(_ => this.formatChange(_.change)),
       filter(_ => _ !== false)
     );
+    this.reset = this.pouchDbService.onDatabaseReset;
   }
 
   private formatChange(change: any): any {

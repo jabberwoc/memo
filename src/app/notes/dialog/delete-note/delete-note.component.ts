@@ -1,15 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  Input,
-  ViewChild,
-  ElementRef,
-  Inject
-} from '@angular/core';
-import { Note } from '../../../core/data/entities/note';
-import { Observable } from 'rxjs';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({

@@ -20,8 +20,12 @@
       <div class="sync-wrapper">
         <app-busy [isBusy]="isSyncing" [size]="1.5" [fadeOut]="true"></app-busy>
       </div>
-      <p class="sideways">{{ user | async }}</p>
-      <button class="btn-icon fa fa-sign-out" title="logout" (click)="logout()">
+
+      <button id="sync-ok" *ngIf="isUserSessionAlive | async" class="smaller btn-icon fa fa-check-circle" title="online"></button>
+      <button id="sync-warning" *ngIf="!(isUserSessionAlive | async)" class="smaller btn-icon fa fa-exclamation-circle"
+        title="offline" (click)="login()"></button>
+      <p class="sideways">{{ (user | async).name }}</p>
+      <button class="btn-icon fa fa-user-circle" title="logout" (click)="logout()">
       </button>
     </div>
     <div class="nav-item" *ngIf="!(user | async)">

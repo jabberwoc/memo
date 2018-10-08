@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
-import { BookDto } from '../data/entities/book';
+import { BookDto } from '../data/model/entities/book';
 import { Dictionary } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
