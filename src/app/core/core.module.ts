@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { MenuService } from './menu/menu.service';
 import { HttpClientModule } from '@angular/common/http';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   imports: [
@@ -30,7 +31,12 @@ import { HttpClientModule } from '@angular/common/http';
     MatButtonModule,
     MatInputModule,
     SharedModule,
-    StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook })
+    StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
+    LoggerModule.forRoot({
+      serverLoggingUrl: '/api/logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR
+    })
   ],
   declarations: [LoginComponent, SettingsComponent, MenuComponent],
   exports: [RouterModule, MenuComponent],

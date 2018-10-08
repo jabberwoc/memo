@@ -17,6 +17,8 @@ import {
 import { MenuService, MenuName } from '../core/menu/menu.service';
 import { AddEditBookComponent } from './dialog/add-edit-book/add-edit-book.component';
 import { DialogMode } from './dialog/add-edit-book/dialog-mode';
+import { NotifierService } from 'angular-notifier';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-books-page',
@@ -32,7 +34,9 @@ export class BooksPageComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataService,
     private menuService: MenuService,
-    private store: Store<MemoStore>
+    private store: Store<MemoStore>,
+    private notifier: NotifierService,
+    private logger: NGXLogger
   ) {
     this.books = this.store.select(_ => _.books).pipe(map(_ => _.sort(Book.modifiedComparer)));
     this.menuService.registerMenuAction(MenuName.BOOKS, () => this.addBook());
@@ -54,10 +58,11 @@ export class BooksPageComponent implements OnInit {
         const newBook = new Book(null, name, 0, null);
         this.dataService.createBook(newBook).then(ok => {
           if (ok) {
-            console.log('created new book: [' + newBook.id + '] ' + name);
+            this.logger.debug(`created new book: [${newBook.id}] ${name}`);
+            this.notifier.notify('success', `${name} created`);
             this.store.dispatch(new AddBookAction(newBook));
           } else {
-            console.log('error creating book: ' + ok);
+            this.logger.error(`creating book [${name}] failed`);
           }
         });
       }
@@ -95,8 +100,6 @@ export class BooksPageComponent implements OnInit {
   }
 
   deleteBook(book: Book): void {
-    console.log('requested delete book: ' + book);
-
     // confirm
     const dialogRef = this.dialog.open(DeleteBookComponent, { data: { name: book.name } });
 
@@ -104,10 +107,12 @@ export class BooksPageComponent implements OnInit {
       if (confirmed) {
         this.dataService.deleteBook(book).then(ok => {
           if (ok) {
-            console.log('book: [' + book.id + '] ' + book.name);
+            this.logger.debug(`book deleted: [${book.id}] ${book.name}`);
+            this.notifier.notify('success', `${name} deleted`);
             this.store.dispatch(new DeleteBookAction(book.id));
           } else {
-            console.log('error deleting book: ' + ok);
+            this.logger.error('failed to delete book: ' + book.name);
+            this.notifier.notify('error', 'failed to delete ' + book.name);
           }
         });
       }
