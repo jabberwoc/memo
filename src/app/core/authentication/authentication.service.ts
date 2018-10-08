@@ -5,6 +5,8 @@ import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
 import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from './remote-state';
+import { NotifierService } from 'angular-notifier';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,18 +20,23 @@ export class AuthenticationService {
     return this.isAliveSubject.asObservable();
   }
 
-  constructor(private pouchDbService: PouchDbService, private electronService: ElectronService) {
+  constructor(
+    private pouchDbService: PouchDbService,
+    private electronService: ElectronService,
+    private notifier: NotifierService,
+    private logger: NGXLogger
+  ) {
     this.keytar = this.electronService.remote.require('keytar');
 
     this.syncChanges = this.pouchDbService.onChange;
     this.remoteState = this.pouchDbService.onStateChange;
-    pouchDbService.onError.subscribe(_ => {
-      console.log('error syncing remote:');
-      console.log(_);
+    pouchDbService.onError.subscribe(err => {
+      this.logger.debug('error syncing remote:');
+      this.logger.debug(err);
 
       // was logged in
       const currentUser = this.currentUser.value;
-      if (_.error === 'unauthorized' && currentUser !== null) {
+      if (err.error === 'unauthorized' && currentUser !== null) {
         this.currentUser.next(null);
 
         // try auto login for previously logged in user
@@ -90,11 +97,11 @@ export class AuthenticationService {
 
           user = new MemoUser(username, true);
           this.currentUser.next(user);
-          console.log('user ' + username + ' successfully logged in.');
+          this.logger.debug(`user ${username} successfully logged in.`);
         } else {
           // not syncing
           if (ok.local) {
-            console.log('user ' + username + ' failed to log in. local log-in only!');
+            this.logger.debug(`user ${username} failed to log in. local log-in only!`);
             user = new MemoUser(username, false);
             this.currentUser.next(user);
           }
@@ -103,8 +110,8 @@ export class AuthenticationService {
         return user;
       })
       .catch(err => {
-        console.log('user ' + username + ' failed to log in:');
-        console.log(err);
+        this.logger.debug(`user ${username} failed to log in:`);
+        this.logger.debug(err);
         return null;
       });
   }
@@ -114,7 +121,7 @@ export class AuthenticationService {
       if (response.ok) {
         localStorage.setItem('auto-login', null);
         this.currentUser.next(null);
-        console.log('user ' + this.currentUser.getValue() + ' successfully logged out.');
+        this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
         return response;
       }
     });

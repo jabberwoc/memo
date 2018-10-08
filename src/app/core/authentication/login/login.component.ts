@@ -1,5 +1,4 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AuthenticationService } from '../authentication.service';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -54,14 +53,15 @@ export class LoginComponent implements OnInit {
     this.authenticationService
       .login(this.username.value, this.password.value, this.loginForm.get('autoLogin').value)
       .then(
-        _ => {
+        user => {
           this.loading = false;
-          this.dialogRef.close();
+          this.dialogRef.close(user);
         },
         error => {
           // this.alertService.error(error);
           this.loading = false;
           this.error = error; // 'Invalid username / password';
+          this.dialogRef.close(null);
         }
       );
   }

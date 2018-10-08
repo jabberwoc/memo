@@ -6,10 +6,12 @@ import { Observable, Subscription } from 'rxjs';
 import { throttleTime, combineLatest } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { LoginComponent } from '../authentication/login/login.component';
 import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from '../authentication/remote-state';
+import { NotifierService } from 'angular-notifier';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-menu',
@@ -36,7 +38,9 @@ export class MenuComponent implements OnInit, OnDestroy {
   constructor(
     private menuService: MenuService,
     private authenticationService: AuthenticationService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notifier: NotifierService,
+    private logger: NGXLogger
   ) {
     this.navigationItems = this.menuService.navigationItems;
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
@@ -58,7 +62,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.menuService.OnNavigated.subscribe(e => {
       if (e instanceof NavigationEnd) {
-        console.log('navigation event url: ' + e.urlAfterRedirects);
+        this.logger.debug('navigation event url: ' + e.urlAfterRedirects);
 
         this.selectNavigationItem(e.urlAfterRedirects);
       }
@@ -86,9 +90,18 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-    const dialogRef = this.dialog.open(LoginComponent);
-    dialogRef.afterClosed().subscribe(() => {
-      // TODO notification
+    const dialogRef: MatDialogRef<LoginComponent, MemoUser> = this.dialog.open(LoginComponent);
+    dialogRef.afterClosed().subscribe(user => {
+      if (user) {
+        if (user.isLoggedIn) {
+          this.notifier.notify('success', `user ${user.name} successfully logged in`);
+          return;
+        }
+
+        this.notifier.notify('warning', `${user.name} logged in locally`);
+      } else {
+        this.notifier.notify('error', 'failed to login user');
+      }
     });
   }
 

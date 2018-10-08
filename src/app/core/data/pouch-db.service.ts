@@ -16,7 +16,6 @@ export class PouchDbService {
   private offlineDatabase: PouchDB.Database<{}>;
   private syncHandler: PouchDB.Replication.Sync<{}>;
 
-  // sync listeners (TOOD: types)
   private change: Subject<PouchDB.Replication.SyncResult<{}>> = new Subject<
     PouchDB.Replication.SyncResult<{}>
   >();
