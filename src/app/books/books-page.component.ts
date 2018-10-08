@@ -109,7 +109,7 @@ export class BooksPageComponent implements OnInit {
         this.dataService.deleteBook(book).then(ok => {
           if (ok) {
             this.logger.debug(`book deleted: [${book.id}] ${book.name}`);
-            this.notifier.notify('success', `${name} deleted`);
+            this.notifier.notify('success', `${book.name} deleted`);
             this.store.dispatch(new DeleteBookAction(book.id));
           } else {
             this.logger.error('failed to delete book: ' + book.name);
