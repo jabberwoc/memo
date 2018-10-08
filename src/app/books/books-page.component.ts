@@ -26,8 +26,6 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./books-page.component.css']
 })
 export class BooksPageComponent implements OnInit {
-  pageTitle = 'Books';
-
   books: Observable<Array<Book>>;
 
   constructor(

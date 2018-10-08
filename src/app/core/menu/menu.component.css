@@ -66,6 +66,10 @@ nav .nav-item {
   font-size: 1em;
 }
 
+#user {
+  cursor: pointer;
+}
+
 #sync-ok {
   color: #c0eb75;
 }
