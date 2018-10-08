@@ -25,16 +25,16 @@ export class PouchDbService {
   private databaseReset: Subject<void> = new Subject();
 
   public get onDatabaseReset(): Observable<void> {
-    return this.databaseReset;
+    return this.databaseReset.asObservable();
   }
   public get onChange(): Observable<PouchDB.Replication.SyncResult<{}>> {
-    return this.change;
+    return this.change.asObservable();
   }
   public get onError(): Observable<any> {
-    return this.error;
+    return this.error.asObservable();
   }
   public get onStateChange(): Observable<RemoteState> {
-    return this.stateChange;
+    return this.stateChange.asObservable();
   }
 
   public constructor() {

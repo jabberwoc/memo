@@ -15,7 +15,7 @@ export class AuthenticationService {
   private aliveSubscription: Subscription;
   private isAliveSubject = new Subject<boolean>();
   get isAlive(): Observable<boolean> {
-    return this.isAliveSubject;
+    return this.isAliveSubject.asObservable();
   }
 
   constructor(private pouchDbService: PouchDbService, private electronService: ElectronService) {
