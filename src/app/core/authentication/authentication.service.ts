@@ -23,7 +23,6 @@ export class AuthenticationService {
   constructor(
     private pouchDbService: PouchDbService,
     private electronService: ElectronService,
-    private notifier: NotifierService,
     private logger: NGXLogger
   ) {
     this.keytar = this.electronService.remote.require('keytar');

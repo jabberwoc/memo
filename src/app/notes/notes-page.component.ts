@@ -23,6 +23,7 @@ import {
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
 import Split from 'split.js';
 import { MenuService, MenuName } from '../core/menu/menu.service';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-notes-page',
@@ -46,7 +47,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private dataService: DataService,
     private menuService: MenuService,
-    private store: Store<MemoStore>
+    private store: Store<MemoStore>,
+    private logger: NGXLogger
   ) {
     this.notes = this.store.select(_ => _.notes).pipe(map(_ => _.sort(Note.modifiedComparer)));
     this.filteredNotes = this.notes.pipe(
@@ -124,7 +126,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       .getBook(bookId)
       .then(book => {
         this.store.dispatch(new SelectBookAction(book));
-        console.log('selected book: ' + book.name + '... loading notes..');
+        this.logger.debug(`selected book: ${book.name}... loading notes..`);
       })
       .catch(_ => {
         this.router.navigate(['books']);
@@ -153,18 +155,18 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       if (name) {
         this.dataService.createNote(new Note(null, name, this.book.id, '', null)).then(newNote => {
           if (newNote) {
-            console.log('created new note: [' + newNote.id + '] ' + name);
+            this.logger.debug(`created new note: [${newNote.id}] ${name}`);
             this.store.dispatch(new AddNoteAction(newNote));
 
             this.dataService.updateBookNoteCount(this.book).then(book => {
               if (book) {
                 this.store.dispatch(new UpdateBookAction(book));
               } else {
-                console.log('error creating book');
+                this.logger.debug('error creating book');
               }
             });
           } else {
-            console.log('error creating note');
+            this.logger.debug('error creating note');
           }
         });
       }
@@ -179,7 +181,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
           if (ok) {
             this.store.dispatch(new DeleteNoteAction(note.id));
           } else {
-            console.log('error deleting book');
+            this.logger.debug(`error deleting note [${note.id}]${note.name}`);
           }
         });
       }
@@ -187,7 +189,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   closeBook(): void {
-    console.log('closing book: ' + this.book.id + ', name: ' + this.book.name);
+    this.logger.debug(`closing book  [${this.book.id}] ${this.book.name}`);
     this.router.navigate(['books', this.book.id]);
   }
 
@@ -196,11 +198,11 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
     this.dataService.updateNote(note).then(ok => {
       if (ok) {
-        console.log('note updated: [' + note.id + '] ' + note.name);
+        this.logger.debug(`note updated: [${note.id}] ${note.name}`);
         this.store.dispatch(new UpdateNoteAction(note));
         this.isSaving = false;
       } else {
-        console.log('error updating note: ' + ok);
+        this.logger.debug(`failed to update note: [${note.id}] ${note.name}`);
       }
     });
   }
