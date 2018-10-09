@@ -3,6 +3,7 @@ import { NavigationItem } from './navigation-item';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable()
 export class MenuService {
@@ -13,7 +14,7 @@ export class MenuService {
   ];
   OnNavigated: Observable<NavigationEnd>;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private logger: NGXLogger) {
     this.OnNavigated = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(ne => <NavigationEnd>ne)
@@ -30,7 +31,7 @@ export class MenuService {
   }
 
   saveRoutingUrl(url: string): void {
-    console.log('saving last active route url: ' + url);
+    this.logger.debug('saving last active route url: ' + url);
     localStorage.setItem('previousRoute', url);
   }
 }
