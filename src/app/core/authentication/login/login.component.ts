@@ -43,7 +43,6 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    console.log(this.loginForm.valid);
     if (!this.loginForm.valid) {
       return;
     }
@@ -52,17 +51,19 @@ export class LoginComponent implements OnInit {
 
     this.authenticationService
       .login(this.username.value, this.password.value, this.loginForm.get('autoLogin').value)
-      .then(
-        user => {
-          this.loading = false;
+      .then(user => {
+        this.loading = false;
+        if (user) {
           this.dialogRef.close(user);
-        },
-        error => {
-          // this.alertService.error(error);
-          this.loading = false;
-          this.error = error; // 'Invalid username / password';
-          this.dialogRef.close(null);
+        } else {
+          // TODO login failed
         }
-      );
+      })
+      .catch(error => {
+        // this.alertService.error(error);
+        console.log(error);
+        this.loading = false;
+        this.error = error; // 'Invalid username / password';
+      });
   }
 }

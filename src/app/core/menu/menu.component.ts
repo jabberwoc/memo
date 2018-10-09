@@ -91,18 +91,19 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   login(): void {
     const dialogRef: MatDialogRef<LoginComponent, MemoUser> = this.dialog.open(LoginComponent);
-    dialogRef.afterClosed().subscribe(user => {
-      if (user) {
-        if (user.isLoggedIn) {
-          this.notifier.notify('success', `user ${user.name} successfully logged in`);
-          return;
-        }
+    dialogRef.afterClosed().subscribe(
+      user => {
+        if (user) {
+          if (user.isLoggedIn) {
+            this.notifier.notify('success', `user ${user.name} successfully logged in`);
+            return;
+          }
 
-        this.notifier.notify('warning', `${user.name} logged in locally`);
-      } else {
-        this.notifier.notify('error', 'failed to login user');
-      }
-    });
+          this.notifier.notify('warning', `${user.name} logged in locally`);
+        }
+      },
+      error => this.notifier.notify('error', 'failed to login: ' + error)
+    );
   }
 
   logout(): void {

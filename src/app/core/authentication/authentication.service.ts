@@ -79,50 +79,45 @@ export class AuthenticationService {
     });
   }
 
-  login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
+  async login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
     let user: MemoUser = null;
 
-    return this.pouchDbService
-      .login(username, password, true)
-      .then(ok => {
-        if (ok.remote) {
-          // syncing with remote
-          if (autoLogin) {
-            this.keytar.setPassword('memo', username, password);
-            localStorage.setItem('auto-login', username);
-          } else {
-            localStorage.setItem('auto-login', null);
-          }
-
-          user = new MemoUser(username, true);
-          this.currentUser.next(user);
-          this.logger.debug(`user ${username} successfully logged in.`);
+    try {
+      const ok = await this.pouchDbService.login(username, password, true);
+      if (ok.remote) {
+        // syncing with remote
+        if (autoLogin) {
+          this.keytar.setPassword('memo', username, password);
+          localStorage.setItem('auto-login', username);
         } else {
-          // not syncing
-          if (ok.local) {
-            this.logger.debug(`user ${username} failed to log in. local log-in only!`);
-            user = new MemoUser(username, false);
-            this.currentUser.next(user);
-          }
+          localStorage.setItem('auto-login', null);
         }
-
-        return user;
-      })
-      .catch(err => {
-        this.logger.debug(`user ${username} failed to log in:`);
-        this.logger.debug(err);
-        return null;
-      });
+        user = new MemoUser(username, true);
+        this.currentUser.next(user);
+        this.logger.debug(`user ${username} successfully logged in.`);
+      } else {
+        // not syncing
+        if (ok.local) {
+          this.logger.debug(`user ${username} failed to log in. local log-in only!`);
+          user = new MemoUser(username, false);
+          this.currentUser.next(user);
+        }
+      }
+      return user;
+    } catch (err) {
+      this.logger.debug(`user ${username} failed to log in:`);
+      this.logger.debug(err);
+      return null;
+    }
   }
 
-  logout() {
-    return this.pouchDbService.logout().then(response => {
-      if (response.ok) {
-        localStorage.setItem('auto-login', null);
-        this.currentUser.next(null);
-        this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
-        return response;
-      }
-    });
+  async logout() {
+    const response = await this.pouchDbService.logout();
+    if (response.ok) {
+      localStorage.setItem('auto-login', null);
+      this.currentUser.next(null);
+      this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
+      return response;
+    }
   }
 }
