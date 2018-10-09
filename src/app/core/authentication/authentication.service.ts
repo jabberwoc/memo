@@ -7,6 +7,7 @@ import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from './remote-state';
 import { NotifierService } from 'angular-notifier';
 import { NGXLogger } from 'ngx-logger';
+import { LoginResponse } from '../data/model/LoginResponse';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,7 +24,8 @@ export class AuthenticationService {
   constructor(
     private pouchDbService: PouchDbService,
     private electronService: ElectronService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private notifier: NotifierService
   ) {
     this.keytar = this.electronService.remote.require('keytar');
 
@@ -79,36 +81,35 @@ export class AuthenticationService {
     });
   }
 
-  async login(username: string, password: string, autoLogin: boolean): Promise<MemoUser> {
-    let user: MemoUser = null;
-
-    try {
-      const ok = await this.pouchDbService.login(username, password, true);
-      if (ok.remote) {
-        // syncing with remote
-        if (autoLogin) {
-          this.keytar.setPassword('memo', username, password);
-          localStorage.setItem('auto-login', username);
-        } else {
-          localStorage.setItem('auto-login', null);
-        }
-        user = new MemoUser(username, true);
-        this.currentUser.next(user);
-        this.logger.debug(`user ${username} successfully logged in.`);
+  public async login(
+    username: string,
+    password: string,
+    autoLogin: boolean
+  ): Promise<LoginResponse> {
+    const response = await this.pouchDbService.login(username, password);
+    if (response.remoteUser.isLoggedIn) {
+      // syncing with remote
+      if (autoLogin) {
+        this.keytar.setPassword('memo', username, password);
+        localStorage.setItem('auto-login', username);
       } else {
-        // not syncing
-        if (ok.local) {
-          this.logger.debug(`user ${username} failed to log in. local log-in only!`);
-          user = new MemoUser(username, false);
-          this.currentUser.next(user);
-        }
+        localStorage.setItem('auto-login', null);
       }
-      return user;
-    } catch (err) {
-      this.logger.debug(`user ${username} failed to log in:`);
-      this.logger.debug(err);
-      return null;
+      this.currentUser.next(response.remoteUser);
+      const message = `${username} logged in successfully`;
+      this.logger.debug(message);
+      this.notifier.notify('success', message);
+    } else {
+      // not syncing
+      if (response.localUser.isLoggedIn) {
+        this.currentUser.next(response.localUser);
+        this.logger.debug(`${username} failed to log in. local log-in only!`);
+        this.notifier.notify('warning', `${username} logged in locally`);
+      } else {
+        this.logger.debug(`${username} failed to log in`);
+      }
     }
+    return response;
   }
 
   async logout() {

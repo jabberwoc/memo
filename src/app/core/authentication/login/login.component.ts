@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AuthenticationService } from '../authentication.service';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { animate, style, trigger, transition } from '@angular/animations';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent implements OnInit {
     autoLogin: new FormControl(false)
   });
   loading = false;
-  error: string;
+  error = new Subject<string>();
   get username(): AbstractControl {
     return this.loginForm.get('username');
   }
@@ -51,19 +52,19 @@ export class LoginComponent implements OnInit {
 
     this.authenticationService
       .login(this.username.value, this.password.value, this.loginForm.get('autoLogin').value)
-      .then(user => {
+      .then(response => {
         this.loading = false;
-        if (user) {
-          this.dialogRef.close(user);
+        if (response.localUser.isLoggedIn) {
+          this.dialogRef.close(response.localUser.name);
         } else {
-          // TODO login failed
+          // login failed
+          this.error.next(response.remoteUser.error);
         }
       })
       .catch(error => {
-        // this.alertService.error(error);
         console.log(error);
         this.loading = false;
-        this.error = error; // 'Invalid username / password';
+        this.error.next(error);
       });
   }
 }

@@ -35,11 +35,12 @@ dialog::backdrop {
 .delete {
   background: #f04949;
 }
+
 .add {
   background: lightslategray;
 }
 
-.dialog-header > .title {
+.dialog-header>.title {
   color: inherit;
   font-size: 1.3em;
 }
@@ -108,6 +109,15 @@ dialog::backdrop {
   background-color: #f2dede;
   margin-bottom: -3px;
   border-radius: 3px;
+}
+
+.dialog-action-error {
+  display: inherit;
+  color: #f04949;
+  background-color: #f2dede;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  /* line-height: 3em; */
 }
 
 .ng-invalid.ng-dirty:not(:focus),

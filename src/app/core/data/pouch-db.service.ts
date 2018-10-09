@@ -4,6 +4,8 @@ import PouchAuth from 'pouchdb-authentication';
 import PouchAllDBs from 'pouchdb-all-dbs';
 import { Observable, Subject } from 'rxjs';
 import { RemoteState } from '../authentication/remote-state';
+import { LoginResponse } from './model/LoginResponse';
+import { MemoUser } from './model/memo-user';
 PouchDB.plugin(PouchAuth).plugin(PouchAllDBs);
 
 @Injectable()
@@ -102,25 +104,22 @@ export class PouchDbService {
     });
   }
 
-  public async login(
-    username: string,
-    password: string,
-    alwaysOpenLocal: boolean = false
-  ): Promise<{ remote: boolean; local: boolean }> {
-    const success = await this.openRemoteDatabase(username, password);
-    if (success) {
-      const response = await this.remoteDatabase.logIn(username, password);
-      if (response.ok) {
-        if (await this.openLocalDatabase(username, true)) {
-          this.sync();
-          return { remote: true, local: true };
-        }
-        throw new Error('logged in to remote database but failed to open/create local database');
+  public async login(username: string, password: string): Promise<LoginResponse> {
+    let localUser: MemoUser;
+    const remoteUser = await this.openRemoteDatabase(username, password);
+    if (remoteUser.isLoggedIn) {
+      // logged in remotely
+      localUser = await this.openLocalDatabase(username, true);
+      if (localUser.isLoggedIn) {
+        // remote and local => sync
+        this.sync();
       }
-    }
-
-    if (alwaysOpenLocal) {
-      return { remote: false, local: await this.openLocalDatabase(username) };
+      return new LoginResponse(remoteUser, localUser);
+    } else {
+      // not logged in remotely
+      // try local
+      localUser = await this.openLocalDatabase(username);
+      return new LoginResponse(remoteUser, localUser);
     }
   }
 
@@ -202,13 +201,13 @@ export class PouchDbService {
     return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
   }
 
-  private openLocalDatabase(user: string = null, create: boolean = false): Promise<boolean> {
+  private openLocalDatabase(user: string = null, create: boolean = false): Promise<MemoUser> {
     if (!user) {
       this.cancelSync();
-      // open default database
+      // open offline database
       this.localDatabase = this.offlineDatabase;
       this.databaseReset.next();
-      return Promise.resolve(true);
+      return Promise.resolve(new MemoUser(null, true));
     }
 
     if (create) {
@@ -218,7 +217,7 @@ export class PouchDbService {
       });
       console.log('opened user database ' + this.USER_DB_PREFIX + userHex + ' for user: ' + user);
       this.databaseReset.next();
-      return Promise.resolve(true);
+      return Promise.resolve(new MemoUser(user, true));
     }
 
     // find user database
@@ -235,27 +234,29 @@ export class PouchDbService {
             user
         );
         this.databaseReset.next();
-        return true;
+        return new MemoUser(user, true);
       }
-      return false;
+      return new MemoUser(user, false, 'No local login possible.');
     });
   }
 
-  private openRemoteDatabase(username: string, password: string): Promise<boolean> {
+  private async openRemoteDatabase(username: string, password: string): Promise<MemoUser> {
     const remoteUrl = localStorage.getItem('remoteUrl');
     if (!remoteUrl) {
-      return Promise.resolve(false);
+      return new MemoUser(username, false, 'remoteUrl not set');
     }
 
-    const userDbName = 'userdb-' + this.convertToHex(username);
-    this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
-      skip_setup: true
-    });
+    try {
+      const userDbName = 'userdb-' + this.convertToHex(username);
+      this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
+        skip_setup: true
+      });
 
-    return this.remoteDatabase
-      .logIn(username, password)
-      .then(response => response.ok)
-      .catch(_ => false);
+      const response = await this.remoteDatabase.logIn(username, password);
+      return new MemoUser(response.name, response.ok);
+    } catch (err) {
+      return new MemoUser(username, false, err.message);
+    }
   }
 
   private convertToHex(value: string): string {

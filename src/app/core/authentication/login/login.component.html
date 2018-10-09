@@ -4,6 +4,9 @@
       <h1 class="title">login</h1>
     </div>
     <div class="dialog-content">
+      <small [@growIn] class="dialog-action-error">
+        {{ error | async }}
+      </small>
       <div class="form-group">
         <small [@growIn] class="error" *ngIf="username.invalid && (username.dirty || username.touched)">
           Username required
