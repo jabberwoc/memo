@@ -77,7 +77,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       });
 
     this.dataService.syncPull.subscribe(change => this.updateState(change));
-    this.dataService.reset.subscribe(_ => this.closeBook());
+    // this.dataService.reset.subscribe(_ => this.closeBook());
 
     // register 'add note' action in menu
     this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
@@ -131,6 +131,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
 
   loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
+      console.log(notes);
+      console.log(notes[0]);
       this.store.dispatch(new SetNotesAction(notes));
       if (notes.length > 0) {
         this.selectNote(notes[0].id);

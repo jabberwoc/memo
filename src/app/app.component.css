@@ -16,6 +16,6 @@ router-outlet {
   margin-left: 4em;
 }
 
-notifier-container ul {
-  padding: 0 !important;
+notifier-container {
+  width: 0;
 }
