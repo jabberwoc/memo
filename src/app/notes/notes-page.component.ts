@@ -104,16 +104,12 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       onDragEnd: function() {
         localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
       },
-      elementStyle: function(dimension, size, gutterSize) {
-        return {
-          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-        };
-      },
-      gutterStyle: function(dimension, gutterSize) {
-        return {
-          'flex-basis': gutterSize + 'px'
-        };
-      }
+      elementStyle: (dimension, size, gutterSize) => ({
+        'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+      }),
+      gutterStyle: (dimension, gutterSize) => ({
+        'flex-basis': gutterSize + 'px'
+      })
     });
   }
 

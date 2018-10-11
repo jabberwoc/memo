@@ -7,7 +7,6 @@ import {
   Output,
   ViewChild,
   ElementRef,
-  Renderer2,
   NgZone,
   HostListener
 } from '@angular/core';
