@@ -61,9 +61,14 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     this.selectedNoteId = this.store.select(_ => _.selectedNoteId);
     this.selectedNote = this.notes.pipe(
       combineLatest(this.selectedNoteId, (notes, selectedId) => {
-        return notes.find(_ => _.id === selectedId) || null;
+        const selectedNote = notes.find(_ => _.id === selectedId);
+        if (!selectedNote && notes.length > 0) {
+          this.selectNote(notes[0].id);
+        }
+        return selectedNote || null;
       })
     );
+
     this.store
       .select(_ => _.selectedBook)
       .pipe(skip(1))
@@ -113,29 +118,39 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   initRouting(): void {
-    this.route.paramMap.subscribe(params => this.openBook(params.get('bookId')));
+    this.route.paramMap.subscribe(params =>
+      this.openBook(params.get('bookId'), params.get('noteId'))
+    );
   }
 
-  openBook(bookId: string): void {
+  openBook(bookId: string, noteId?: string): void {
+    if (this.book && this.book.id === bookId) {
+      if (noteId) {
+        this.selectNote(noteId);
+      }
+      return;
+    }
+
     this.dataService
       .getBook(bookId)
       .then(book => {
+        // book
         this.store.dispatch(new SelectBookAction(book));
-        this.logger.debug(`selected book: ${book.name}... loading notes..`);
+        this.logger.debug(`selecting book: ${book.id}`);
+
+        // note
+        if (noteId) {
+          this.selectNote(noteId);
+        }
       })
       .catch(_ => {
         this.router.navigate(['books']);
       });
   }
 
-  loadNotes(bookId: string): void {
+  private loadNotes(bookId: string): void {
     this.dataService.getNotes(bookId).then(notes => {
-      console.log(notes);
-      console.log(notes[0]);
       this.store.dispatch(new SetNotesAction(notes));
-      if (notes.length > 0) {
-        this.selectNote(notes[0].id);
-      }
     });
   }
 
@@ -204,8 +219,15 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  selectNote(id: string) {
+  openNote(id: string) {
+    if (this.book.id) {
+      this.router.navigate(['notes', this.book.id, id]);
+    }
+  }
+
+  private selectNote(id: string) {
     this.store.dispatch(new SelectNoteAction(id));
+    this.logger.debug(`selecting note: ${id}`);
   }
 
   filter(text: string) {

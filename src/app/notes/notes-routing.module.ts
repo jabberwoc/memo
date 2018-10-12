@@ -9,20 +9,11 @@ const routes: Routes = [
     redirectTo: 'books',
     pathMatch: 'full'
   },
-  // {
-  //   path: 'books',
-  //   component: BooksPageComponent
-  // },
-  // {
-  //   path: 'books/:id',
-  //   component: BooksPageComponent
-  // },
   {
     path: ':bookId',
     component: NotesPageComponent
   },
   {
-    // TODO implement
     path: ':bookId/:noteId',
     component: NotesPageComponent
   }

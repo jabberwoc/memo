@@ -15,7 +15,7 @@
       </div>
     </header>
     <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book?.name"
-      (selectNote)="selectNote($event)" (deleteNote)="deleteNote($event)">
+      (selectNote)="openNote($event)" (deleteNote)="deleteNote($event)">
     </app-notes-list>
 
   </div>

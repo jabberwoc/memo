@@ -61,8 +61,6 @@ export class MenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.menuService.OnNavigated.subscribe(e => {
       if (e instanceof NavigationEnd) {
-        this.logger.debug('navigation event url: ' + e.urlAfterRedirects);
-
         this.selectNavigationItem(e.urlAfterRedirects);
       }
     });
