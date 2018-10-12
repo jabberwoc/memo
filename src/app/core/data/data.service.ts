@@ -9,6 +9,7 @@ import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
 import { DeleteBookAction, DeleteNoteAction } from './store/actions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DataService {
@@ -17,7 +18,11 @@ export class DataService {
   syncPull: Observable<any>;
   reset: Observable<void>;
 
-  constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
+  constructor(
+    private pouchDbService: PouchDbService,
+    private store: Store<MemoStore>,
+    private router: Router
+  ) {
     // sync changes wth state
     this.syncPull = this.pouchDbService.onChange.pipe(
       filter(_ => _.direction === 'pull'),
@@ -25,6 +30,7 @@ export class DataService {
       filter(_ => _ !== false)
     );
     this.reset = this.pouchDbService.onDatabaseReset;
+    this.reset.subscribe(_ => this.router.navigate(['/']));
   }
 
   private formatChange(change: any): any {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subscription, timer, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
 import { MemoUser } from '../data/model/memo-user';
@@ -118,6 +117,7 @@ export class AuthenticationService {
       localStorage.setItem('auto-login', null);
       this.currentUser.next(null);
       this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
+
       return response;
     }
   }

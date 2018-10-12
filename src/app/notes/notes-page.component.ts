@@ -77,7 +77,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
       });
 
     this.dataService.syncPull.subscribe(change => this.updateState(change));
-    // this.dataService.reset.subscribe(_ => this.closeBook());
 
     // register 'add note' action in menu
     this.menuService.registerMenuAction(MenuName.NOTES, () => this.addNote());
