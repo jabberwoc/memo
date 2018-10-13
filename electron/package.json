@@ -4,13 +4,13 @@
   "author": {
     "name": "Sebastian Stoecker"
   },
-  "version": "0.3.10",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "main.js",
 
   "private": true,
   "dependencies": {
     "electron-settings": "^3.2.0",
-    "keytar": "^4.2.1"
+    "keytar": "^4.3.0"
   }
 }
