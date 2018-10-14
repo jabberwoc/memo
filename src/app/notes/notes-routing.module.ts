@@ -12,11 +12,11 @@ const routes: Routes = [
   {
     path: ':bookId',
     component: NotesPageComponent
-  },
-  {
-    path: ':bookId/:noteId',
-    component: NotesPageComponent
   }
+  // {
+  //   path: ':bookId/:noteId',
+  //   component: NotesPageComponent
+  // }
 ];
 
 @NgModule({

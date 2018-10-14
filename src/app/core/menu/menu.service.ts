@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { NavigationItem } from './navigation-item';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, skip } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 @Injectable()
@@ -16,11 +16,14 @@ export class MenuService {
 
   constructor(private router: Router, private logger: NGXLogger) {
     this.OnNavigated = this.router.events.pipe(
+      skip(1),
       filter(e => e instanceof NavigationEnd),
       map(ne => <NavigationEnd>ne)
     );
 
-    this.OnNavigated.subscribe(e => this.saveRoutingUrl(e.urlAfterRedirects));
+    this.OnNavigated.subscribe(e => {
+      this.saveRoutingUrl(e.urlAfterRedirects);
+    });
   }
 
   registerMenuAction(name: MenuName, action: () => void): void {
@@ -31,7 +34,7 @@ export class MenuService {
   }
 
   saveRoutingUrl(url: string): void {
-    this.logger.debug('saving last active route url: ' + url);
+    this.logger.debug('[routing] saving ' + url);
     localStorage.setItem('previousRoute', url);
   }
 }

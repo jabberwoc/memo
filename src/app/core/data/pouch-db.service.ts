@@ -183,18 +183,22 @@ export class PouchDbService {
     });
   }
 
-  public isRemoteAlive(user?: string): Promise<boolean> {
-    return this.remoteDatabase
-      .getSession()
-      .then(_ => {
-        if (_.ok && _.userCtx) {
-          if (user) {
-            return _.userCtx.name === user;
-          }
-          return _.userCtx.name ? true : false;
+  public async isRemoteAlive(user?: string): Promise<boolean> {
+    try {
+      if (!this.remoteDatabase) {
+        return false;
+      }
+
+      const _ = await this.remoteDatabase.getSession();
+      if (_.ok && _.userCtx) {
+        if (user) {
+          return _.userCtx.name === user;
         }
-      })
-      .catch(_ => false);
+        return _.userCtx.name ? true : false;
+      }
+    } catch (_) {
+      return false;
+    }
   }
 
   private GetAllUserDbs(): Promise<Array<string>> {

@@ -23,7 +23,6 @@ const routes: Routes = [
     component: SettingsComponent
   },
   {
-    // TODO 404
     path: '**',
     redirectTo: 'books'
   }

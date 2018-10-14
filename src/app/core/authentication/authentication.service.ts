@@ -103,7 +103,10 @@ export class AuthenticationService {
       if (response.localUser.isLoggedIn) {
         this.currentUser.next(response.localUser);
         this.logger.debug(`${username} failed to log in. local log-in only!`);
-        this.notifier.notify('warning', `${username} logged in locally`);
+        this.notifier.notify(
+          'warning',
+          `${username} logged in locally. ${response.remoteUser.error}`
+        );
       } else {
         this.logger.debug(`${username} failed to log in`);
       }

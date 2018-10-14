@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +9,16 @@ export class RoutingInterceptorService implements CanActivate {
   private previousRouteName = 'previousRoute';
   private defaultRoute = '/books';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private logger: NGXLogger) {}
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     const previousRoute = localStorage.getItem(this.previousRouteName);
-    console.log('previousRoute: ' + previousRoute);
     if (!previousRoute) {
-      console.log('navigating to default route url: ' + this.defaultRoute);
-      this.router.navigate([this.defaultRoute]);
+      this.logger.debug(`[routing] to ${this.defaultRoute} (default)`);
+      this.router.navigateByUrl(this.router.parseUrl(this.defaultRoute));
     } else {
-      console.log('navigating to previous route url: ' + previousRoute);
-      this.router.navigate([previousRoute]);
+      this.logger.debug(`[routing] to ${previousRoute} (previous route)`);
+      this.router.navigateByUrl(this.router.parseUrl(previousRoute));
     }
     return false;
   }

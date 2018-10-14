@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, HostBinding } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../core/data/model/entities/book';
 import { DataService } from '../core/data/data.service';
 import { Note } from '../core/data/model/entities/note';
@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map, combineLatest, skip } from 'rxjs/operators';
 
 import {
@@ -30,7 +30,7 @@ import { NGXLogger } from 'ngx-logger';
   templateUrl: './notes-page.component.html',
   styleUrls: ['./notes-page.component.css']
 })
-export class NotesPageComponent implements OnInit, AfterViewInit {
+export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   book: Book;
   notes: Observable<Array<Note>>;
   filteredNotes: Observable<Array<Note>>;
@@ -40,6 +40,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   noteFilter = new BehaviorSubject<string>(null);
 
   isSaving = false;
+  routingSub: Subscription;
 
   constructor(
     private router: Router,
@@ -91,6 +92,13 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
     this.initRouting();
   }
 
+  ngOnDestroy(): void {
+    this.logger.debug('destroying notes page component');
+    if (this.routingSub) {
+      this.routingSub.unsubscribe();
+    }
+  }
+
   ngAfterViewInit(): void {
     const setting = localStorage.getItem('split-sizes');
     let sizes;
@@ -118,9 +126,9 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   initRouting(): void {
-    this.route.paramMap.subscribe(params =>
-      this.openBook(params.get('bookId'), params.get('noteId'))
-    );
+    this.routingSub = this.route.paramMap.subscribe(params => {
+      this.openBook(params.get('bookId'), params.get('noteId'));
+    });
   }
 
   openBook(bookId: string, noteId?: string): void {
@@ -220,8 +228,10 @@ export class NotesPageComponent implements OnInit, AfterViewInit {
   }
 
   openNote(id: string) {
-    if (this.book.id) {
-      this.router.navigate(['notes', this.book.id, id]);
+    if (this.book && this.book.id) {
+      this.router.navigate(['notes', this.book.id, { noteId: id }]);
+    } else {
+      this.logger.error(`Failed to open note [${id}]. No book selected.`);
     }
   }
 
