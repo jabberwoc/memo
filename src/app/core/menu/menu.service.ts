@@ -20,10 +20,6 @@ export class MenuService {
       filter(e => e instanceof NavigationEnd),
       map(ne => <NavigationEnd>ne)
     );
-
-    this.OnNavigated.subscribe(e => {
-      this.saveRoutingUrl(e.urlAfterRedirects);
-    });
   }
 
   registerMenuAction(name: MenuName, action: () => void): void {
@@ -31,11 +27,6 @@ export class MenuService {
     if (target) {
       target.action = action;
     }
-  }
-
-  saveRoutingUrl(url: string): void {
-    this.logger.debug('[routing] saving ' + url);
-    localStorage.setItem('previousRoute', url);
   }
 }
 

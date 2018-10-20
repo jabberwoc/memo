@@ -8,7 +8,7 @@ import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, combineLatest, skip } from 'rxjs/operators';
+import { map, combineLatest, skip, switchMap } from 'rxjs/operators';
 
 import {
   SetNotesAction,
@@ -93,7 +93,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.debug('destroying notes page component');
     if (this.routingSub) {
       this.routingSub.unsubscribe();
     }
@@ -113,13 +112,13 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       sizes: sizes,
       minSize: 150,
       gutterSize: 5,
-      onDragEnd: function() {
+      onDragEnd: () => {
         localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
       },
-      elementStyle: (dimension, size, gutterSize) => ({
+      elementStyle: (_, size, gutterSize) => ({
         'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
       }),
-      gutterStyle: (dimension, gutterSize) => ({
+      gutterStyle: (_, gutterSize) => ({
         'flex-basis': gutterSize + 'px'
       })
     });
@@ -143,8 +142,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       .getBook(bookId)
       .then(book => {
         // book
-        this.store.dispatch(new SelectBookAction(book));
-        this.logger.debug(`selecting book: ${book.id}`);
+        this.selectBook(book);
 
         // note
         if (noteId) {
@@ -157,9 +155,8 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadNotes(bookId: string): void {
-    this.dataService.getNotes(bookId).then(notes => {
-      this.store.dispatch(new SetNotesAction(notes));
-    });
+    this.store.dispatch(new SetNotesAction([]));
+    this.dataService.getNotes(bookId).then(notes => this.store.dispatch(new SetNotesAction(notes)));
   }
 
   updateState(change: any): void {
@@ -235,9 +232,12 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private selectNote(id: string) {
+  private selectBook(book: Book): void {
+    this.store.dispatch(new SelectBookAction(book));
+  }
+
+  private selectNote(id: string): void {
     this.store.dispatch(new SelectNoteAction(id));
-    this.logger.debug(`selecting note: ${id}`);
   }
 
   filter(text: string) {

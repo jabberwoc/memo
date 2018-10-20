@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
-import { RoutingInterceptorService } from './routing/routing-interceptor.service';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    canActivate: [RoutingInterceptorService],
-    children: []
+    redirectTo: 'books'
   },
   {
     path: 'books',

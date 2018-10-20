@@ -30,7 +30,6 @@ export class DataService {
       filter(_ => _ !== false)
     );
     this.reset = this.pouchDbService.onDatabaseReset;
-    this.reset.subscribe(_ => this.router.navigate(['/']));
   }
 
   private formatChange(change: any): any {

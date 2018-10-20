@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavigationEnd } from '@angular/router';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
 import { Observable, Subscription } from 'rxjs';
@@ -45,6 +44,15 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
 
     this.user = this.authenticationService.currentUser;
+
+    this.user
+      .pipe(
+        combineLatest(this.menuService.OnNavigated, (user, ne) =>
+          this.saveRoutingUrl(user ? user.name : 'local', ne.urlAfterRedirects)
+        )
+      )
+      .subscribe();
+
     this.isUserSessionAlive = this.user.pipe(
       combineLatest(
         this.authenticationService.isAlive,
@@ -59,11 +67,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.menuService.OnNavigated.subscribe(e => {
-      if (e instanceof NavigationEnd) {
-        this.selectNavigationItem(e.urlAfterRedirects);
-      }
-    });
+    this.menuService.OnNavigated.subscribe(e => this.selectNavigationItem(e.urlAfterRedirects));
   }
 
   ngOnDestroy(): void {
@@ -100,5 +104,13 @@ export class MenuComponent implements OnInit, OnDestroy {
     if (target && target.action) {
       target.action();
     }
+  }
+
+  private saveRoutingUrl(user: string, url: string): void {
+    this.logger.debug(`[routing] saving ${url} (user: ${user})`);
+    const storage = localStorage.getItem('previousRoutes');
+    const previousRoutes = storage ? JSON.parse(storage) : {};
+    previousRoutes[user] = url;
+    localStorage.setItem('previousRoutes', JSON.stringify(previousRoutes));
   }
 }

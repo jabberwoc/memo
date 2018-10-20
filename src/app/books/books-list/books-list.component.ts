@@ -21,7 +21,6 @@ export class BooksListComponent {
 
   select(book: Book): void {
     this.selectedBook = book;
-    console.log(this.selectedBook.name + ' selected.');
     this.open(book);
   }
 

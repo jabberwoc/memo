@@ -86,10 +86,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.editorReady) {
-      this.editor.setContent('');
-      tinymce.remove(this.editor);
-    }
+    tinymce.remove(this.editor);
   }
 
   zone(fn: (...args: any[]) => void): void {
@@ -329,9 +326,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   addEditorTitle(): void {
-    const editorArea = document.getElementsByClassName('mce-edit-area')[0];
+    try {
+      const editorArea = document.getElementsByClassName('mce-edit-area')[0];
 
-    editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
+      editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
+    } catch (_) {
+      console.log('error add editor title element');
+    }
   }
 
   setTitleEditMode(isEditable: boolean): void {
