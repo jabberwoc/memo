@@ -45,15 +45,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
 
     this.selectedNoteValue = value;
-    if (this.selectedNoteValue) {
-      this.setContent(this.selectedNoteValue.content);
-
-      this.titleForm.setValue({
-        title: this.selectedNote.name
-      });
-
-      setTimeout(() => this.resizeEditor(), 0);
-    }
+    this.setContent();
   }
 
   busyState = BusyState.ACTIVE;
@@ -230,16 +222,21 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  setContent(content: string): void {
-    if (this.editorReady) {
-      this.editor.setContent(content);
-      this.editor.undoManager.clear();
-    } else {
-      const textArea = document.getElementById('editor') as HTMLTextAreaElement;
-      if (textArea) {
-        textArea.value = content;
-      }
+  setContent(): void {
+    if (!this.editorReady || !this.selectedNoteValue) {
+      return;
     }
+
+    this.editor.setContent(this.selectedNoteValue.content);
+    this.editor.undoManager.clear();
+
+    this.zone(() =>
+      this.titleForm.setValue({
+        title: this.selectedNote.name
+      })
+    );
+
+    setTimeout(() => this.resizeEditor(), 0);
   }
 
   onTitleEditComplete() {
@@ -267,11 +264,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         this.busyState = BusyState.INACTIVE;
       });
 
-      if (this.selectedNote) {
-        this.setContent(this.selectedNote.content);
-      }
-
-      this.resizeEditor();
+      this.setContent();
     }, 0);
   }
 
@@ -279,7 +272,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const content = this.editor.getContent();
 
     if (content !== this.selectedNote.content) {
-      // this.selectedNote.content = content;
       this.saveNote((note: Note) => (note.content = content));
     }
   }
