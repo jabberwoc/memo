@@ -28,7 +28,9 @@ export class AuthenticationService {
     private notifier: NotifierService,
     private router: Router
   ) {
-    this.keytar = this.electronService.remote.require('keytar');
+    if (this.electronService.isElectronApp) {
+      this.keytar = this.electronService.remote.require('keytar');
+    }
 
     this.syncChanges = this.pouchDbService.onChange;
     this.remoteState = this.pouchDbService.onStateChange;

@@ -4,7 +4,7 @@ body {
 
 #titlebar {
   display: flex;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   right: 0;
   height: 32px;
@@ -21,15 +21,18 @@ body {
   flex-grow: 1;
   max-width: 32px;
   max-height: 32px;
+  margin-left: 13px;
+}
+
+.ui-titleicon img {
+  max-height: 24px;
+  vertical-align: middle;
 }
 
 .ui-titletext {
   flex-grow: 2;
   max-height: 32px;
   width: auto;
-  /* font: 12px/32px "Segoe UI", Arial, sans-serif; */
-  /* color: #fff; */
-  text-indent: 10px;
   -webkit-app-region: drag;
 }
 
