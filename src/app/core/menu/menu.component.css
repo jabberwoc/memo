@@ -1,5 +1,7 @@
 :host {
   display: flex;
+  top: 32px !important;
+  height: calc(100% - 32px);
 }
 
 nav {
