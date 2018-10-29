@@ -10,7 +10,7 @@ import { NotifierModule } from 'angular-notifier';
     BrowserAnimationsModule,
     CoreModule,
     NotifierModule.withConfig({
-      position: { horizontal: { position: 'right' }, vertical: { position: 'top' } }
+      position: { horizontal: { position: 'right' }, vertical: { position: 'bottom' } }
     })
   ],
   bootstrap: [AppComponent]

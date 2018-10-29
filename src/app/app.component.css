@@ -1,15 +1,27 @@
-.app-layout {
-  display: flex;
-  height: 100%;
-  overflow-y: auto;
-  align-items: stretch;
+:host {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "menu content";
+  grid-template-columns: 4em 1fr;
+  grid-template-rows: auto 1fr;
+  grid-gap: 0;
+
+  height: 100vh;
 }
 
 app-menu {
   display: flex;
+  grid-area: menu;
 }
 
+.content-layout {
+  grid-area: content;
+  display: flex;
+  overflow-y: auto;
+}
 
 notifier-container {
   width: 0;
+  height: 0;
 }

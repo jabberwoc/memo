@@ -106,6 +106,9 @@ export class AuthenticationService {
   }
 
   private autoLogin(user: string) {
+    if (!this.electronService.isElectronApp) {
+      return;
+    }
     this.keytar.getPassword('memo', user).then(async password => {
       if (password) {
         this.login(user, password, true);
