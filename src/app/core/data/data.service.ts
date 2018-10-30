@@ -4,12 +4,11 @@ import { Book } from './model/entities/book';
 import * as cuid from 'cuid';
 import docUri from 'docuri';
 import { Note } from './model/entities/note';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
 import { DeleteBookAction, DeleteNoteAction } from './store/actions';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class DataService {
@@ -18,11 +17,7 @@ export class DataService {
   syncPull: Observable<any>;
   reset: Observable<void>;
 
-  constructor(
-    private pouchDbService: PouchDbService,
-    private store: Store<MemoStore>,
-    private router: Router
-  ) {
+  constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
     // sync changes wth state
     this.syncPull = this.pouchDbService.onChange.pipe(
       filter(_ => _.direction === 'pull'),

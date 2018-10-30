@@ -1,8 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  Menu
-} = require('electron'),
+const { app, BrowserWindow } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 require('dotenv').config();

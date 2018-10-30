@@ -1,8 +1,8 @@
 :host {
   display: grid;
   grid-template-areas:
-    "header header"
-    "menu content";
+    'header header'
+    'menu content';
   grid-template-columns: 4em 1fr;
   grid-template-rows: auto 1fr;
   grid-gap: 0;
@@ -19,6 +19,7 @@ app-menu {
   grid-area: content;
   display: flex;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 notifier-container {
