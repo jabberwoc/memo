@@ -30,5 +30,14 @@
             [class.status-ok]="remoteUrlState === connectionState.OK"></span></div>
       </div>
     </li>
+    <li class="container">
+      <div class="left">Native window</div>
+      <div class="right">
+        <label class="checkbox">bla {{getConfigValue('nativeWindow')}}
+          <input type="checkbox" name="nativeWindow" value="getConfigValue('nativeWindow')">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+    </li>
   </ul>
 </section>

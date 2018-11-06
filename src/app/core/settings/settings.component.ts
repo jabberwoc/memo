@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
@@ -8,39 +8,38 @@ import { Dictionary } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConnectionState } from './connection-state';
+import { ConfigItems, ConfigItem } from './config-items';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   pageTitle = 'Settings';
+  configElementPrefix = 'config/';
   configItems: Dictionary<string> = {};
   remoteUrl = new FormControl('');
   remoteUrlState = ConnectionState.NONE;
   connectionState = ConnectionState;
+  configKeys = new Array<string>(ConfigItems.REMOTE_URL, ConfigItems.NATIVE_WINDOW);
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private dataService: DataService,
     private electronService: ElectronService,
     private fsService: FsService,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private logger: NGXLogger
+  ) {
+    this.addConfigItems();
+  }
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      console.log('settings params: + ' + params);
-    });
+  private addConfigItems(): void {
+    this.configKeys.forEach(key => (this.configItems[key] = this.getConfigValue(key)));
 
-    let remoteUrl = this.getConfigValue('remoteUrl');
-    if (!remoteUrl) {
-      remoteUrl = '';
-    }
-    this.configItems['remoteUrl'] = remoteUrl;
-    this.remoteUrl.setValue(remoteUrl);
+    // validate remoteUrl
     this.validateRemoteUrl();
   }
 
@@ -49,35 +48,33 @@ export class SettingsComponent implements OnInit {
   }
 
   getConfigValue(key: string): string {
-    return localStorage.getItem(key);
+    return localStorage.getItem(this.configElementPrefix + key);
   }
 
   setConfigValue(key: string): void {
-    localStorage.setItem(key, this.configItems[key]);
+    localStorage.setItem(this.configElementPrefix + key, this.configItems[key]);
   }
 
   setRemoteUrl(): void {
-    const remoteUrlKey = 'remoteUrl';
-    if (this.configItems[remoteUrlKey] === this.remoteUrl.value) {
+    if (this.configItems[ConfigItems.REMOTE_URL] === this.remoteUrl.value) {
       return;
     }
-    this.configItems[remoteUrlKey] = this.remoteUrl.value;
-    this.setConfigValue(remoteUrlKey);
+    this.configItems[ConfigItems.REMOTE_URL] = this.remoteUrl.value;
+    this.setConfigValue(ConfigItems.REMOTE_URL);
     this.validateRemoteUrl();
   }
 
   resetRemoteUrl(): void {
-    this.remoteUrl.setValue(this.configItems['remoteUrl']);
+    this.remoteUrl.setValue(this.configItems[ConfigItems.REMOTE_URL]);
   }
 
   validateRemoteUrl(): void {
-    if (!this.configItems['remoteUrl']) {
+    if (!this.configItems[ConfigItems.REMOTE_URL]) {
       this.remoteUrlState = ConnectionState.NONE;
       return;
     }
 
-    console.log('Validating remoteUrl...');
-    this.http.get(this.configItems['remoteUrl'], { observe: 'response' }).subscribe(
+    this.http.get(this.configItems[ConfigItems.REMOTE_URL], { observe: 'response' }).subscribe(
       response => {
         this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
       },
@@ -93,8 +90,6 @@ export class SettingsComponent implements OnInit {
     );
 
     const jsonExport = JSON.stringify(data);
-    console.log(jsonExport);
-
     const savePath = this.electronService.remote.dialog.showSaveDialog({
       title: 'Export data',
       defaultPath: 'memo-export.json'
@@ -102,10 +97,11 @@ export class SettingsComponent implements OnInit {
 
     (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
       if (err) {
-        return console.log('error exporting memo data: ' + err);
+        this.logger.error('error exporting memo data: ' + err);
+        return;
       }
 
-      console.log('memo data exported successfully.');
+      this.logger.debug('memo data exported successfully.');
     });
   }
 
@@ -116,7 +112,7 @@ export class SettingsComponent implements OnInit {
       properties: ['openFile']
     })[0];
 
-    (<any>this.fsService.fs).readFile(filePath, (err, data) => {
+    (<any>this.fsService.fs).readFile(filePath, async (err, data) => {
       if (err) {
         throw err;
       }
@@ -124,21 +120,21 @@ export class SettingsComponent implements OnInit {
       const memoData = JSON.parse(data);
 
       // save books & notes
-      Promise.all(
+      await Promise.all(
         memoData.map(b =>
-          this.dataService.createBook(b).then(result => {
+          this.dataService.createBook(b).then(async result => {
             if (result) {
               b.notes.forEach(n => (n.book = result.id));
-              return this.dataService.createNotes(b.notes).then(notes => {
-                if (notes) {
-                  console.log('Book ' + result.id + ' imported with ' + notes.length + ' notes..');
-                  return result;
-                }
-              });
+              const notes = await this.dataService.createNotes(b.notes);
+              if (notes) {
+                this.logger.debug(`book: [${result.id}] imported with ${notes.length} notes`);
+                return result;
+              }
             }
           })
         )
-      ).then(_ => console.log('Import finished.'));
+      );
+      this.logger.debug('Import finished.');
     });
   }
 }

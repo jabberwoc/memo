@@ -8,30 +8,32 @@ import { ElectronService } from 'ngx-electron';
 })
 export class AppComponent {
   window: Electron.BrowserWindow;
+  useNativeWindow: boolean;
 
   constructor(private electronService: ElectronService) {
-    if (this.isElectronApp()) {
+    this.useNativeWindow = localStorage.getItem('nativeWindow') === 'true';
+    if (this.hasCustomWindow()) {
       this.window = this.electronService.remote.getCurrentWindow();
     }
   }
 
-  isElectronApp(): boolean {
-    return this.electronService.isElectronApp;
+  public hasCustomWindow(): boolean {
+    return !this.useNativeWindow && this.electronService.isElectronApp;
   }
 
-  minimize(): void {
+  public minimize(): void {
     if (window) {
       this.window.minimize();
     }
   }
 
-  close(): void {
+  public close(): void {
     if (window) {
       this.window.close();
     }
   }
 
-  toggleMaxRestore(): void {
+  public toggleMaxRestore(): void {
     if (!window) {
       return;
     }
