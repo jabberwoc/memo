@@ -85,53 +85,27 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  export(): void {
-    this.dataService.getBooks().then(books => {
-      Promise.all(
-        books.map(book =>
-          this.dataService.getNotes(book.id).then(notes => new BookDto(book, notes))
-        )
-      ).then(data => {
-        const jsonExport = JSON.stringify(data);
-        console.log(jsonExport);
+  async export(): Promise<void> {
+    const data = await Promise.all(
+      (await this.dataService.getBooks()).map(
+        async book => new BookDto(book, await this.dataService.getNotes(book.id))
+      )
+    );
 
-        const savePath = this.electronService.remote.dialog.showSaveDialog({
-          title: 'Export data',
-          defaultPath: 'memo-export.json'
-        });
+    const jsonExport = JSON.stringify(data);
+    console.log(jsonExport);
 
-        (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
-          if (err) {
-            return console.log('error exporting memo data: ' + err);
-          }
-
-          console.log('memo data exported successfully.');
-        });
-      });
+    const savePath = this.electronService.remote.dialog.showSaveDialog({
+      title: 'Export data',
+      defaultPath: 'memo-export.json'
     });
-  }
 
-  // TODO remove
-  export2(): void {
-    this.dataService.getBooks().then(books => {
-      Promise.all(books.map(book => this.dataService.getNotes(book.id))).then(result => {
-        const notes = Array.prototype.concat(...result);
-        const jsonExport = JSON.stringify({ books: books, notes: notes });
-        console.log(jsonExport);
+    (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
+      if (err) {
+        return console.log('error exporting memo data: ' + err);
+      }
 
-        const savePath = this.electronService.remote.dialog.showSaveDialog({
-          title: 'Export data',
-          defaultPath: 'memo-export.json'
-        });
-
-        (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
-          if (err) {
-            return console.log('error exporting memo data: ' + err);
-          }
-
-          console.log('memo data exported successfully.');
-        });
-      });
+      console.log('memo data exported successfully.');
     });
   }
 
