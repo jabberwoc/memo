@@ -4,12 +4,12 @@ import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
 import { BookDto } from '../data/model/entities/book';
-import { Dictionary } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConnectionState } from './connection-state';
-import { ConfigItems, ConfigItem } from './config-items';
+import { ConfigItems } from './config-items';
 import { NGXLogger } from 'ngx-logger';
+import { Dictionary } from 'lodash';
 
 @Component({
   selector: 'app-settings',
@@ -23,7 +23,6 @@ export class SettingsComponent {
   remoteUrl = new FormControl('');
   remoteUrlState = ConnectionState.NONE;
   connectionState = ConnectionState;
-  configKeys = new Array<string>(ConfigItems.REMOTE_URL, ConfigItems.NATIVE_WINDOW);
 
   constructor(
     private router: Router,
@@ -37,7 +36,8 @@ export class SettingsComponent {
   }
 
   private addConfigItems(): void {
-    this.configKeys.forEach(key => (this.configItems[key] = this.getConfigValue(key)));
+    const configKeys = Object.keys(ConfigItems).map(key => ConfigItems[key as any]);
+    configKeys.forEach(key => (this.configItems[key] = this.getConfigValue(key)));
 
     // validate remoteUrl
     this.validateRemoteUrl();
