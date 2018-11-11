@@ -1,28 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
 import { BookDto } from '../data/model/entities/book';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConnectionState } from './connection-state';
 import { ConfigItems } from './config-items';
 import { NGXLogger } from 'ngx-logger';
-import { Dictionary } from 'lodash';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   pageTitle = 'Settings';
-  configElementPrefix = 'config/';
-  configItems: Dictionary<string> = {};
-  remoteUrl = new FormControl('');
+  configName = 'memo_config';
+
+  configGroup: FormGroup;
+
   remoteUrlState = ConnectionState.NONE;
   connectionState = ConnectionState;
+  configStore: {};
 
   constructor(
     private router: Router,
@@ -30,14 +31,25 @@ export class SettingsComponent {
     private electronService: ElectronService,
     private fsService: FsService,
     private http: HttpClient,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private fb: FormBuilder
   ) {
-    this.addConfigItems();
+    this.initConfigItems();
   }
 
-  private addConfigItems(): void {
+  ngOnInit() {
+    // this.addConfigItems();
+  }
+
+  private initConfigItems(): void {
+    this.configStore = JSON.parse(localStorage.getItem(this.configName)) || {};
     const configKeys = Object.keys(ConfigItems).map(key => ConfigItems[key as any]);
-    configKeys.forEach(key => (this.configItems[key] = this.getConfigValue(key)));
+
+    const formElements = configKeys.reduce((obj, key) => {
+      obj[key] = new FormControl(this.configStore[key]);
+      return obj;
+    }, {});
+    this.configGroup = this.fb.group(formElements);
 
     // validate remoteUrl
     this.validateRemoteUrl();
@@ -47,34 +59,29 @@ export class SettingsComponent {
     this.router.navigate(['books']);
   }
 
-  getConfigValue(key: string): string {
-    return localStorage.getItem(this.configElementPrefix + key);
-  }
+  saveConfig(): void {
+    const config = Object.keys(this.configGroup.controls).reduce((obj, key) => {
+      obj[key] = this.configGroup.get(key).value;
+      return obj;
+    }, {});
 
-  setConfigValue(key: string): void {
-    localStorage.setItem(this.configElementPrefix + key, this.configItems[key]);
+    const configJson = JSON.stringify(config);
+    this.logger.info(`saving config => ${configJson}`);
+    localStorage.setItem(this.configName, configJson);
   }
 
   setRemoteUrl(): void {
-    if (this.configItems[ConfigItems.REMOTE_URL] === this.remoteUrl.value) {
-      return;
-    }
-    this.configItems[ConfigItems.REMOTE_URL] = this.remoteUrl.value;
-    this.setConfigValue(ConfigItems.REMOTE_URL);
+    this.saveConfig();
     this.validateRemoteUrl();
   }
 
-  resetRemoteUrl(): void {
-    this.remoteUrl.setValue(this.configItems[ConfigItems.REMOTE_URL]);
-  }
-
   validateRemoteUrl(): void {
-    if (!this.configItems[ConfigItems.REMOTE_URL]) {
+    if (!this.configStore[ConfigItems.REMOTE_URL]) {
       this.remoteUrlState = ConnectionState.NONE;
       return;
     }
 
-    this.http.get(this.configItems[ConfigItems.REMOTE_URL], { observe: 'response' }).subscribe(
+    this.http.get(this.configStore[ConfigItems.REMOTE_URL], { observe: 'response' }).subscribe(
       response => {
         this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
       },

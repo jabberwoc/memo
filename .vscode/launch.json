@@ -39,8 +39,8 @@
       "type": "chrome",
       "request": "attach",
       "port": 9222,
-      "webRoot": "${workspaceFolder}"
-      // "sourceMaps": true,
+      "webRoot": "${workspaceFolder}",
+      // "sourceMaps": true
       // "sourceMapPathOverrides": {
       //   "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
       //   "webpack:///./src/*": "${workspaceRoot}/src/*"

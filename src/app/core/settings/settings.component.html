@@ -1,10 +1,8 @@
 <section id="settings-section">
   <header>
-    <h1>
-      <span class="fa fa-cog"></span> {{ pageTitle }}</h1>
+    <h1><span class="fa fa-cog"></span> {{ pageTitle }}</h1>
   </header>
-
-  <ul class="panel">
+  <ul class="panel" [formGroup]="configGroup">
     <li class="container">
       <div class="left">Import books</div>
       <div class="right">
@@ -24,19 +22,19 @@
     <li class="container">
       <div class="left">Remote Url</div>
       <div class="right">
-        <input class="form-control" type="text" placeholder="Enter URL" [formControl]="remoteUrl" (blur)="resetRemoteUrl();"
-          (keydown.enter)="setRemoteUrl();$event.target.blur()" title="{{remoteUrl.value}}">
-        <div class="status" *ngIf="remoteUrlState !== connectionState.NONE"><span class="icon" [class.status-error]="remoteUrlState === connectionState.ERROR"
-            [class.status-ok]="remoteUrlState === connectionState.OK"></span></div>
+        <input class="form-control" type="text" placeholder="Enter URL" formControlName="remoteUrl" (keydown.enter)="setRemoteUrl(); $event.target.blur()"
+          title="{{ configStore['remoteUrl'] }}" />
+        <div class="status" *ngIf="remoteUrlState !== connectionState.NONE">
+          <span class="icon" [class.status-error]="remoteUrlState === connectionState.ERROR" [class.status-ok]="remoteUrlState === connectionState.OK"></span>
+        </div>
       </div>
     </li>
     <li class="container">
       <div class="left">Native window</div>
       <div class="right">
-        <label class="checkbox">
-          <input type="checkbox" name="nativeWindow" value="configValue['nativeWindow']">
-          <span class="checkmark"></span>
-        </label>
+        <span class="fa fa-toggle-on"></span>
+        <span class="fa fa-toggle-off"></span>
+        <input type="checkbox" name="nativeWindow" (change)="saveConfig()" formControlName="nativeWindow" />
       </div>
     </li>
   </ul>
