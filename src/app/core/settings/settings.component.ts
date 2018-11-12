@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FsService } from 'ngx-fs';
 import { ElectronService } from 'ngx-electron';
@@ -15,7 +15,7 @@ import { NGXLogger } from 'ngx-logger';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   pageTitle = 'Settings';
   configName = 'memo_config';
 
@@ -35,10 +35,6 @@ export class SettingsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.initConfigItems();
-  }
-
-  ngOnInit() {
-    // this.addConfigItems();
   }
 
   private initConfigItems(): void {

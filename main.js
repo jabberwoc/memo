@@ -12,7 +12,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: false,
+    frame: settings.get('nativeWindow') || false,
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });

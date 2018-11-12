@@ -8,7 +8,7 @@ section {
   align-items: center;
 }
 
-section>header {
+section > header {
   color: #888;
 }
 
@@ -35,36 +35,45 @@ header .left {
   height: 3em;
 }
 
-.panel> :first-child {
+.panel > :first-child {
   border-top: 0;
 }
 
-.container>* {
+.container > * {
   align-items: center;
   display: flex;
 }
 
-.container>.left {
+.container > .left {
   flex: 2;
   background: slategray;
   font-size: 1.2em;
   padding-left: 1em;
 }
 
-.container>.right {
+.container > .left .info {
+  margin-left: 5px;
+  font-size: 0.8em;
+  color: khaki;
+  background: lightslategray;
+  padding: 0 5px;
+  border-radius: 2px;
+}
+
+.container > .right {
   flex: 1;
   text-align: right;
   background: gray;
   border-left: 1px solid darkgray;
 }
 
-.container>.right>.status {
+.container > .right > .status {
   height: 100%;
   display: table;
   padding: 5px;
 }
 
-.status>.icon {
+.status > .icon {
   display: table-cell;
   vertical-align: middle;
 }
@@ -81,11 +90,11 @@ header .left {
   color: #ad7;
 }
 
-.panel> :first-child>.left {
+.panel > :first-child > .left {
   border-top-left-radius: 4px;
 }
 
-.panel> :first-child>.right {
+.panel > :first-child > .right {
   border-top-right-radius: 4px;
 }
 
@@ -108,6 +117,11 @@ header .left {
   border-radius: 0;
 }
 
+.container .right .value-icon {
+  margin: auto;
+  font-size: 1.5em;
+}
+
 .container input::placeholder {
   color: lightgray !important;
   text-align: center;
@@ -124,6 +138,10 @@ header .left {
   background-color: lightgray !important;
 }
 
-.container input[type="checkbox"] {
+.container input[type='checkbox'] {
   margin: 0;
+}
+
+.container .hidden {
+  display: none;
 }

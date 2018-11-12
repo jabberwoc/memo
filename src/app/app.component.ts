@@ -11,7 +11,8 @@ export class AppComponent {
   useNativeWindow: boolean;
 
   constructor(private electronService: ElectronService) {
-    this.useNativeWindow = localStorage.getItem('nativeWindow') === 'true';
+    const config = localStorage.getItem('memo_config');
+    this.useNativeWindow = config && JSON.parse(config)['nativeWindow'];
     if (this.hasCustomWindow()) {
       this.window = this.electronService.remote.getCurrentWindow();
     }
