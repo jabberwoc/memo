@@ -1,4 +1,8 @@
-const { app, BrowserWindow } = require('electron'),
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 require('dotenv').config();
@@ -70,4 +74,11 @@ app.on('activate', () => {
   if (win === null) {
     createWindow();
   }
+});
+ipcMain.on('getConfig', (e, arg) => {
+  const config = settings.get('config') || JSON.stringify({
+    items: []
+  });
+  console.log(config);
+  e.returnValue = JSON.parse(config);
 });

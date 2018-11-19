@@ -39,7 +39,7 @@
         </div>
       </div>
     </li>
-    <li class="container">
+    <li class="container" *ngIf="configStore['nativeWindow'] !== undefined">
       <div class="left">Native window <span class="info">requires restart!</span></div>
       <div class="right">
         <span

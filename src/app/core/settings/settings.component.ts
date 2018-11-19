@@ -7,8 +7,9 @@ import { BookDto } from '../data/model/entities/book';
 import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConnectionState } from './connection-state';
-import { ConfigItems } from './config-items';
 import { NGXLogger } from 'ngx-logger';
+import { ConfigStore, ConfigItemType, ConfigItemKeys } from './config-store';
+import { ConfigService } from './config.service';
 
 @Component({
   selector: 'app-settings',
@@ -17,18 +18,17 @@ import { NGXLogger } from 'ngx-logger';
 })
 export class SettingsComponent {
   pageTitle = 'Settings';
-  configName = 'memo_config';
-
   configGroup: FormGroup;
 
   remoteUrlState = ConnectionState.NONE;
   connectionState = ConnectionState;
-  configStore: {};
+  configStore: ConfigStore;
 
   constructor(
     private router: Router,
     private dataService: DataService,
     private electronService: ElectronService,
+    private configService: ConfigService,
     private fsService: FsService,
     private http: HttpClient,
     private logger: NGXLogger,
@@ -38,11 +38,9 @@ export class SettingsComponent {
   }
 
   private initConfigItems(): void {
-    this.configStore = JSON.parse(localStorage.getItem(this.configName)) || {};
-    const configKeys = Object.keys(ConfigItems).map(key => ConfigItems[key as any]);
-
-    const formElements = configKeys.reduce((obj, key) => {
-      obj[key] = new FormControl(this.configStore[key]);
+    this.configStore = this.configService.getConfig();
+    const formElements = this.configStore.items.reduce((obj, item) => {
+      obj[item.key] = new FormControl(item);
       return obj;
     }, {});
     this.configGroup = this.fb.group(formElements);
@@ -56,14 +54,20 @@ export class SettingsComponent {
   }
 
   saveConfig(): void {
-    const config = Object.keys(this.configGroup.controls).reduce((obj, key) => {
-      obj[key] = this.configGroup.get(key).value;
-      return obj;
-    }, {});
+    // TODO set item values in local store
+    this.configStore.items.forEach(item => (item.value = this.configGroup.get(item.key).value));
 
-    const configJson = JSON.stringify(config);
-    this.logger.info(`saving config => ${configJson}`);
-    localStorage.setItem(this.configName, configJson);
+    this.configService.updateConfig(this.configStore);
+
+    // Object.keys(this.configGroup.controls).reduce((obj, key) => {
+    //   obj[key] = this.configGroup.get(key).value;
+    //   return obj;
+    // }, {}
+    // });
+
+    // const configJson = JSON.stringify(config);
+    // this.logger.info(`saving config => ${configJson}`);
+    // localStorage.setItem(this.configName, configJson);
   }
 
   setRemoteUrl(): void {
@@ -72,12 +76,12 @@ export class SettingsComponent {
   }
 
   validateRemoteUrl(): void {
-    if (!this.configStore[ConfigItems.REMOTE_URL]) {
+    if (!this.configStore[ConfigItemKeys.REMOTE_URL]) {
       this.remoteUrlState = ConnectionState.NONE;
       return;
     }
 
-    this.http.get(this.configStore[ConfigItems.REMOTE_URL], { observe: 'response' }).subscribe(
+    this.http.get(this.configStore[ConfigItemKeys.REMOTE_URL], { observe: 'response' }).subscribe(
       response => {
         this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
       },
