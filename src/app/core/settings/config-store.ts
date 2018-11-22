@@ -1,15 +1,17 @@
-export class ConfigStore {
+export interface ConfigStore {
   items: Array<ConfigItem>;
-
-  // public getItem(key: string): ConfigItem {
-  //   return this.items.find(_ => _.key === key) || null;
-  // }
 }
 
 export class ConfigItem<T = any> {
-  key: string;
-  type: ConfigItemType;
+  readonly key: string;
+  readonly type: ConfigItemType;
   value: T;
+
+  constructor(key: string, type: ConfigItemType, value?: T) {
+    this.key = key;
+    this.type = type;
+    this.value = value;
+  }
 }
 
 export enum ConfigItemType {
@@ -18,4 +20,6 @@ export enum ConfigItemType {
   Browser
 }
 
-export const ConfigItemKeys = { REMOTE_URL: 'remoteUrl' };
+export const ConfigItemKeys = {
+  REMOTE_URL: new ConfigItem<string>('remoteUrl', ConfigItemType.All)
+};

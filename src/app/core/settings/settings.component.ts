@@ -40,7 +40,7 @@ export class SettingsComponent {
   private initConfigItems(): void {
     this.configStore = this.configService.getConfig();
     const formElements = this.configStore.items.reduce((obj, item) => {
-      obj[item.key] = new FormControl(item);
+      obj[item.key] = new FormControl(item.value);
       return obj;
     }, {});
     this.configGroup = this.fb.group(formElements);
@@ -58,16 +58,6 @@ export class SettingsComponent {
     this.configStore.items.forEach(item => (item.value = this.configGroup.get(item.key).value));
 
     this.configService.updateConfig(this.configStore);
-
-    // Object.keys(this.configGroup.controls).reduce((obj, key) => {
-    //   obj[key] = this.configGroup.get(key).value;
-    //   return obj;
-    // }, {}
-    // });
-
-    // const configJson = JSON.stringify(config);
-    // this.logger.info(`saving config => ${configJson}`);
-    // localStorage.setItem(this.configName, configJson);
   }
 
   setRemoteUrl(): void {
@@ -76,17 +66,27 @@ export class SettingsComponent {
   }
 
   validateRemoteUrl(): void {
-    if (!this.configStore[ConfigItemKeys.REMOTE_URL]) {
+    if (!this.configStore[ConfigItemKeys.REMOTE_URL.key]) {
       this.remoteUrlState = ConnectionState.NONE;
       return;
     }
 
-    this.http.get(this.configStore[ConfigItemKeys.REMOTE_URL], { observe: 'response' }).subscribe(
-      response => {
-        this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
-      },
-      () => (this.remoteUrlState = ConnectionState.ERROR)
-    );
+    this.http
+      .get(this.configStore[ConfigItemKeys.REMOTE_URL.key], { observe: 'response' })
+      .subscribe(
+        response => {
+          this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
+        },
+        () => (this.remoteUrlState = ConnectionState.ERROR)
+      );
+  }
+
+  configItemExists(name: string): boolean {
+    return this.configStore.items.some(_ => _.key === name);
+  }
+
+  getConfigValue(key: string): any {
+    return this.configStore.items.find(_ => _.key === key);
   }
 
   async export(): Promise<void> {

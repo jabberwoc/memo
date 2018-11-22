@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ConfigStore, ConfigItemType, ConfigItem } from './config-store';
+import { ConfigStore, ConfigItemType, ConfigItem, ConfigItemKeys } from './config-store';
 import { ElectronService } from 'ngx-electron';
 import { NGXLogger } from 'ngx-logger';
+import lodash from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,21 @@ export class ConfigService {
   private configStore: ConfigStore;
 
   constructor(private logger: NGXLogger, private electronService: ElectronService) {
-    const storageConfig = JSON.parse(
+    const storageConfig: ConfigStore = JSON.parse(
       localStorage.getItem(this.configName) ||
         JSON.stringify({
           items: []
         })
     );
+
+    storageConfig.items = lodash.unionBy(
+      storageConfig.items,
+      Object.values(ConfigItemKeys),
+      _ => _.key
+    );
+
     if (this.electronService.isElectronApp) {
       const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
-      console.log(electronConfig);
       storageConfig.items.push(electronConfig.items);
     }
 
