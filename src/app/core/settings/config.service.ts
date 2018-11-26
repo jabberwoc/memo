@@ -19,16 +19,16 @@ export class ConfigService {
         })
     );
 
+    if (this.electronService.isElectronApp) {
+      const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
+      storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
+    }
+
     storageConfig.items = lodash.unionBy(
       storageConfig.items,
       Object.values(ConfigItemKeys),
       _ => _.key
     );
-
-    if (this.electronService.isElectronApp) {
-      const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
-      storageConfig.items.push(electronConfig.items);
-    }
 
     this.configStore = {
       items: storageConfig.items.filter(
@@ -38,6 +38,7 @@ export class ConfigService {
             (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
       )
     };
+    console.log(this.configStore);
   }
 
   public updateItem(item: ConfigItem): void {
@@ -56,6 +57,11 @@ export class ConfigService {
 
   public getConfig(): ConfigStore {
     return this.configStore;
+  }
+
+  public getConfigValue(key: string): any {
+    const item = this.configStore.items.find(_ => _.key === key);
+    return item ? item.value : null;
   }
 
   private saveStorageConfig(config: ConfigStore) {

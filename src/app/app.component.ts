@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
+import { ConfigService } from './core/settings/config.service';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,8 @@ export class AppComponent {
   window: Electron.BrowserWindow;
   useNativeWindow: boolean;
 
-  constructor(private electronService: ElectronService) {
-    const config = localStorage.getItem('memo_config');
-    this.useNativeWindow = config && JSON.parse(config)['nativeWindow'];
+  constructor(private electronService: ElectronService, private configService: ConfigService) {
+    this.useNativeWindow = this.configService.getConfigValue('nativeWindow') || false;
     if (this.hasCustomWindow()) {
       this.window = this.electronService.remote.getCurrentWindow();
     }

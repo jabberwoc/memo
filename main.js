@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron'),
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 require('dotenv').config();
@@ -7,12 +11,13 @@ let win = null;
 
 function createWindow() {
   require('./menu');
+  const nativeWindow = getConfig().items.find(_ => _.key === 'nativeWindow');
 
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: settings.get('nativeWindow') || false,
+    frame: nativeWindow ? nativeWindow.value : false,
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
@@ -52,6 +57,15 @@ function createWindow() {
   });
 }
 
+function getConfig() {
+  const config =
+    settings.get('config') ||
+    JSON.stringify({
+      items: []
+    });
+  return JSON.parse(config);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -72,10 +86,10 @@ app.on('activate', () => {
   }
 });
 ipcMain.on('getConfig', (e, arg) => {
-  const config =
-    settings.get('config') ||
-    JSON.stringify({
-      items: []
-    });
-  e.returnValue = JSON.parse(config);
+  e.returnValue = getConfig();
+});
+
+ipcMain.on('saveConfig', (e, arg) => {
+  settings.set('config', JSON.stringify(arg));
+  e.returnValue = true;
 });

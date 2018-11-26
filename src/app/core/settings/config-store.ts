@@ -21,5 +21,6 @@ export enum ConfigItemType {
 }
 
 export const ConfigItemKeys = {
-  REMOTE_URL: new ConfigItem<string>('remoteUrl', ConfigItemType.All)
+  REMOTE_URL: new ConfigItem<string>('remoteUrl', ConfigItemType.All),
+  NATIVE_WINDOW: new ConfigItem<boolean>('nativeWindow', ConfigItemType.Electron, true)
 };
