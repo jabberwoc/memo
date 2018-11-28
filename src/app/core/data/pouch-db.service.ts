@@ -6,6 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { RemoteState } from '../authentication/remote-state';
 import { LoginResponse } from './model/LoginResponse';
 import { MemoUser } from './model/memo-user';
+import { ConfigService } from '../settings/config.service';
 PouchDB.plugin(PouchAuth).plugin(PouchAllDBs);
 
 @Injectable()
@@ -38,7 +39,7 @@ export class PouchDbService {
     return this.stateChange.asObservable();
   }
 
-  public constructor() {
+  public constructor(private configService: ConfigService) {
     if (!this.isInstantiated) {
       this.setupDatabase();
     }
@@ -245,7 +246,8 @@ export class PouchDbService {
   }
 
   private async openRemoteDatabase(username: string, password: string): Promise<MemoUser> {
-    const remoteUrl = localStorage.getItem('remoteUrl');
+    // TODO get remoteUrl from settings service
+    const remoteUrl = this.configService.getConfigValue('remoteUrl');
     if (!remoteUrl) {
       return new MemoUser(username, false, 'remoteUrl not set');
     }

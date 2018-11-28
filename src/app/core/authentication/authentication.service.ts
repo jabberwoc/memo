@@ -72,20 +72,6 @@ export class AuthenticationService {
       .subscribe(async _ =>
         this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive(_.name))
       );
-
-    // this.currentUser.subscribe(user => {
-    //   if (this.aliveSubscription) {
-    //     this.aliveSubscription.unsubscribe();
-    //   }
-
-    //   if (user == null) {
-    //     return;
-    //   }
-
-    //   this.aliveSubscription = timer(0, 5000).subscribe(async _ =>
-    //     this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive(user.name))
-    //   );
-    // });
   }
 
   private setupUserChangedRouting(): void {

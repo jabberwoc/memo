@@ -66,13 +66,13 @@ export class SettingsComponent {
   }
 
   validateRemoteUrl(): void {
-    if (!this.configStore[ConfigItemKeys.REMOTE_URL.key]) {
+    if (!this.getConfigValue(ConfigItemKeys.REMOTE_URL.key)) {
       this.remoteUrlState = ConnectionState.NONE;
       return;
     }
 
     this.http
-      .get(this.configStore[ConfigItemKeys.REMOTE_URL.key], { observe: 'response' })
+      .get(this.getConfigValue(ConfigItemKeys.REMOTE_URL.key), { observe: 'response' })
       .subscribe(
         response => {
           this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
@@ -86,7 +86,8 @@ export class SettingsComponent {
   }
 
   getConfigValue(key: string): any {
-    return this.configStore.items.find(_ => _.key === key);
+    const item = this.configStore.items.find(_ => _.key === key);
+    return item ? item.value : null;
   }
 
   async export(): Promise<void> {

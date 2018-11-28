@@ -5,7 +5,6 @@ const {
 } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
-require('dotenv').config();
 
 let win = null;
 
