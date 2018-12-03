@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { TextPipe } from './pipe/text.pipe';
 import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
+import { FileHelpersModule } from 'ngx-file-helpers';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    FileHelpersModule,
     SharedModule
   ],
   declarations: [

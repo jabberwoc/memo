@@ -6,6 +6,19 @@
     <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
       type="text" formControlName="title" [ngModel]="selectedNote?.name">
   </form>
+  <div class="attachments-container">
+    <button type="button" [ngxFilePicker]="readMode" multiple accept="image/*" (readStart)="onReadStart($event)"
+      (filePick)="onFilePicked($event)" (readEnd)="onReadEnd($event)">Browse</button>
+    <ul *ngIf="picked">
+      <li *ngFor="let file of picked">
+        <div>
+          <strong>{{file.name}}</strong>
+          <br> {{file.size}} bytes
+        </div>
+      </li>
+    </ul>
+  </div>
+
   <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>
 </div>
 

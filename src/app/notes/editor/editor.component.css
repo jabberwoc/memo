@@ -38,3 +38,8 @@ textarea {
 .placeholder-content>.add-note:hover {
   color: lightslategray;
 }
+
+.attachments-container {
+  grid-row: 2;
+  grid-column: 1 / 3;
+}

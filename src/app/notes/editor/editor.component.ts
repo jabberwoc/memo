@@ -15,6 +15,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
+import { ReadFile, ReadMode, FilePickerDirective } from 'ngx-file-helpers';
 
 declare var tinymce: any;
 
@@ -58,6 +59,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editorHeight: number;
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
+
+  // file picker
+  public readMode = ReadMode.dataURL;
+  public picked: Array<ReadFile> = [];
+  public status: string;
+
+  @ViewChild(FilePickerDirective)
+  private filePicker;
 
   constructor(private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
@@ -364,5 +373,21 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   onAddNote(): void {
     this.addNote.next();
+  }
+
+  onReadStart(fileCount: number) {
+    this.status = `Reading ${fileCount} file(s)...`;
+  }
+
+  onFilePicked(file: ReadFile) {
+    if (this.picked.some(_ => _.name === file.name && _.size === file.size)) {
+      return;
+    }
+    this.picked.push(file);
+  }
+
+  onReadEnd(fileCount: number) {
+    this.status = `Read ${fileCount} file(s) on ${new Date().toLocaleTimeString()}.`;
+    this.filePicker.reset();
   }
 }
