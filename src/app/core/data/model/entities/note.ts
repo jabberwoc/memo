@@ -4,6 +4,7 @@ export class Note {
   book: string;
   content: string;
   modified: string;
+  attachments: Array<any> = [];
 
   constructor(id: string, name: string, book: string, content: string, modified: string) {
     this.id = id;
@@ -47,4 +48,10 @@ export class NoteDto {
     this.content = content;
     this.modified = modified;
   }
+}
+
+export interface Attachment {
+  name: string;
+  type: string;
+  content: any;
 }

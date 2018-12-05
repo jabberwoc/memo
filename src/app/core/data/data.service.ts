@@ -111,6 +111,7 @@ export class DataService {
     return this.pouchDbService.all(pattern, pattern + '\uffff', true).then(result => {
       return result.map(row => {
         const note = row.doc;
+        console.log(note);
         return new Note(note.id, note.name, note.book, note.content, note.modified);
       });
     });
@@ -151,15 +152,24 @@ export class DataService {
   updateNote(note: Note): Promise<boolean> {
     const id = this.noteUri({ book: note.book, note: note.id });
     note.modified = new Date().toJSON();
-    return this.pouchDbService
-      .put(id, {
-        id: note.id,
-        name: note.name,
-        book: note.book,
-        content: note.content,
-        modified: note.modified
-      })
-      .then(response => (response ? true : false));
+    const attachments = note.attachments.reduce((result, item) => {
+      result[item.name] = {
+        type: item.type,
+        data: item
+      };
+      return result;
+    }, {});
+    console.log(note.attachments);
+    console.log(attachments);
+    const doc = {
+      id: note.id,
+      name: note.name,
+      book: note.book,
+      content: note.content,
+      modified: note.modified
+      // _attachments: attachments
+    };
+    return this.pouchDbService.put(id, doc).then(response => (response ? true : false));
   }
 
   updateBook(book: Book): Promise<boolean> {

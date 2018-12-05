@@ -10,7 +10,7 @@ import {
   NgZone,
   HostListener
 } from '@angular/core';
-import { Note } from '../../core/data/model/entities/note';
+import { Note, Attachment } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -63,7 +63,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   // file picker
   public readMode = ReadMode.dataURL;
   public picked: Array<ReadFile> = [];
-  public status: string;
+  public filesPicked: FileList;
 
   @ViewChild(FilePickerDirective)
   private filePicker;
@@ -375,10 +375,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addNote.next();
   }
 
-  onReadStart(fileCount: number) {
-    this.status = `Reading ${fileCount} file(s)...`;
-  }
-
   onFilePicked(file: ReadFile) {
     if (this.picked.some(_ => _.name === file.name && _.size === file.size)) {
       return;
@@ -387,7 +383,20 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   onReadEnd(fileCount: number) {
-    this.status = `Read ${fileCount} file(s) on ${new Date().toLocaleTimeString()}.`;
+    // TODO inject logger
+    console.log(`Read ${fileCount} file(s) on ${new Date().toLocaleTimeString()}.`);
     this.filePicker.reset();
+
+    // TODO size constraint? confirm?
+
+    // add attachments to selected note
+    this.selectedNote.attachments.push(...this.picked);
+    this.changeNote.next(this.selectedNote);
+  }
+
+  handleFileInput(files: FileList) {
+    this.filesPicked = files;
+    this.selectedNote.attachments.push(...Array.from(this.filesPicked));
+    this.changeNote.next(this.selectedNote);
   }
 }

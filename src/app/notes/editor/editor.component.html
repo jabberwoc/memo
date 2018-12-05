@@ -1,19 +1,39 @@
-<div id="note-title-wrapper" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }"
-  #noteTitle>
+<div
+  id="note-title-wrapper"
+  [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }"
+  #noteTitle
+>
   <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
-    {{ selectedNote?.name }}</label>
+    {{ selectedNote?.name }}</label
+  >
   <form [formGroup]="titleForm" novalidate>
-    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
-      type="text" formControlName="title" [ngModel]="selectedNote?.name">
+    <input
+      *ngIf="titleEditMode"
+      class="note-title"
+      (keydown.enter)="onTitleEditComplete()"
+      (blur)="setTitleEditMode(false)"
+      type="text"
+      formControlName="title"
+      [ngModel]="selectedNote?.name"
+    />
   </form>
   <div class="attachments-container">
-    <button type="button" [ngxFilePicker]="readMode" multiple accept="image/*" (readStart)="onReadStart($event)"
-      (filePick)="onFilePicked($event)" (readEnd)="onReadEnd($event)">Browse</button>
+    <input multiple type="file" id="inputFile" (change)="handleFileInput($event.target.files)" />
+    <button
+      type="button"
+      [ngxFilePicker]="readMode"
+      multiple
+      accept="*"
+      (filePick)="onFilePicked($event)"
+      (readEnd)="onReadEnd($event)"
+    >
+      Browse
+    </button>
     <ul *ngIf="picked">
       <li *ngFor="let file of picked">
         <div>
-          <strong>{{file.name}}</strong>
-          <br> {{file.size}} bytes
+          <strong>{{ file.name }}</strong> <br />
+          {{ file.size }} bytes
         </div>
       </li>
     </ul>
@@ -26,8 +46,7 @@
 <div *ngIf="!selectedNote" class="editor-placeholder">
   <div class="placeholder-content">
     <span class="text">add note</span>
-    <button class="add-note btn-icon icon-plus" (click)="onAddNote()">
-    </button>
+    <button class="add-note btn-icon icon-plus" (click)="onAddNote()"></button>
   </div>
 </div>
 
