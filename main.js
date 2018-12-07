@@ -11,13 +11,14 @@ let win = null;
 
 function createWindow() {
   require('./menu');
-  const nativeWindow = getConfig().items.find(_ => _.key === 'nativeWindow');
+  const windowSetting = getConfig().items.find(_ => _.key === 'nativeWindow');
+  const nativeWindow = windowSetting ? windowSetting.value : false;
 
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: nativeWindow ? nativeWindow.value : false,
+    frame: nativeWindow,
     backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png')
   });
@@ -54,6 +55,14 @@ function createWindow() {
 
   win.once('ready-to-show', () => {
     win.show();
+  });
+
+  win.webContents.on('new-window', (e, url) => {
+    if (!nativeWindow) {
+      // prevent child window and open external
+      e.preventDefault();
+      require('electron').shell.openExternal(url);
+    }
   });
 }
 
