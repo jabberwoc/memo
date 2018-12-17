@@ -1,54 +1,24 @@
-<div
-  id="note-title-wrapper"
-  [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }"
-  #noteTitle
->
+<div id="note-title-wrapper" [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }"
+  #noteTitle>
   <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
-    {{ selectedNote?.name }}</label
-  >
+    {{ selectedNote?.name }}</label>
   <form [formGroup]="titleForm" novalidate>
-    <input
-      *ngIf="titleEditMode"
-      class="note-title"
-      (keydown.enter)="onTitleEditComplete()"
-      (blur)="setTitleEditMode(false)"
-      type="text"
-      formControlName="title"
-      [ngModel]="selectedNote?.name"
-    />
+    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
+      type="text" formControlName="title" [ngModel]="selectedNote?.name" />
   </form>
   <div class="attachments-container">
-    <input multiple type="file" id="inputFile" (change)="handleFileInput($event.target.files)" />
-    <!--
-      <button
-        type="button"
-        [ngxFilePicker]="readMode"
-        multiple
-        accept="*"
-        (filePick)="onFilePicked($event)"
-        (readEnd)="onReadEnd($event)"
-      >
-        Browse
-      </button>
-    -->
+    <button class="attachment fa fa-paperclip" (click)="inputFile.click()"></button>
+    <input multiple type="file" id="inputFile" class="attachment-input" (change)="handleFileInput($event.target.files)"
+      #inputFile />
     <ul *ngIf="selectedNote && selectedNote.attachments">
       <li *ngFor="let a of selectedNote.attachments">
         <div>
           <strong>{{ a.name }}</strong> ({{ a.type }}) <br />
           {{ a.size }} bytes
+          <button class="download" (click)="downloadAttachment(a)">download</button>
         </div>
       </li>
     </ul>
-    <!--
-      <ul *ngIf="picked">
-        <li *ngFor="let file of picked">
-          <div>
-            <strong>{{ file.name }}</strong> <br />
-            {{ file.size }} bytes
-          </div>
-        </li>
-      </ul>
-    -->
   </div>
 
   <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>

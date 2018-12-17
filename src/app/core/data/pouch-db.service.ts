@@ -265,19 +265,15 @@ export class PouchDbService {
     }
   }
 
+  public async getAttachment(docId: string, attachmentId: string): Promise<Blob | Buffer> {
+    return await this.localDatabase.getAttachment(docId, attachmentId);
+  }
+
   private convertToHex(value: string): string {
     let hex = '';
     for (let i = 0; i < value.length; i++) {
       hex += '' + value.charCodeAt(i).toString(16);
     }
     return hex;
-  }
-
-  private hexToString(hex: string): string {
-    let string = '';
-    for (let i = 0; i < hex.length; i += 2) {
-      string += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    }
-    return string;
   }
 }

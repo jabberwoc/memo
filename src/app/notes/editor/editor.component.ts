@@ -10,7 +10,7 @@ import {
   NgZone,
   HostListener
 } from '@angular/core';
-import { Note } from '../../core/data/model/entities/note';
+import { Note, AttachmentId } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -29,6 +29,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   addNote = new EventEmitter();
   @Output()
   changeNote = new EventEmitter<Note>();
+  @Output()
+  getAttachment = new EventEmitter<AttachmentId>();
 
   @ViewChild('noteTitle')
   private noteTitle: ElementRef;
@@ -375,6 +377,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   private convertToAttachment(file: File) {
-    return new Attachment(file.name, file.type, file.size, file);
+    return new Attachment({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      data: file
+    });
+  }
+
+  downloadAttachment(attachment: Attachment) {
+    this.getAttachment.emit({ note: this.selectedNote, attachmentId: attachment.name });
   }
 }

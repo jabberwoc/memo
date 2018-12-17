@@ -51,3 +51,8 @@ export class NoteDto {
     this.modified = modified;
   }
 }
+
+export interface AttachmentId {
+  note: Note;
+  attachmentId: string;
+}

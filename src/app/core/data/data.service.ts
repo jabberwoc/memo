@@ -108,25 +108,25 @@ export class DataService {
     const pattern = this.noteUri({ book: bookId });
     const result = await this.pouchDbService.all(pattern, pattern + '\uffff', true);
     return result.map(row => {
-      const note = row.doc;
-      console.log(note._attachments);
-      const bla = new Note(note.id, note.name, note.book, note.content, note.modified);
-      console.log(note._attachments);
-      if (!note._attachments) {
-        return bla;
+      const doc = row.doc;
+      const note = new Note(doc.id, doc.name, doc.book, doc.content, doc.modified);
+      if (!doc._attachments) {
+        return note;
       }
-      // let blubb = Array.from(note._attachments, a => ({
-      //   name: a,
-      //   content_tye: note._attachments[a].content_type,
-      //   size: note._attachments[a].length
-      // }));
-      console.log('blubb');
-      const blubb = Object.keys(note._attachments).map(
-        a => new Attachment(a, note._attachments[a].content_type, note._attachments[a].length)
-      );
-      bla.attachments = blubb;
-      console.log(blubb);
-      return bla;
+
+      const attachments = Object.keys(doc._attachments).map(a => {
+        const metadata = doc._attachments[a];
+        return new Attachment({
+          name: a,
+          stub: true,
+          type: metadata.content_type,
+          size: metadata.length,
+          digest: metadata.digest
+        });
+      });
+      note.attachments = attachments;
+      console.log(attachments);
+      return note;
     });
   }
 
@@ -162,6 +162,8 @@ export class DataService {
     note.modified = new Date().toJSON();
     const attachments = note.attachments.reduce((result, item) => {
       result[item.name] = {
+        stub: item.stub,
+        digest: item.digest,
         content_type: item.type,
         data: item.data
       };
@@ -176,8 +178,13 @@ export class DataService {
       modified: note.modified,
       _attachments: attachments
     };
-    const response = await this.pouchDbService.put(id, doc);
-    return response ? true : false;
+    try {
+      const response = await this.pouchDbService.put(id, doc);
+      return response ? true : false;
+    } catch (err) {
+      console.log(err);
+      Promise.reject();
+    }
   }
 
   updateBook(book: Book): Promise<boolean> {
@@ -220,5 +227,19 @@ export class DataService {
     const pattern = this.noteUri({ book: bookId });
     const result = await this.pouchDbService.all(pattern, pattern + '\uffff', true);
     return result.length;
+  }
+
+  async getAttachment(note: Note, attachment: string): Promise<Blob | Buffer> {
+    const docId = this.noteUri({ note: note.id, book: note.book });
+    return this.pouchDbService
+      .getAttachment(docId, attachment)
+      .then(blobOrBuffer => {
+        console.log(blobOrBuffer);
+        return blobOrBuffer;
+      })
+      .catch(err => {
+        console.log(err);
+        return Promise.reject();
+      });
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../core/data/model/entities/book';
 import { DataService } from '../core/data/data.service';
-import { Note } from '../core/data/model/entities/note';
+import { Note, AttachmentId } from '../core/data/model/entities/note';
 import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
@@ -242,5 +242,16 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filter(text: string) {
     this.noteFilter.next(text.toLowerCase());
+  }
+
+  async getAttachment(attachmentId: AttachmentId) {
+    console.log('downloading file: ');
+    console.log(attachmentId);
+
+    const blob = await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
+    console.log(blob);
+    const blobUrl = URL.createObjectURL(blob);
+    console.log(blobUrl);
+    window.open(blobUrl, 'child');
   }
 }

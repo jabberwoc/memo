@@ -19,7 +19,10 @@ function createWindow() {
     height: 600,
     frame: nativeWindow ? nativeWindow.value : false,
     backgroundColor: '#444',
-    icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+    icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+    webPreferences: {
+      nativeWindowOpen: true
+    }
   });
   // win.setAutoHideMenuBar(true);
 
@@ -55,6 +58,20 @@ function createWindow() {
   win.once('ready-to-show', () => {
     win.show();
   });
+
+  win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+    if (frameName === 'child') {
+      event.preventDefault()
+      Object.assign(options, {
+        parent: win,
+        frame: true,
+        backgroundColor: '#fff'
+      })
+      const childWindow = new BrowserWindow(options);
+      childWindow.setMenu(null);
+      event.newGuest = childWindow;
+    }
+  })
 }
 
 function getConfig() {

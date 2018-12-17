@@ -140,6 +140,11 @@ i.mce-i-todoList:before {
   display: none;
 }
 
+.attachment.fa {
+  font-family: 'FontAwesome' !important;
+  font-size: 1.5em !important;
+}
+
 @media print {
   .title-print {
     display: initial;

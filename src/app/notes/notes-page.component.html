@@ -20,6 +20,7 @@
 
   </div>
   <div id="app-editor">
-    <app-editor [selectedNote]="selectedNote | async" [isSaving]="isSaving" (changeNote)="updateNote($event)" (addNote)=addNote()></app-editor>
+    <app-editor [selectedNote]="selectedNote | async" [isSaving]="isSaving" (changeNote)="updateNote($event)" (addNote)=addNote()
+      (getAttachment)=getAttachment($event)></app-editor>
   </div>
 </section>
