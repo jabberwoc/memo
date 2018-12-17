@@ -19,24 +19,36 @@
   </form>
   <div class="attachments-container">
     <input multiple type="file" id="inputFile" (change)="handleFileInput($event.target.files)" />
-    <button
-      type="button"
-      [ngxFilePicker]="readMode"
-      multiple
-      accept="*"
-      (filePick)="onFilePicked($event)"
-      (readEnd)="onReadEnd($event)"
-    >
-      Browse
-    </button>
-    <ul *ngIf="picked">
-      <li *ngFor="let file of picked">
+    <!--
+      <button
+        type="button"
+        [ngxFilePicker]="readMode"
+        multiple
+        accept="*"
+        (filePick)="onFilePicked($event)"
+        (readEnd)="onReadEnd($event)"
+      >
+        Browse
+      </button>
+    -->
+    <ul *ngIf="selectedNote && selectedNote.attachments">
+      <li *ngFor="let a of selectedNote.attachments">
         <div>
-          <strong>{{ file.name }}</strong> <br />
-          {{ file.size }} bytes
+          <strong>{{ a.name }}</strong> ({{ a.type }}) <br />
+          {{ a.size }} bytes
         </div>
       </li>
     </ul>
+    <!--
+      <ul *ngIf="picked">
+        <li *ngFor="let file of picked">
+          <div>
+            <strong>{{ file.name }}</strong> <br />
+            {{ file.size }} bytes
+          </div>
+        </li>
+      </ul>
+    -->
   </div>
 
   <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>

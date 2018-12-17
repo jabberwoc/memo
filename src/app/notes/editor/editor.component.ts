@@ -10,12 +10,12 @@ import {
   NgZone,
   HostListener
 } from '@angular/core';
-import { Note, Attachment } from '../../core/data/model/entities/note';
+import { Note } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
-import { ReadFile, ReadMode, FilePickerDirective } from 'ngx-file-helpers';
+import { Attachment } from '../../core/data/model/entities/attachment';
 
 declare var tinymce: any;
 
@@ -59,14 +59,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editorHeight: number;
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
-
-  // file picker
-  public readMode = ReadMode.dataURL;
-  public picked: Array<ReadFile> = [];
-  public filesPicked: FileList;
-
-  @ViewChild(FilePickerDirective)
-  private filePicker;
 
   constructor(private ngZone: NgZone, private fb: FormBuilder) {
     this.createTitleForm();
@@ -375,28 +367,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addNote.next();
   }
 
-  onFilePicked(file: ReadFile) {
-    if (this.picked.some(_ => _.name === file.name && _.size === file.size)) {
-      return;
-    }
-    this.picked.push(file);
-  }
-
-  onReadEnd(fileCount: number) {
-    // TODO inject logger
-    console.log(`Read ${fileCount} file(s) on ${new Date().toLocaleTimeString()}.`);
-    this.filePicker.reset();
-
-    // TODO size constraint? confirm?
-
-    // add attachments to selected note
-    this.selectedNote.attachments.push(...this.picked);
-    this.changeNote.next(this.selectedNote);
-  }
-
   handleFileInput(files: FileList) {
-    this.filesPicked = files;
-    this.selectedNote.attachments.push(...Array.from(this.filesPicked));
+    this.selectedNote.attachments.push(...Array.from(files).map(this.convertToAttachment));
+    console.log('Attachments:');
+    console.log(this.selectedNote.attachments);
     this.changeNote.next(this.selectedNote);
+  }
+
+  private convertToAttachment(file: File) {
+    return new Attachment(file.name, file.type, file.size, file);
   }
 }

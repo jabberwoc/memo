@@ -61,7 +61,6 @@
     "font-awesome": "^4.7.0",
     "keytar": "^4.3.0",
     "lodash": "^4.17.11",
-    "ngx-file-helpers": "^1.1.0",
     "ngx-fs": "0.0.1",
     "ngx-logger": "^3.3.6",
     "ngx-moment": "^3.2.0",
