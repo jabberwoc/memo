@@ -13,7 +13,8 @@
     <ul *ngIf="selectedNote && selectedNote.attachments">
       <li *ngFor="let a of selectedNote.attachments">
         <div>
-          <strong>{{ a.name }}</strong> ({{ a.type }}) <br />
+          <span class="smaller attachment fa {{ getMimeTypeIcon(a.type) }}" title="{{ a.type }}"></span>
+          <strong> {{ a.name }}</strong> ({{ a.type }}) <br />
           {{ a.size }} bytes
           <button class="download" (click)="downloadAttachment(a)">download</button>
         </div>

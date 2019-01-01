@@ -8,7 +8,9 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
-  HostListener
+  HostListener,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
 import { Note, AttachmentId } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
@@ -16,13 +18,15 @@ import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
 import { Attachment } from '../../core/data/model/entities/attachment';
+import { MimeType } from './mime-type';
 
 declare var tinymce: any;
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']
+  styleUrls: ['./editor.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output()
@@ -38,6 +42,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private selectedNoteValue: Note;
   @Input()
   isSaving: boolean;
+
   get selectedNote(): Note {
     return this.selectedNoteValue;
   }
@@ -46,7 +51,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     if (Note.isEqual(value, this.selectedNoteValue)) {
       return;
     }
-
     this.selectedNoteValue = value;
     this.setContent();
   }
@@ -62,7 +66,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
 
-  constructor(private ngZone: NgZone, private fb: FormBuilder) {
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef, private fb: FormBuilder) {
     this.createTitleForm();
     this.debouncer.pipe(debounceTime(300)).subscribe(change => {
       change(this.selectedNote);
@@ -268,6 +272,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       });
 
       this.setContent();
+      this.cdr.detectChanges();
     }, 0);
   }
 
@@ -371,8 +376,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   handleFileInput(files: FileList) {
     this.selectedNote.attachments.push(...Array.from(files).map(this.convertToAttachment));
-    console.log('Attachments:');
-    console.log(this.selectedNote.attachments);
     this.changeNote.next(this.selectedNote);
   }
 
@@ -387,5 +390,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   downloadAttachment(attachment: Attachment) {
     this.getAttachment.emit({ note: this.selectedNote, attachmentId: attachment.name });
+  }
+
+  getMimeTypeIcon(mimeType: string): string {
+    return MimeType.getIconFromMimeType(mimeType);
   }
 }

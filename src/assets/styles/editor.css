@@ -145,6 +145,10 @@ i.mce-i-todoList:before {
   font-size: 1.5em !important;
 }
 
+.smaller.attachment.fa {
+  font-size: 1em !important;
+}
+
 @media print {
   .title-print {
     display: initial;

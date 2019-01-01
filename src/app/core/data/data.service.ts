@@ -124,8 +124,7 @@ export class DataService {
           digest: metadata.digest
         });
       });
-      note.attachments = attachments;
-      console.log(attachments);
+      note.attachments.push(...attachments);
       return note;
     });
   }
@@ -169,7 +168,6 @@ export class DataService {
       };
       return result;
     }, {});
-    console.log(attachments);
     const doc = {
       id: note.id,
       name: note.name,

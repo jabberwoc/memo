@@ -210,18 +210,17 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['books', this.book.id]);
   }
 
-  updateNote(note: Note) {
+  async updateNote(note: Note) {
     this.isSaving = true;
 
-    this.dataService.updateNote(note).then(ok => {
-      if (ok) {
-        this.logger.debug(`note updated: [${note.id}] ${note.name}`);
-        this.store.dispatch(new UpdateNoteAction(note));
-        this.isSaving = false;
-      } else {
-        this.logger.debug(`failed to update note: [${note.id}] ${note.name}`);
-      }
-    });
+    const ok = await this.dataService.updateNote(note);
+    if (ok) {
+      this.logger.debug(`note updated: [${note.id}] ${note.name}`);
+      this.store.dispatch(new UpdateNoteAction(note));
+      this.isSaving = false;
+    } else {
+      this.logger.debug(`failed to update note: [${note.id}] ${note.name}`);
+    }
   }
 
   openNote(id: string) {
