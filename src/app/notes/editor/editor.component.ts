@@ -60,13 +60,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editor: any;
   editorReady = false;
   titleEditMode = false;
-  titleElementHeight = 0;
   toolbarVisible = false;
   editorHeight: number;
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
 
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef, private fb: FormBuilder) {
+  constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private el: ElementRef,
+    private fb: FormBuilder
+  ) {
     this.createTitleForm();
     this.debouncer.pipe(debounceTime(300)).subscribe(change => {
       change(this.selectedNote);
@@ -176,7 +180,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     input.click();
   }
 
-  resize(height): void {
+  resize(height: number): void {
     if (this.editorReady && this.editorHeight !== height) {
       this.editor.theme.resizeTo('100%', height);
       this.editorHeight = height;
@@ -190,7 +194,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('postRender', () => this.editorOnPostRender());
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
-    editor.on('keyup', e => this.editorOnKeyup());
+    editor.on('keyup', () => this.editorOnKeyup());
 
     this.addPrintPlugin(editor);
   }
@@ -327,7 +331,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   addEditorTitle(): void {
     try {
-      const editorArea = document.getElementsByClassName('mce-edit-area')[0];
+      const editorArea = this.el.nativeElement.querySelector('.mce-edit-area');
 
       editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
     } catch (_) {
@@ -352,20 +356,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const wrapperHeight = document.getElementById('app-editor').offsetHeight;
-    // TODO doesn't work with angular 5
-    // if (!this.titleElementHeight) {
-    //   this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
-    // }
-    this.titleElementHeight = document.getElementById('note-title-wrapper').offsetHeight;
+    const wrapperHeight = this.el.nativeElement.offsetParent.offsetHeight;
+    const titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
 
-    let toolbarGrpHeight = 0;
-    const elements = document.getElementsByClassName('mce-toolbar-grp');
-    if (elements) {
-      toolbarGrpHeight = elements[0].clientHeight;
-    }
+    const toolbarGroup = this.el.nativeElement.querySelector('.mce-toolbar-grp');
+    const toolbarGrpHeight = toolbarGroup ? toolbarGroup.clientHeight : 0;
 
-    const targetHeight = wrapperHeight - toolbarGrpHeight - this.titleElementHeight;
+    const targetHeight = wrapperHeight - toolbarGrpHeight - titleElementHeight;
 
     this.resize(targetHeight);
   }

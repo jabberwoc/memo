@@ -1,26 +1,39 @@
 <section>
-
   <div id="app-notes-list">
     <header class="note-list-header">
       <div class="header-row">
         <button class="btn-icon dark-themed btn-section" (click)="closeBook()">
           <span class="fa fa-book"></span>
         </button>
-        <span id="bookTitle" class="dark-themed">{{book?.name}}</span>
+        <span id="bookTitle" class="dark-themed">{{ book?.name }}</span>
       </div>
 
       <div class="note-filter" *ngIf="(notes | async).length">
-        <input class="form-control search-box" type="text" placeholder="Search" [ngModel]="noteFilter | async"
-          (ngModelChange)="filter($event)">
+        <input
+          class="form-control search-box"
+          type="text"
+          placeholder="Search"
+          [ngModel]="noteFilter | async"
+          (ngModelChange)="filter($event)"
+        />
       </div>
     </header>
-    <app-notes-list [notes]="filteredNotes | async" [selectedNoteId]="selectedNoteId | async" [bookTitle]="book?.name"
-      (selectNote)="openNote($event)" (deleteNote)="deleteNote($event)">
+    <app-notes-list
+      [notes]="filteredNotes | async"
+      [selectedNoteId]="selectedNoteId | async"
+      [bookTitle]="book?.name"
+      (selectNote)="openNote($event)"
+      (deleteNote)="deleteNote($event)"
+    >
     </app-notes-list>
-
   </div>
   <div id="app-editor">
-    <app-editor [selectedNote]="selectedNote | async" [isSaving]="isSaving" (changeNote)="updateNote($event)" (addNote)=addNote()
-      (getAttachment)=getAttachment($event)></app-editor>
+    <app-editor
+      [selectedNote]="selectedNote | async"
+      [isSaving]="isSaving"
+      (changeNote)="updateNote($event)"
+      (addNote)="addNote()"
+      (getAttachment)="getAttachment($event)"
+    ></app-editor>
   </div>
 </section>

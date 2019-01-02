@@ -27,6 +27,9 @@ export abstract class MimeType {
   };
 
   public static getIconFromMimeType(mimeType: string): string {
+    if (!mimeType) {
+      return;
+    }
     const icon = Object.keys(this.iconClasses).find(iconClass => mimeType.search(iconClass) === 0);
     return icon ? this.iconClasses[icon] : 'fa-file-o';
   }
