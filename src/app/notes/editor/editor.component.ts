@@ -10,7 +10,8 @@ import {
   NgZone,
   HostListener,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Renderer2
 } from '@angular/core';
 import { Note, AttachmentId } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
@@ -69,6 +70,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
     private el: ElementRef,
+    private renderer: Renderer2,
     private fb: FormBuilder
   ) {
     this.createTitleForm();
@@ -153,7 +155,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   // TODO
   filePickerCallback(cb): void {
-    const input = document.createElement('input');
+    const input = this.renderer.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
@@ -205,11 +207,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       const body = win.document.body;
 
       // create title element to display in print
-      const title = document.createElement('h1');
-      title.classList.add('title-print');
-      title.innerHTML = this.selectedNote.name;
+      const title = this.renderer.createElement('h1');
+      this.renderer.addClass(title, 'title-print');
+
+      const text = this.renderer.createText(this.selectedNote.name);
+      this.renderer.appendChild(title, text);
+
       // insert
-      body.insertBefore(title, body.firstChild);
+      this.renderer.insertBefore(body, title, body.firstChild);
 
       win.print();
 
@@ -316,7 +321,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   toggleToolbars(show: boolean) {
     Array.from(<HTMLCollectionOf<HTMLElement>>(
-      document.getElementsByClassName('mce-toolbar-grp')
+      this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
     )).forEach(_ => {
       if (show) {
         _.style.display = 'block';
@@ -359,8 +364,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const wrapperHeight = this.el.nativeElement.offsetParent.offsetHeight;
     const titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
 
-    const toolbarGroup = this.el.nativeElement.querySelector('.mce-toolbar-grp');
-    const toolbarGrpHeight = toolbarGroup ? toolbarGroup.clientHeight : 0;
+    const toolbarGroups = Array.from(<HTMLCollectionOf<HTMLElement>>(
+      this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
+    ));
+    const toolbarGrpHeight = toolbarGroups
+      .map(_ => _.clientHeight)
+      .reduce((prev, next) => prev + next);
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - titleElementHeight;
 
