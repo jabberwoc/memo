@@ -14,7 +14,7 @@ import {
   Renderer2
 } from '@angular/core';
 import { Note, AttachmentId } from '../../core/data/model/entities/note';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
@@ -37,8 +37,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output()
   getAttachment = new EventEmitter<AttachmentId>();
 
-  @ViewChild('noteTitle')
-  private noteTitle: ElementRef;
+  @ViewChild('noteHeader')
+  private noteHeader: ElementRef;
 
   private selectedNoteValue: Note;
   @Input()
@@ -55,6 +55,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.selectedNoteValue = value;
     this.setContent();
   }
+
+  @Input()
+  resizeObs: Observable<void>;
 
   busyState = BusyState.ACTIVE;
   elementId = 'editor';
@@ -88,6 +91,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.initEditor();
+    this.resizeObs.subscribe(_ => this.resizeEditor());
   }
 
   ngOnDestroy() {
@@ -338,7 +342,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     try {
       const editorArea = this.el.nativeElement.querySelector('.mce-edit-area');
 
-      editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
+      editorArea.parentElement.insertBefore(this.noteHeader.nativeElement, editorArea);
     } catch (_) {
       console.log('error add editor title element');
     }
@@ -350,7 +354,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     if (this.titleEditMode) {
       // focus
       setTimeout(() => {
-        this.noteTitle.nativeElement.getElementsByTagName('input')[0].focus();
+        this.noteHeader.nativeElement.getElementsByTagName('input')[0].focus();
       }, 0);
     }
   }
@@ -362,7 +366,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     }
 
     const wrapperHeight = this.el.nativeElement.offsetParent.offsetHeight;
-    const titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
+    const headerHeight = this.noteHeader.nativeElement.offsetHeight;
 
     const toolbarGroups = Array.from(<HTMLCollectionOf<HTMLElement>>(
       this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
@@ -371,7 +375,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       .map(_ => _.clientHeight)
       .reduce((prev, next) => prev + next);
 
-    const targetHeight = wrapperHeight - toolbarGrpHeight - titleElementHeight;
+    const targetHeight = wrapperHeight - toolbarGrpHeight - headerHeight;
 
     this.resize(targetHeight);
   }

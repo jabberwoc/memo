@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, Subject } from 'rxjs';
 import { map, combineLatest, skip, switchMap } from 'rxjs/operators';
 
 import {
@@ -41,6 +41,9 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isSaving = false;
   routingSub: Subscription;
+
+  private resizeEditor = new Subject<void>();
+  editorResize: Observable<void> = this.resizeEditor.asObservable();
 
   constructor(
     private router: Router,
@@ -100,7 +103,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const setting = localStorage.getItem('split-sizes');
-    let sizes;
+    let sizes: number[];
 
     if (setting) {
       sizes = JSON.parse(setting);
@@ -112,13 +115,12 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       sizes: sizes,
       minSize: 150,
       gutterSize: 5,
-      onDragEnd: () => {
-        localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
-      },
-      elementStyle: (_, size, gutterSize) => ({
+      onDrag: () => this.resizeEditor.next(),
+      onDragEnd: () => localStorage.setItem('split-sizes', JSON.stringify(split.getSizes())),
+      elementStyle: (_: any, size: string, gutterSize: string) => ({
         'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
       }),
-      gutterStyle: (_, gutterSize) => ({
+      gutterStyle: (_: any, gutterSize: string) => ({
         'flex-basis': gutterSize + 'px'
       })
     });
@@ -248,9 +250,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log(attachmentId);
 
     const blob = await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
-    console.log(blob);
     const blobUrl = URL.createObjectURL(blob);
-    console.log(blobUrl);
     window.open(blobUrl, 'child');
   }
 }
