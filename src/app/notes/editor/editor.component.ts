@@ -376,9 +376,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       .reduce((prev, next) => prev + next);
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - headerHeight;
-    console.log(
-      `targetHeight (${targetHeight}) = wrapperHeight (${wrapperHeight}) - toolbarGrpHeight (${toolbarGrpHeight}) - headerHeight (${headerHeight})`
-    );
 
     this.resize(targetHeight);
   }
