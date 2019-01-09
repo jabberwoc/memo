@@ -8,7 +8,6 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
-  HostListener,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Renderer2
@@ -56,9 +55,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.setContent();
   }
 
-  @Input()
-  resizeObs: Observable<void>;
-
   busyState = BusyState.ACTIVE;
   elementId = 'editor';
   editor: any;
@@ -91,7 +87,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.initEditor();
-    this.resizeObs.pipe(debounceTime(200)).subscribe(_ => this.resizeEditor());
   }
 
   ngOnDestroy() {
@@ -186,13 +181,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     input.click();
   }
 
-  resize(height: number): void {
-    if (this.editorReady && this.editorHeight !== height) {
-      this.editor.theme.resizeTo('100%', height);
-      this.editorHeight = height;
-    }
-  }
-
   setupEditor(editor): void {
     this.editor = editor;
     editor.on('init', () => this.editorOnInit());
@@ -255,8 +243,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         title: this.selectedNote.name
       })
     );
-
-    setTimeout(() => this.resizeEditor(), 0);
   }
 
   onTitleEditComplete() {
@@ -335,7 +321,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
 
     this.toolbarVisible = show;
-    this.resizeEditor();
   }
 
   addEditorTitle(): void {
@@ -357,27 +342,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         this.noteHeader.nativeElement.getElementsByTagName('input')[0].focus();
       }, 0);
     }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  resizeEditor(): void {
-    if (!this.editorReady) {
-      return;
-    }
-
-    const wrapperHeight = this.el.nativeElement.offsetParent.offsetHeight;
-    const headerHeight = this.noteHeader.nativeElement.offsetHeight;
-
-    const toolbarGroups = Array.from(<HTMLCollectionOf<HTMLElement>>(
-      this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
-    ));
-    const toolbarGrpHeight = toolbarGroups
-      .map(_ => _.offsetHeight)
-      .reduce((prev, next) => prev + next);
-
-    const targetHeight = wrapperHeight - toolbarGrpHeight - headerHeight;
-
-    this.resize(targetHeight);
   }
 
   onAddNote(): void {

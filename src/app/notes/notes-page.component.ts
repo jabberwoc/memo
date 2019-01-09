@@ -42,9 +42,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   isSaving = false;
   routingSub: Subscription;
 
-  private resizeEditor = new Subject<void>();
-  editorResize: Observable<void> = this.resizeEditor.asObservable();
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -115,7 +112,6 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       sizes: sizes,
       minSize: 150,
       gutterSize: 5,
-      onDrag: () => this.resizeEditor.next(),
       onDragEnd: () => localStorage.setItem('split-sizes', JSON.stringify(split.getSizes())),
       elementStyle: (_: any, size: string, gutterSize: string) => ({
         'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
