@@ -28,9 +28,10 @@
     "test": "npm run ng test",
     "lint": "npm run ng lint",
     "e2e": "npm run ng e2e",
+    "serve": "npm run ng -- serve",
     "start-electron": "npm run electron -- . --remote-debugging-port=9222",
     "start": "npm run build && npm run start-electron",
-    "dev": "npm run start-electron & npm run ng -- serve"
+    "dev": "npm run start-electron | npm run serve"
   },
   "private": true,
   "dependencies": {

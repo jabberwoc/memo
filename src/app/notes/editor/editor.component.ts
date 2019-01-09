@@ -91,7 +91,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.initEditor();
-    this.resizeObs.subscribe(_ => this.resizeEditor());
+    this.resizeObs.pipe(debounceTime(200)).subscribe(_ => this.resizeEditor());
   }
 
   ngOnDestroy() {
@@ -372,10 +372,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
     ));
     const toolbarGrpHeight = toolbarGroups
-      .map(_ => _.clientHeight)
+      .map(_ => _.offsetHeight)
       .reduce((prev, next) => prev + next);
 
     const targetHeight = wrapperHeight - toolbarGrpHeight - headerHeight;
+    console.log(
+      `targetHeight (${targetHeight}) = wrapperHeight (${wrapperHeight}) - toolbarGrpHeight (${toolbarGrpHeight}) - headerHeight (${headerHeight})`
+    );
 
     this.resize(targetHeight);
   }
