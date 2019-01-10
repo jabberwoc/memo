@@ -1,30 +1,52 @@
 <div id="note-header" #noteHeader>
-  <div id="note-title-wrapper" [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }">
-    <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
-      {{ selectedNote?.name }}</label>
+  <div
+    id="note-title-wrapper"
+    [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }"
+  >
+    <label
+      *ngIf="!titleEditMode"
+      class="note-title"
+      (dblclick)="setTitleEditMode(true)"
+      from="title"
+    >
+      {{ selectedNote?.name }}</label
+    >
     <form [formGroup]="titleForm" novalidate>
-      <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
-        type="text" formControlName="title" [ngModel]="selectedNote?.name" />
+      <input
+        *ngIf="titleEditMode"
+        class="note-title"
+        (keydown.enter)="onTitleEditComplete()"
+        (blur)="setTitleEditMode(false)"
+        type="text"
+        formControlName="title"
+        [ngModel]="selectedNote?.name"
+      />
     </form>
     <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>
   </div>
 
   <div class="attachments-container">
     <button class="attachment fa fa-paperclip" (click)="inputFile.click()"></button>
-    <input multiple type="file" id="inputFile" class="attachment-input" (change)="handleFileInput($event.target.files)"
-      #inputFile />
-    <ul *ngIf="selectedNote && selectedNote.attachments">
+    <input
+      multiple
+      type="file"
+      id="inputFile"
+      class="attachment-input"
+      (change)="handleFileInput($event.target.files)"
+      #inputFile
+    />
+    <ul class="attachment-list" *ngIf="selectedNote && selectedNote.attachments">
       <li *ngFor="let a of selectedNote.attachments">
-        <div>
-          <span class="smaller attachment fa {{ getMimeTypeIcon(a.type) }}" title="{{ a.type }}"></span>
-          <strong> {{ a.name }}</strong> ({{ a.type }}) <br />
-          {{ a.size }} bytes
-          <button class="download" (click)="downloadAttachment(a)">download</button>
-        </div>
+        <span
+          class="smaller attachment fa {{ getMimeTypeIcon(a.type) }}"
+          title="{{ a.type }}"
+        ></span>
+        <strong> {{ a.name }}</strong> ({{ a.type }}) <br />
+        {{ a.size }} bytes
+        <button class="download" (click)="downloadAttachment(a)">download</button>
       </li>
     </ul>
   </div>
-
 </div>
 
 <textarea id="{{ elementId }}"></textarea>
