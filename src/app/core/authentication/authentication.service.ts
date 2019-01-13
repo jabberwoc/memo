@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, Subscription, timer, Subject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, timer, Subject, interval } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
 import { MemoUser } from '../data/model/memo-user';
@@ -63,10 +63,12 @@ export class AuthenticationService {
     this.currentUser
       .pipe(
         switchMap(user =>
-          timer(0, 5000).pipe(
-            map(_ => user),
-            filter(_ => _ != null)
-          )
+          interval(5000)
+            // timer(0, 5000)
+            .pipe(
+              map(_ => user),
+              filter(_ => _ != null)
+            )
         )
       )
       .subscribe(async _ =>

@@ -1,11 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Book } from '../../core/data/model/entities/book';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-books-list',
   templateUrl: './books-list.component.html',
-  styleUrls: ['./books-list.component.css']
+  styleUrls: ['./books-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BooksListComponent {
   @Input()

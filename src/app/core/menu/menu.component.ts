@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { NavigationItem } from './navigation-item';
 import { Observable, Subscription } from 'rxjs';
@@ -42,9 +42,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   ) {
     this.navigationItems = this.menuService.navigationItems;
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
-
     this.user = this.authenticationService.currentUser;
-
     this.user
       .pipe(
         combineLatest(this.menuService.OnNavigated, (user, ne) =>
@@ -52,14 +50,12 @@ export class MenuComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe();
-
     this.isUserSessionAlive = this.user.pipe(
       combineLatest(
         this.authenticationService.isAlive,
         (user, alive) => user !== null && user.isLoggedIn && alive
       )
     );
-
     this.syncSub = this.authenticationService.syncChanges.pipe(throttleTime(2000)).subscribe(_ => {
       this.isSyncing = true;
       setTimeout(() => (this.isSyncing = false), 0);
@@ -85,7 +81,6 @@ export class MenuComponent implements OnInit, OnDestroy {
       targetItem.isSelected = true;
       this.selectedNavigationItem = targetItem;
     }
-
     // filter visible
     this.visibleNavigationItems = this.navigationItems.filter(_ => _.isSelected || !_.isInfo);
   }

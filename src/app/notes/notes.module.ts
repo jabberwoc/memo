@@ -9,7 +9,7 @@ import { MomentModule } from 'ngx-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { TextPipe } from './pipe/text.pipe';
-import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
+import { ConfirmDeleteComponent } from './dialog/confirm-delete/confirm-delete.component';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -28,7 +28,7 @@ import { SharedModule } from '../shared/shared.module';
     EditorComponent,
     AddNoteComponent,
     TextPipe,
-    DeleteNoteComponent
+    ConfirmDeleteComponent
   ],
   exports: [
     NotesPageComponent,
@@ -37,6 +37,6 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule
   ],
-  entryComponents: [AddNoteComponent, DeleteNoteComponent]
+  entryComponents: [AddNoteComponent, ConfirmDeleteComponent]
 })
 export class NotesModule {}

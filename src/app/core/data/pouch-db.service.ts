@@ -99,10 +99,9 @@ export class PouchDbService {
     return this.localDatabase.bulkDocs(documents);
   }
 
-  public remove(id: string) {
-    return this.localDatabase.get(id).then(doc => {
-      return this.localDatabase.remove(doc);
-    });
+  public async remove(id: string) {
+    const doc = await this.localDatabase.get(id);
+    return this.localDatabase.remove(doc);
   }
 
   public async login(username: string, password: string): Promise<LoginResponse> {
@@ -265,19 +264,28 @@ export class PouchDbService {
     }
   }
 
+  public async getAttachment(docId: string, attachmentId: string): Promise<Blob | Buffer> {
+    return await this.localDatabase.getAttachment(docId, attachmentId);
+  }
+
+  public async removeAttachment(
+    docId: string,
+    attachmentId: string
+  ): Promise<PouchDB.Core.RemoveAttachmentResponse> {
+    try {
+      const doc = await this.get(docId);
+      return await this.localDatabase.removeAttachment(docId, attachmentId, doc._rev);
+    } catch (err) {
+      console.log(err);
+      return Promise.reject();
+    }
+  }
+
   private convertToHex(value: string): string {
     let hex = '';
     for (let i = 0; i < value.length; i++) {
       hex += '' + value.charCodeAt(i).toString(16);
     }
     return hex;
-  }
-
-  private hexToString(hex: string): string {
-    let string = '';
-    for (let i = 0; i < hex.length; i += 2) {
-      string += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    }
-    return string;
   }
 }

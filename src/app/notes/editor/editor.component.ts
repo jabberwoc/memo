@@ -8,42 +8,53 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
-  HostListener
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Renderer2
 } from '@angular/core';
 import { Note } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
+import { Attachment } from '../../core/data/model/entities/attachment';
+import { MimeType } from './mime-type';
+import { AttachmentAction, AttachmentActionType } from '../type/attachment-action';
 
 declare var tinymce: any;
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']
+  styleUrls: ['./editor.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output()
   addNote = new EventEmitter();
   @Output()
   changeNote = new EventEmitter<Note>();
+  @Output()
+  attachmentAction = new EventEmitter<AttachmentAction>();
 
-  @ViewChild('noteTitle')
-  private noteTitle: ElementRef;
+  @ViewChild('noteHeader')
+  private noteHeader: ElementRef;
+  @ViewChild('inputFile')
+  private inputFile: ElementRef;
 
   private selectedNoteValue: Note;
   @Input()
   isSaving: boolean;
+
   get selectedNote(): Note {
     return this.selectedNoteValue;
   }
   @Input()
   set selectedNote(value: Note) {
+    console.log('note selected');
     if (Note.isEqual(value, this.selectedNoteValue)) {
       return;
     }
-
     this.selectedNoteValue = value;
     this.setContent();
   }
@@ -53,13 +64,18 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   editor: any;
   editorReady = false;
   titleEditMode = false;
-  titleElementHeight = 0;
   toolbarVisible = false;
   editorHeight: number;
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
   titleForm: FormGroup;
 
-  constructor(private ngZone: NgZone, private fb: FormBuilder) {
+  constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private fb: FormBuilder
+  ) {
     this.createTitleForm();
     this.debouncer.pipe(debounceTime(300)).subscribe(change => {
       change(this.selectedNote);
@@ -124,7 +140,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       toolbar:
         'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | ' +
         'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | ' +
-        'bullist numlist outdent indent | link image print | table codesample | ' +
+        'bullist numlist outdent indent | link image print attachment | table codesample | ' +
         'fullscreen code',
       image_advtab: true,
       image_title: true,
@@ -142,7 +158,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   // TODO
   filePickerCallback(cb): void {
-    const input = document.createElement('input');
+    const input = this.renderer.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
@@ -169,13 +185,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     input.click();
   }
 
-  resize(height): void {
-    if (this.editorReady && this.editorHeight !== height) {
-      this.editor.theme.resizeTo('100%', height);
-      this.editorHeight = height;
-    }
-  }
-
   setupEditor(editor): void {
     this.editor = editor;
     editor.on('init', () => this.editorOnInit());
@@ -183,9 +192,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('postRender', () => this.editorOnPostRender());
     editor.on('focus', () => this.editorOnFocus());
     editor.on('blur', () => this.editorOnBlur());
-    editor.on('keyup', e => this.editorOnKeyup());
+    editor.on('keyup', () => this.editorOnKeyup());
 
     this.addPrintPlugin(editor);
+    this.addAttachmentPlugin(editor);
   }
 
   addPrintPlugin(editor: any): void {
@@ -194,11 +204,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       const body = win.document.body;
 
       // create title element to display in print
-      const title = document.createElement('h1');
-      title.classList.add('title-print');
-      title.innerHTML = this.selectedNote.name;
+      const title = this.renderer.createElement('h1');
+      this.renderer.addClass(title, 'title-print');
+
+      const text = this.renderer.createText(this.selectedNote.name);
+      this.renderer.appendChild(title, text);
+
       // insert
-      body.insertBefore(title, body.firstChild);
+      this.renderer.insertBefore(body, title, body.firstChild);
 
       win.print();
 
@@ -222,6 +235,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  addAttachmentPlugin(editor: any): void {
+    editor.addCommand('mceAddAttachment', () => {
+      this.inputFile.nativeElement.click();
+    });
+
+    editor.addButton('attachment', {
+      title: 'Add attachment',
+      cmd: 'mceAddAttachment'
+    });
+  }
+
   setContent(): void {
     if (!this.editorReady || !this.selectedNoteValue) {
       return;
@@ -235,8 +259,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         title: this.selectedNote.name
       })
     );
-
-    setTimeout(() => this.resizeEditor(), 0);
   }
 
   onTitleEditComplete() {
@@ -265,6 +287,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       });
 
       this.setContent();
+      this.cdr.detectChanges();
     }, 0);
   }
 
@@ -304,7 +327,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   toggleToolbars(show: boolean) {
     Array.from(<HTMLCollectionOf<HTMLElement>>(
-      document.getElementsByClassName('mce-toolbar-grp')
+      this.el.nativeElement.querySelectorAll('.mce-toolbar-grp')
     )).forEach(_ => {
       if (show) {
         _.style.display = 'block';
@@ -314,14 +337,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
 
     this.toolbarVisible = show;
-    this.resizeEditor();
   }
 
   addEditorTitle(): void {
     try {
-      const editorArea = document.getElementsByClassName('mce-edit-area')[0];
+      const editorArea = this.el.nativeElement.querySelector('.mce-edit-area');
 
-      editorArea.parentElement.insertBefore(this.noteTitle.nativeElement, editorArea);
+      editorArea.parentElement.insertBefore(this.noteHeader.nativeElement, editorArea);
     } catch (_) {
       console.log('error add editor title element');
     }
@@ -333,36 +355,57 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     if (this.titleEditMode) {
       // focus
       setTimeout(() => {
-        this.noteTitle.nativeElement.getElementsByTagName('input')[0].focus();
+        this.noteHeader.nativeElement.getElementsByTagName('input')[0].focus();
       }, 0);
     }
   }
 
-  @HostListener('window:resize', ['$event'])
-  resizeEditor(): void {
-    if (!this.editorReady) {
-      return;
-    }
-
-    const wrapperHeight = document.getElementById('app-editor').offsetHeight;
-    // TODO doesn't work with angular 5
-    // if (!this.titleElementHeight) {
-    //   this.titleElementHeight = this.noteTitle.nativeElement.offsetHeight;
-    // }
-    this.titleElementHeight = document.getElementById('note-title-wrapper').offsetHeight;
-
-    let toolbarGrpHeight = 0;
-    const elements = document.getElementsByClassName('mce-toolbar-grp');
-    if (elements) {
-      toolbarGrpHeight = elements[0].clientHeight;
-    }
-
-    const targetHeight = wrapperHeight - toolbarGrpHeight - this.titleElementHeight;
-
-    this.resize(targetHeight);
-  }
-
   onAddNote(): void {
     this.addNote.next();
+  }
+
+  handleFileInput(files: FileList) {
+    this.selectedNote.attachments.push(...Array.from(files).map(this.convertToAttachment));
+    this.changeNote.next(this.selectedNote);
+  }
+
+  private convertToAttachment(file: File) {
+    return new Attachment({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      data: file
+    });
+  }
+
+  deleteAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.DELETE
+      )
+    );
+  }
+
+  openAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.OPEN
+      )
+    );
+  }
+
+  saveAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.SAVE
+      )
+    );
+  }
+
+  getMimeTypeIcon(mimeType: string): string {
+    return MimeType.getIconFromMimeType(mimeType);
   }
 }

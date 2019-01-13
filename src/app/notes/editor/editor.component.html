@@ -1,20 +1,41 @@
-<div id="note-title-wrapper" [ngClass]="{'edit-mode': titleEditMode,'validation-error': titleForm.status === 'INVALID' }"
-  #noteTitle>
-  <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
-    {{ selectedNote?.name }}</label>
-  <form [formGroup]="titleForm" novalidate>
-    <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
-      type="text" formControlName="title" [ngModel]="selectedNote?.name">
-  </form>
-  <app-busy [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>
+<div id="note-header" #noteHeader>
+  <div id="note-title-wrapper" [ngClass]="{ 'edit-mode': titleEditMode, 'validation-error': titleForm.status === 'INVALID' }">
+    <label *ngIf="!titleEditMode" class="note-title" (dblclick)="setTitleEditMode(true)" from="title">
+      {{ selectedNote?.name }}</label>
+    <form [formGroup]="titleForm" novalidate>
+      <input *ngIf="titleEditMode" class="note-title" (keydown.enter)="onTitleEditComplete()" (blur)="setTitleEditMode(false)"
+        type="text" formControlName="title" [ngModel]="selectedNote?.name" />
+    </form>
+    <app-busy class="state" [isBusy]="isSaving" [fadeOut]="true" [size]="1.5"></app-busy>
+  </div>
+
+  <div class="attachments-container">
+    <button class="attachment add fa fa-paperclip" (click)="inputFile.click()" title="add attachment"></button>
+    <input multiple type="file" id="inputFile" class="attachment-input" (change)="handleFileInput($event.target.files)"
+      #inputFile />
+    <ul class="attachment-list" *ngIf="selectedNote && selectedNote.attachments">
+      <li *ngFor="let a of selectedNote.attachments" title="{{ a.name }}">
+        <span class="smaller attachment fa {{ getMimeTypeIcon(a.type) }}" title="{{ a.type }}"></span>
+        <div class="attachment-content">
+          <span class="name"> {{ a.name }}</span>
+        </div>
+        <div class="attachment-action">
+          <button class="smaller attachment fa fa-trash action-delete" (click)="deleteAttachment(a)"></button>
+          <div class="action-group">
+            <button class="smaller attachment fa fa-external-link" (click)="openAttachment(a)"></button>
+            <button class="smaller attachment fa fa-download" (click)="saveAttachment(a)"></button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <textarea id="{{ elementId }}"></textarea>
 <div *ngIf="!selectedNote" class="editor-placeholder">
   <div class="placeholder-content">
     <span class="text">add note</span>
-    <button class="add-note btn-icon icon-plus" (click)="onAddNote()">
-    </button>
+    <button class="add-note btn-icon icon-plus" (click)="onAddNote()"></button>
   </div>
 </div>
 

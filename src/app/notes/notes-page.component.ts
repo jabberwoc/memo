@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../core/data/model/entities/book';
 import { DataService } from '../core/data/data.service';
-import { Note } from '../core/data/model/entities/note';
+import { Note, AttachmentId } from '../core/data/model/entities/note';
 import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, combineLatest, skip, switchMap } from 'rxjs/operators';
+import { map, combineLatest, skip } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 
 import {
   SetNotesAction,
@@ -20,10 +21,11 @@ import {
   SelectBookAction,
   AddOrUpdateNoteAction
 } from '../core/data/store/actions';
-import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
+import { ConfirmDeleteComponent } from './dialog/confirm-delete/confirm-delete.component';
 import Split from 'split.js';
 import { MenuService, MenuName } from '../core/menu/menu.service';
 import { NGXLogger } from 'ngx-logger';
+import { AttachmentAction, AttachmentActionType } from './type/attachment-action';
 
 @Component({
   selector: 'app-notes-page',
@@ -100,7 +102,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const setting = localStorage.getItem('split-sizes');
-    let sizes;
+    let sizes: number[];
 
     if (setting) {
       sizes = JSON.parse(setting);
@@ -112,13 +114,11 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       sizes: sizes,
       minSize: 150,
       gutterSize: 5,
-      onDragEnd: () => {
-        localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
-      },
-      elementStyle: (_, size, gutterSize) => ({
+      onDragEnd: () => localStorage.setItem('split-sizes', JSON.stringify(split.getSizes())),
+      elementStyle: (_: any, size: string, gutterSize: string) => ({
         'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
       }),
-      gutterStyle: (_, gutterSize) => ({
+      gutterStyle: (_: any, gutterSize: string) => ({
         'flex-basis': gutterSize + 'px'
       })
     });
@@ -191,7 +191,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteNote(note: Note): void {
-    const dialogRef = this.dialog.open(DeleteNoteComponent, { data: { name: note.name } });
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, { data: { name: note.name } });
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed === true) {
         this.dataService.deleteNote(note).then(ok => {
@@ -210,18 +210,17 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['books', this.book.id]);
   }
 
-  updateNote(note: Note) {
+  async updateNote(note: Note) {
     this.isSaving = true;
 
-    this.dataService.updateNote(note).then(ok => {
-      if (ok) {
-        this.logger.debug(`note updated: [${note.id}] ${note.name}`);
-        this.store.dispatch(new UpdateNoteAction(note));
-        this.isSaving = false;
-      } else {
-        this.logger.debug(`failed to update note: [${note.id}] ${note.name}`);
-      }
-    });
+    const ok = await this.dataService.updateNote(note);
+    if (ok) {
+      this.logger.debug(`note updated: [${note.id}] ${note.name}`);
+      this.store.dispatch(new UpdateNoteAction(note));
+      this.isSaving = false;
+    } else {
+      this.logger.debug(`failed to update note: [${note.id}] ${note.name}`);
+    }
   }
 
   openNote(id: string) {
@@ -242,5 +241,67 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filter(text: string) {
     this.noteFilter.next(text.toLowerCase());
+  }
+
+  async getAttachment(attachmentId: AttachmentId): Promise<Blob | Buffer> {
+    return await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
+  }
+
+  async deleteAttachment(attachmentId: AttachmentId) {
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: { name: attachmentId.attachmentId }
+    });
+    const confirmed = await dialogRef.afterClosed().toPromise();
+    if (confirmed === true) {
+      this.isSaving = true;
+      const ok = await this.dataService.deleteAttachment(
+        attachmentId.note,
+        attachmentId.attachmentId
+      );
+      if (ok) {
+        this.logger.debug(
+          `Deleted attachment [${attachmentId.attachmentId}] from note [${attachmentId.note.name}].`
+        );
+
+        attachmentId.note.attachments = attachmentId.note.attachments.filter(
+          _ => _.name !== attachmentId.attachmentId
+        );
+        this.store.dispatch(new UpdateNoteAction(attachmentId.note));
+      }
+
+      this.isSaving = false;
+    }
+  }
+
+  async openAttachment(attachmentId: AttachmentId) {
+    this.logger.debug(`Opening attachment [${attachmentId.attachmentId}].`);
+
+    const blob = await this.getAttachment(attachmentId);
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, 'child');
+  }
+
+  async saveAttachment(attachmentId: AttachmentId) {
+    this.logger.debug(`Saving attachment [${attachmentId.attachmentId}].`);
+
+    const blob = await this.getAttachment(attachmentId);
+    saveAs(<Blob>blob, attachmentId.attachmentId);
+  }
+
+  async attachmentAction(action: AttachmentAction) {
+    switch (action.type) {
+      case AttachmentActionType.DELETE: {
+        await this.deleteAttachment(action.id);
+        break;
+      }
+      case AttachmentActionType.OPEN: {
+        await this.openAttachment(action.id);
+        break;
+      }
+      case AttachmentActionType.SAVE: {
+        await this.saveAttachment(action.id);
+        break;
+      }
+    }
   }
 }
