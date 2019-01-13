@@ -67,8 +67,12 @@
   flex: 1 !important;
 }
 
-.mce-container {
+.mce-tinymce {
   min-height: 100%;
+}
+
+.mce-tinymce iframe {
+  flex: 1 !important;
 }
 
 /* content styles */
