@@ -37,7 +37,8 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
             action.payload.name,
             action.payload.book,
             action.payload.content,
-            action.payload.modified
+            action.payload.modified,
+            action.payload.attachments
           );
         }
 

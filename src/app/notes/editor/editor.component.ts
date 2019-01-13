@@ -12,13 +12,14 @@ import {
   ChangeDetectorRef,
   Renderer2
 } from '@angular/core';
-import { Note, AttachmentId } from '../../core/data/model/entities/note';
-import { Subject, Observable } from 'rxjs';
+import { Note } from '../../core/data/model/entities/note';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
 import { Attachment } from '../../core/data/model/entities/attachment';
 import { MimeType } from './mime-type';
+import { AttachmentAction, AttachmentActionType } from '../type/attachment-action';
 
 declare var tinymce: any;
 
@@ -34,10 +35,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @Output()
   changeNote = new EventEmitter<Note>();
   @Output()
-  getAttachment = new EventEmitter<AttachmentId>();
+  attachmentAction = new EventEmitter<AttachmentAction>();
 
   @ViewChild('noteHeader')
   private noteHeader: ElementRef;
+  @ViewChild('inputFile')
+  private inputFile: ElementRef;
 
   private selectedNoteValue: Note;
   @Input()
@@ -48,6 +51,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
   @Input()
   set selectedNote(value: Note) {
+    console.log('note selected');
     if (Note.isEqual(value, this.selectedNoteValue)) {
       return;
     }
@@ -136,7 +140,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       toolbar:
         'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | ' +
         'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | ' +
-        'bullist numlist outdent indent | link image print | table codesample | ' +
+        'bullist numlist outdent indent | link image print attachment | table codesample | ' +
         'fullscreen code',
       image_advtab: true,
       image_title: true,
@@ -191,6 +195,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('keyup', () => this.editorOnKeyup());
 
     this.addPrintPlugin(editor);
+    this.addAttachmentPlugin(editor);
   }
 
   addPrintPlugin(editor: any): void {
@@ -227,6 +232,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       icon: 'print',
       shortcut: 'Meta+P',
       context: 'file'
+    });
+  }
+
+  addAttachmentPlugin(editor: any): void {
+    editor.addCommand('mceAddAttachment', () => {
+      this.inputFile.nativeElement.click();
+    });
+
+    editor.addButton('attachment', {
+      title: 'Add attachment',
+      cmd: 'mceAddAttachment'
     });
   }
 
@@ -362,8 +378,31 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  downloadAttachment(attachment: Attachment) {
-    this.getAttachment.emit({ note: this.selectedNote, attachmentId: attachment.name });
+  deleteAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.DELETE
+      )
+    );
+  }
+
+  openAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.OPEN
+      )
+    );
+  }
+
+  saveAttachment(attachment: Attachment) {
+    this.attachmentAction.emit(
+      new AttachmentAction(
+        { note: this.selectedNote, attachmentId: attachment.name },
+        AttachmentActionType.SAVE
+      )
+    );
   }
 
   getMimeTypeIcon(mimeType: string): string {

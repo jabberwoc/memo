@@ -7,8 +7,9 @@ import { MatDialog } from '@angular/material';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
-import { Observable, BehaviorSubject, Subscription, Subject } from 'rxjs';
-import { map, combineLatest, skip, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { map, combineLatest, skip } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 
 import {
   SetNotesAction,
@@ -24,6 +25,7 @@ import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component'
 import Split from 'split.js';
 import { MenuService, MenuName } from '../core/menu/menu.service';
 import { NGXLogger } from 'ngx-logger';
+import { AttachmentAction, AttachmentActionType } from './type/attachment-action';
 
 @Component({
   selector: 'app-notes-page',
@@ -241,12 +243,60 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.noteFilter.next(text.toLowerCase());
   }
 
-  async getAttachment(attachmentId: AttachmentId) {
-    console.log('downloading file: ');
-    console.log(attachmentId);
+  async getAttachment(attachmentId: AttachmentId): Promise<Blob | Buffer> {
+    return await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
+  }
 
-    const blob = await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
+  async deleteAttachment(attachmentId: AttachmentId) {
+    // TODO delete attachment dialog
+    this.isSaving = true;
+    const ok = await this.dataService.deleteAttachment(
+      attachmentId.note,
+      attachmentId.attachmentId
+    );
+    if (ok) {
+      this.logger.debug(
+        `Deleted attachment [${attachmentId.attachmentId}] from note [${attachmentId.note.name}].`
+      );
+
+      attachmentId.note.attachments = attachmentId.note.attachments.filter(
+        _ => _.name !== attachmentId.attachmentId
+      );
+      this.store.dispatch(new UpdateNoteAction(attachmentId.note));
+    }
+
+    this.isSaving = false;
+  }
+
+  async openAttachment(attachmentId: AttachmentId) {
+    this.logger.debug(`Opening attachment [${attachmentId.attachmentId}].`);
+
+    const blob = await this.getAttachment(attachmentId);
     const blobUrl = URL.createObjectURL(blob);
     window.open(blobUrl, 'child');
+  }
+
+  async saveAttachment(attachmentId: AttachmentId) {
+    this.logger.debug(`Saving attachment [${attachmentId.attachmentId}].`);
+
+    const blob = await this.getAttachment(attachmentId);
+    saveAs(<Blob>blob, attachmentId.attachmentId);
+  }
+
+  async attachmentAction(action: AttachmentAction) {
+    switch (action.type) {
+      case AttachmentActionType.DELETE: {
+        await this.deleteAttachment(action.id);
+        break;
+      }
+      case AttachmentActionType.OPEN: {
+        await this.openAttachment(action.id);
+        break;
+      }
+      case AttachmentActionType.SAVE: {
+        await this.saveAttachment(action.id);
+        break;
+      }
+    }
   }
 }

@@ -240,4 +240,15 @@ export class DataService {
         return Promise.reject();
       });
   }
+
+  public async deleteAttachment(note: Note, attachmentId: string): Promise<boolean> {
+    try {
+      const docId = this.noteUri({ note: note.id, book: note.book });
+      const result = await this.pouchDbService.removeAttachment(docId, attachmentId);
+      return result.ok;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
 }
