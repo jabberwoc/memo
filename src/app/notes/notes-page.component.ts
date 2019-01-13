@@ -21,7 +21,7 @@ import {
   SelectBookAction,
   AddOrUpdateNoteAction
 } from '../core/data/store/actions';
-import { DeleteNoteComponent } from './dialog/delete-note/delete-note.component';
+import { ConfirmDeleteComponent } from './dialog/confirm-delete/confirm-delete.component';
 import Split from 'split.js';
 import { MenuService, MenuName } from '../core/menu/menu.service';
 import { NGXLogger } from 'ngx-logger';
@@ -191,7 +191,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteNote(note: Note): void {
-    const dialogRef = this.dialog.open(DeleteNoteComponent, { data: { name: note.name } });
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, { data: { name: note.name } });
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed === true) {
         this.dataService.deleteNote(note).then(ok => {
@@ -248,24 +248,29 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async deleteAttachment(attachmentId: AttachmentId) {
-    // TODO delete attachment dialog
-    this.isSaving = true;
-    const ok = await this.dataService.deleteAttachment(
-      attachmentId.note,
-      attachmentId.attachmentId
-    );
-    if (ok) {
-      this.logger.debug(
-        `Deleted attachment [${attachmentId.attachmentId}] from note [${attachmentId.note.name}].`
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: { name: attachmentId.attachmentId }
+    });
+    const confirmed = await dialogRef.afterClosed().toPromise();
+    if (confirmed === true) {
+      this.isSaving = true;
+      const ok = await this.dataService.deleteAttachment(
+        attachmentId.note,
+        attachmentId.attachmentId
       );
+      if (ok) {
+        this.logger.debug(
+          `Deleted attachment [${attachmentId.attachmentId}] from note [${attachmentId.note.name}].`
+        );
 
-      attachmentId.note.attachments = attachmentId.note.attachments.filter(
-        _ => _.name !== attachmentId.attachmentId
-      );
-      this.store.dispatch(new UpdateNoteAction(attachmentId.note));
+        attachmentId.note.attachments = attachmentId.note.attachments.filter(
+          _ => _.name !== attachmentId.attachmentId
+        );
+        this.store.dispatch(new UpdateNoteAction(attachmentId.note));
+      }
+
+      this.isSaving = false;
     }
-
-    this.isSaving = false;
   }
 
   async openAttachment(attachmentId: AttachmentId) {
