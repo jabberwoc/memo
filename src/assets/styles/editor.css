@@ -127,6 +127,10 @@ i.mce-i-todoList:before {
   vertical-align: bottom;
 }
 
+button {
+  cursor: pointer !important;
+}
+
 @media print {
   .title-print {
     display: initial;

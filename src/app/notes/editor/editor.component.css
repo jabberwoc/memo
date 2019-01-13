@@ -57,8 +57,7 @@ textarea {
   color: inherit;
 }
 
-#note-title-wrapper form,
-#note-title-wrapper label {
+#note-title-wrapper form, #note-title-wrapper label {
   grid-column: 1;
   grid-row: 1;
 }
@@ -107,11 +106,23 @@ textarea {
   font-size: 1em !important;
 }
 
+.attachment.add {
+  background: transparent;
+  padding: 5px;
+}
+
+.attachment.add:hover {
+  background: slategray;
+  border-radius: 3px;
+  color: #eee;
+}
+
 .attachment-list {
   display: flex;
   flex: 1;
   flex-wrap: wrap;
   list-style-type: none;
+  margin-top: 5px;
 }
 
 .attachment-list li {
@@ -156,7 +167,7 @@ textarea {
 }
 
 .attachment-action button {
-  color: white;
+  color: #eee;
   padding: 6px;
   background: slategray;
 }

@@ -10,7 +10,7 @@
   </div>
 
   <div class="attachments-container">
-    <button class="attachment fa fa-paperclip" (click)="inputFile.click()"></button>
+    <button class="attachment add fa fa-paperclip" (click)="inputFile.click()" title="add attachment"></button>
     <input multiple type="file" id="inputFile" class="attachment-input" (change)="handleFileInput($event.target.files)"
       #inputFile />
     <ul class="attachment-list" *ngIf="selectedNote && selectedNote.attachments">
