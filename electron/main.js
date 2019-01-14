@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron'),
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 
@@ -61,6 +65,10 @@ function createWindow() {
         const childWindow = new BrowserWindow(options);
         childWindow.setMenu(null);
         event.newGuest = childWindow;
+      } else {
+        // prevent child window and open external
+        event.preventDefault();
+        require('electron').shell.openExternal(url);
       }
     }
   );

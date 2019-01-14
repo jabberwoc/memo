@@ -145,6 +145,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       image_advtab: true,
       image_title: true,
       link_context_toolbar: true,
+      target_list: false,
       // enable automatic uploads of images represented by blob or data URIs
       automatic_uploads: true,
       file_picker_types: 'image',

@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron'),
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 require('dotenv').config();
@@ -57,24 +61,20 @@ function createWindow() {
   win.webContents.on(
     'new-window',
     (event, url, frameName, disposition, options, additionalFeatures) => {
-      //// TODO open external; default: child
-      // if (true) {
-      //   // prevent child window and open external
-      //   e.preventDefault();
-      //   require('electron').shell.openExternal(url);
-      //   return;
-      // }
-
-      // if (frameName === 'child') {
-      event.preventDefault();
-      Object.assign(options, {
-        parent: win,
-        frame: true
-      });
-      const childWindow = new BrowserWindow(options);
-      childWindow.setMenu(null);
-      event.newGuest = childWindow;
-      // }
+      if (frameName === 'child') {
+        event.preventDefault();
+        Object.assign(options, {
+          parent: win,
+          frame: true
+        });
+        const childWindow = new BrowserWindow(options);
+        childWindow.setMenu(null);
+        event.newGuest = childWindow;
+      } else {
+        // prevent child window and open external
+        event.preventDefault();
+        require('electron').shell.openExternal(url);
+      }
     }
   );
 }
