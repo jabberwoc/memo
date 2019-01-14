@@ -14,7 +14,6 @@ function createWindow() {
     width: 800,
     height: 600,
     frame: nativeWindow,
-    backgroundColor: '#444',
     icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
     webPreferences: {
       nativeWindowOpen: true
@@ -57,8 +56,7 @@ function createWindow() {
         event.preventDefault();
         Object.assign(options, {
           parent: win,
-          frame: true,
-          backgroundColor: '#fff'
+          frame: true
         });
         const childWindow = new BrowserWindow(options);
         childWindow.setMenu(null);

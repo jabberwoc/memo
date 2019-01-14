@@ -229,16 +229,10 @@ export class DataService {
 
   async getAttachment(note: Note, attachment: string): Promise<Blob | Buffer> {
     const docId = this.noteUri({ note: note.id, book: note.book });
-    return this.pouchDbService
-      .getAttachment(docId, attachment)
-      .then(blobOrBuffer => {
-        console.log(blobOrBuffer);
-        return blobOrBuffer;
-      })
-      .catch(err => {
-        console.log(err);
-        return Promise.reject();
-      });
+    return this.pouchDbService.getAttachment(docId, attachment).catch(err => {
+      console.log(err);
+      return Promise.reject();
+    });
   }
 
   public async deleteAttachment(note: Note, attachmentId: string): Promise<boolean> {
