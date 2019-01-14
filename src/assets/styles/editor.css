@@ -55,7 +55,7 @@
   border-top: 0 !important;
 }
 
-.mce-tinymce,
+.mce-tinymce:not(.mce-floatpanel),
 .mce-stack-layout,
 .mce-edit-area {
   display: flex !important;
@@ -67,12 +67,8 @@
   flex: 1 !important;
 }
 
-.mce-tinymce {
+.mce-tinymce:not(.mce-floatpanel) {
   min-height: 100%;
-}
-
-.mce-tinymce iframe {
-  flex: 1 !important;
 }
 
 /* content styles */
@@ -120,7 +116,7 @@ i.mce-i-todoList:before {
 }
 
 .mce-i-attachment:before {
-  content: "\f0c6";
+  content: '\f0c6';
   font-family: 'FontAwesome';
   display: inline-block;
   font-size: 16px;

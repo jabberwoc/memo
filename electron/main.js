@@ -1,8 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain
-} = require('electron'),
+const { app, BrowserWindow, ipcMain } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 
@@ -19,7 +15,10 @@ function createWindow() {
     height: 600,
     frame: nativeWindow,
     backgroundColor: '#444',
-    icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+    icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+    webPreferences: {
+      nativeWindowOpen: true
+    }
   });
 
   const winBounds = settings.get('winBounds');
@@ -51,13 +50,22 @@ function createWindow() {
     win.show();
   });
 
-  win.webContents.on('new-window', (e, url) => {
-    if (!nativeWindow) {
-      // prevent child window and open external
-      e.preventDefault();
-      require('electron').shell.openExternal(url);
+  win.webContents.on(
+    'new-window',
+    (event, url, frameName, disposition, options, additionalFeatures) => {
+      if (frameName === 'child') {
+        event.preventDefault();
+        Object.assign(options, {
+          parent: win,
+          frame: true,
+          backgroundColor: '#fff'
+        });
+        const childWindow = new BrowserWindow(options);
+        childWindow.setMenu(null);
+        event.newGuest = childWindow;
+      }
     }
-  });
+  );
 }
 
 function getConfig() {

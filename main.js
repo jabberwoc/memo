@@ -1,8 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain
-} = require('electron'),
+const { app, BrowserWindow, ipcMain } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
 require('dotenv').config();
@@ -60,19 +56,22 @@ function createWindow() {
     win.show();
   });
 
-  win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
-    if (frameName === 'child') {
-      event.preventDefault()
-      Object.assign(options, {
-        parent: win,
-        frame: true,
-        backgroundColor: '#fff'
-      })
-      const childWindow = new BrowserWindow(options);
-      childWindow.setMenu(null);
-      event.newGuest = childWindow;
+  win.webContents.on(
+    'new-window',
+    (event, url, frameName, disposition, options, additionalFeatures) => {
+      if (frameName === 'child') {
+        event.preventDefault();
+        Object.assign(options, {
+          parent: win,
+          frame: true,
+          backgroundColor: '#fff'
+        });
+        const childWindow = new BrowserWindow(options);
+        childWindow.setMenu(null);
+        event.newGuest = childWindow;
+      }
     }
-  })
+  );
 }
 
 function getConfig() {

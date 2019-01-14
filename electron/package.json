@@ -4,10 +4,9 @@
   "author": {
     "name": "Sebastian Stoecker"
   },
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "MIT",
   "main": "main.js",
-
   "private": true,
   "dependencies": {
     "electron-settings": "^3.2.0",
