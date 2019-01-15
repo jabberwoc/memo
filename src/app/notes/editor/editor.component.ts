@@ -122,7 +122,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       relative_urls: false,
       document_base_url: '.',
-      // theme_url: 'assets/tinymce/themes/modern/theme.min.js',
       skin_url: 'assets/tinymce/skins/lightgray',
       content_css: 'assets/styles/editor.css',
 
@@ -233,17 +232,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       icon: 'print',
       shortcut: 'Meta+P',
       context: 'file'
-    });
-  }
-
-  addAttachmentPlugin(editor: any): void {
-    editor.addCommand('mceAddAttachment', () => {
-      this.inputFile.nativeElement.click();
-    });
-
-    editor.addButton('attachment', {
-      title: 'Add attachment',
-      cmd: 'mceAddAttachment'
     });
   }
 
