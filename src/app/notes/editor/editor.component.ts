@@ -148,7 +148,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       // enable automatic uploads of images represented by blob or data URIs
       automatic_uploads: true,
       file_picker_types: 'image',
-      file_picker_callback: this.filePickerCallback,
+      file_picker_callback: cb => this.filePickerCallback(cb),
       setup: ed => this.setupEditor(ed),
       custom_shortcuts: false
       // TODO enable
@@ -166,7 +166,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       const file = e.target.files[0];
 
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+
       reader.onload = () => {
         // Note: Now we need to register the blob in TinyMCEs image blob
         // registry. In the next release this part hopefully won't be
@@ -180,6 +180,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         // call the callback and populate the Title field with the file name
         cb(blobInfo.blobUri(), { title: file.name });
       };
+
+      reader.readAsDataURL(file);
     };
 
     input.click();
@@ -195,7 +197,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     editor.on('keyup', () => this.editorOnKeyup());
 
     this.addPrintPlugin(editor);
-    this.addAttachmentPlugin(editor);
   }
 
   addPrintPlugin(editor: any): void {
