@@ -156,13 +156,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  // TODO
   filePickerCallback(cb): void {
     const input = this.renderer.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
-    input.onchange = function(e: any) {
+    input.onchange = (e: any) => {
       const file = e.target.files[0];
 
       const reader = new FileReader();
