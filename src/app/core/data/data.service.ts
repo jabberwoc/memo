@@ -146,14 +146,19 @@ export class DataService {
   }
 
   async createNotes(notes: Array<Note>): Promise<Array<Note>> {
-    const result = await this.pouchDbService.bulkCreate(
-      (<any>notes).map(n => {
-        n.id = cuid();
-        n._id = this.noteUri({ book: n.book, note: n.id });
-        return n;
-      })
-    );
-    return result.every(_ => _.ok) ? notes : null;
+    try {
+      const result = await this.pouchDbService.bulkCreate(
+        (<any>notes).map(n => {
+          n.id = cuid();
+          n._id = this.noteUri({ book: n.book, note: n.id });
+          return n;
+        })
+      );
+      return notes;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 
   async updateNote(note: Note): Promise<boolean> {

@@ -95,7 +95,7 @@ export class PouchDbService {
     );
   }
 
-  public bulkCreate(documents: any[]) {
+  public bulkCreate(documents: any[]):Promise<Array<PouchDB.Core.Response | PouchDB.Core.Error >> {
     return this.localDatabase.bulkDocs(documents);
   }
 
