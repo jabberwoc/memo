@@ -115,7 +115,9 @@ export class AuthenticationService {
     if (response.remoteUser.isLoggedIn) {
       // syncing with remote
       if (autoLogin) {
-        this.keytar.setPassword('memo', username, password);
+        if (this.electronService.isElectronApp) {
+          this.keytar.setPassword('memo', username, password);
+        }
         localStorage.setItem('auto-login', username);
       } else {
         localStorage.setItem('auto-login', null);
