@@ -253,19 +253,13 @@ export class PouchDbService {
 
     try {
       const userDbName = 'userdb-' + this.convertToHex(username);
-      this.remoteDatabase = new PouchDB(
-        remoteUrl + '/' + userDbName,
-        {
-          fetch(url, opts) {
-            opts.credentials = 'include';
-            return PouchDB.fetch(url, opts);
-          }
-        }
-
-        // {
-        //   skip_setup: true
-        // }
-      );
+      this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
+        fetch(url, opts) {
+          opts.credentials = 'include';
+          return PouchDB.fetch(url, opts);
+        },
+        skip_setup: true
+      });
 
       const response = await this.remoteDatabase.logIn(username, password);
       return new MemoUser(response.name, response.ok);
