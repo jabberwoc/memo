@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { BooksPageComponent } from './books-page.component';
-import { NotesPageComponent } from '../notes/notes-page.component';
 
 const routes: Routes = [
   {
