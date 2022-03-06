@@ -14,7 +14,9 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatButtonModule, MatInputModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MenuService } from './menu/menu.service';
 import { HttpClientModule } from '@angular/common/http';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
@@ -43,4 +45,4 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
   providers: [DataService, PouchDbService, AuthenticationService, MenuService],
   entryComponents: [LoginComponent]
 })
-export class CoreModule {}
+export class CoreModule { }

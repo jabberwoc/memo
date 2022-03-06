@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BooksPageComponent } from './books-page.component';
 import { BooksListComponent } from './books-list/books-list.component';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';
-import { MatDialogModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BooksRoutingModule } from './books-routing.module';
 import { AddEditBookComponent } from './dialog/add-edit-book/add-edit-book.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,4 +14,4 @@ import { ReactiveFormsModule } from '@angular/forms';
   exports: [BooksPageComponent, BooksListComponent],
   entryComponents: [DeleteBookComponent, AddEditBookComponent]
 })
-export class BooksModule {}
+export class BooksModule { }
