@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../authentication.service';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { animate, style, trigger, transition } from '@angular/animations';

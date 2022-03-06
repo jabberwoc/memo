@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../core/data/model/entities/book';
 import { DataService } from '../core/data/data.service';
 import { Note, AttachmentId } from '../core/data/model/entities/note';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';
 import { MemoStore } from '../core/data/store/memo-store';
 import { Store } from '@ngrx/store';
