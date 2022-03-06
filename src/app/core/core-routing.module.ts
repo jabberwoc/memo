@@ -10,11 +10,11 @@ const routes: Routes = [
   },
   {
     path: 'books',
-    loadChildren: '../books/books.module#BooksModule'
+    loadChildren: () => import('../books/books.module').then(m => m.BooksModule)
   },
   {
     path: 'notes',
-    loadChildren: '../notes/notes.module#NotesModule'
+    loadChildren: () => import('../notes/notes.module').then(m => m.NotesModule)
   },
   {
     path: 'settings',
