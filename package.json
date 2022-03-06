@@ -105,7 +105,7 @@
     "protractor": "^5.4.2",
     "ts-node": "~8.0.3",
     "tslint": "~5.14.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.3"
   },
   "optionalDependencies": {
     "electron-installer-debian": "^1.1.1"
