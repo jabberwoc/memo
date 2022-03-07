@@ -22,27 +22,26 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    CoreRoutingModule,
-    NgxElectronModule,
-    NgxFsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    SharedModule,
-    StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
-    LoggerModule.forRoot({
-      serverLoggingUrl: '/api/logs',
-      level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.ERROR
-    })
-  ],
-  declarations: [LoginComponent, SettingsComponent, MenuComponent],
-  exports: [RouterModule, MenuComponent],
-  providers: [DataService, PouchDbService, AuthenticationService, MenuService],
-  entryComponents: [LoginComponent]
+    imports: [
+        CommonModule,
+        CoreRoutingModule,
+        NgxElectronModule,
+        NgxFsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        SharedModule,
+        StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
+        LoggerModule.forRoot({
+            serverLoggingUrl: '/api/logs',
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+        })
+    ],
+    declarations: [LoginComponent, SettingsComponent, MenuComponent],
+    exports: [RouterModule, MenuComponent],
+    providers: [DataService, PouchDbService, AuthenticationService, MenuService]
 })
 export class CoreModule { }

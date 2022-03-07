@@ -13,30 +13,29 @@ import { ConfirmDeleteComponent } from './dialog/confirm-delete/confirm-delete.c
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    NotesRoutingModule,
-    MomentModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    SharedModule
-  ],
-  declarations: [
-    NotesPageComponent,
-    NotesListComponent,
-    EditorComponent,
-    AddNoteComponent,
-    TextPipe,
-    ConfirmDeleteComponent
-  ],
-  exports: [
-    NotesPageComponent,
-    NotesListComponent,
-    EditorComponent,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  entryComponents: [AddNoteComponent, ConfirmDeleteComponent]
+    imports: [
+        CommonModule,
+        NotesRoutingModule,
+        MomentModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        SharedModule
+    ],
+    declarations: [
+        NotesPageComponent,
+        NotesListComponent,
+        EditorComponent,
+        AddNoteComponent,
+        TextPipe,
+        ConfirmDeleteComponent
+    ],
+    exports: [
+        NotesPageComponent,
+        NotesListComponent,
+        EditorComponent,
+        FormsModule,
+        ReactiveFormsModule
+    ]
 })
 export class NotesModule {}
