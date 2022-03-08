@@ -232,10 +232,10 @@ export class PouchDbService {
         this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
         console.log(
           'opened existing user database ' +
-            this.USER_DB_PREFIX +
-            this.convertToHex(user) +
-            ' for user: ' +
-            user
+          this.USER_DB_PREFIX +
+          this.convertToHex(user) +
+          ' for user: ' +
+          user
         );
         this.databaseReset.next();
         return new MemoUser(user, true);

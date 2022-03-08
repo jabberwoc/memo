@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PouchDbService } from './pouch-db.service';
 import { Book } from './model/entities/book';
-import * as cuid from 'cuid';
+import cuid from 'cuid';
 import docUri from 'docuri';
 import { Note } from './model/entities/note';
 import { Observable } from 'rxjs';

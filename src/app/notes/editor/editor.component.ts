@@ -110,7 +110,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       if (change) {
         this.debouncer.next(change);
       } else {
-        this.debouncer.next(() => {});
+        this.debouncer.next(() => { });
       }
     });
   }
@@ -350,7 +350,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
 
   onAddNote(): void {
-    this.addNote.next();
+    this.addNote.emit();
   }
 
   handleFileInput(files: FileList) {
