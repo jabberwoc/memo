@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoreRoutingModule } from './core-routing.module';
 import { NgxElectronModule } from 'ngx-electron';
-import { NgxFsModule } from 'ngx-fs';
+import { FsService, NgxFsModule } from 'ngx-fs';
 import { StoreModule } from '@ngrx/store';
 import { LoginComponent } from './authentication/login/login.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -22,26 +22,32 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CoreRoutingModule,
-        NgxElectronModule,
-        NgxFsModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatInputModule,
-        SharedModule,
-        StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
-        LoggerModule.forRoot({
-            serverLoggingUrl: '/api/logs',
-            level: NgxLoggerLevel.DEBUG,
-            serverLogLevel: NgxLoggerLevel.ERROR
-        })
-    ],
-    declarations: [LoginComponent, SettingsComponent, MenuComponent],
-    exports: [RouterModule, MenuComponent],
-    providers: [DataService, PouchDbService, AuthenticationService, MenuService]
+  imports: [
+    CommonModule,
+    CoreRoutingModule,
+    NgxElectronModule,
+    // NgxFsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    SharedModule,
+    // StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
+    StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      }
+    }),
+    LoggerModule.forRoot({
+      serverLoggingUrl: '/api/logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR
+    })
+  ],
+  declarations: [LoginComponent, SettingsComponent, MenuComponent],
+  exports: [RouterModule, MenuComponent],
+  providers: [DataService, PouchDbService, AuthenticationService, MenuService, FsService]
 })
 export class CoreModule { }

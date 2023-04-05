@@ -115,12 +115,12 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       minSize: 150,
       gutterSize: 5,
       onDragEnd: () => localStorage.setItem('split-sizes', JSON.stringify(split.getSizes())),
-      elementStyle: (_: any, size: string, gutterSize: string) => ({
-        'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-      }),
-      gutterStyle: (_: any, gutterSize: string) => ({
-        'flex-basis': gutterSize + 'px'
-      })
+      // elementStyle: (_: any, size: string, gutterSize: string) => ({
+      //   'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+      // }),
+      // gutterStyle: (_: any, gutterSize: string) => ({
+      //   'flex-basis': gutterSize + 'px'
+      // })
     });
   }
 
@@ -243,7 +243,7 @@ export class NotesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.noteFilter.next(text.toLowerCase());
   }
 
-  async getAttachment(attachmentId: AttachmentId): Promise<Blob | Buffer> {
+  async getAttachment(attachmentId: AttachmentId): Promise<Blob> {
     return await this.dataService.getAttachment(attachmentId.note, attachmentId.attachmentId);
   }
 

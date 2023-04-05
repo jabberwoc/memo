@@ -60,9 +60,10 @@ export class SettingsComponent {
     this.configService.updateConfig(this.configStore);
   }
 
-  setRemoteUrl(): void {
+  setRemoteUrl(et: EventTarget): void {
     this.saveConfig();
     this.validateRemoteUrl();
+    (et as HTMLInputElement).blur();
   }
 
   validateRemoteUrl(): void {

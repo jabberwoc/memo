@@ -232,7 +232,7 @@ export class DataService {
     return result.length;
   }
 
-  async getAttachment(note: Note, attachment: string): Promise<Blob | Buffer> {
+  async getAttachment(note: Note, attachment: string): Promise<any> {
     const docId = this.noteUri({ note: note.id, book: note.book });
     return this.pouchDbService.getAttachment(docId, attachment).catch(err => {
       console.log(err);

@@ -95,6 +95,7 @@ export class BooksPageComponent implements OnInit {
 
   loadBooks(): void {
     this.dataService.getBooks().then(books => {
+      console.log(books);
       this.store.dispatch(new SetBooksAction(books));
     });
   }

@@ -10,35 +10,32 @@ import lodash from 'lodash';
 export class ConfigService {
   private configName = 'memo_config';
   private configStore: ConfigStore;
+  private configResponse: Promise<any>;
 
   constructor(private logger: NGXLogger, private electronService: ElectronService) {
-    const storageConfig: ConfigStore = JSON.parse(
-      localStorage.getItem(this.configName) ||
-        JSON.stringify({
-          items: []
-        })
-    );
 
-    if (this.electronService.isElectronApp) {
-      const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
-      storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
-    }
+    this.loadConfig();
 
-    storageConfig.items = lodash.unionBy(
-      storageConfig.items,
-      Object.values(ConfigItemKeys),
-      _ => _.key
-    );
+    // if (this.electronService.isElectronApp) {
+    //   const electronConfig = this.electronService.ipcRenderer.send('getConfig').then();
+    //   storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
+    // }
 
-    this.configStore = {
-      items: storageConfig.items.filter(
-        _ =>
-          _.type === ConfigItemType.All ||
-          _.type ===
-            (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
-      )
-    };
-    console.log(this.configStore);
+    // storageConfig.items = lodash.unionBy(
+    //   storageConfig.items,
+    //   Object.values(ConfigItemKeys),
+    //   _ => _.key
+    // );
+
+    // this.configStore = {
+    //   items: storageConfig.items.filter(
+    //     _ =>
+    //       _.type === ConfigItemType.All ||
+    //       _.type ===
+    //         (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
+    //   )
+    // };
+    // console.log(this.configStore);
   }
 
   public updateItem(item: ConfigItem): void {
@@ -69,4 +66,35 @@ export class ConfigService {
     this.logger.info(`saving config => ${configJson}`);
     localStorage.setItem(this.configName, configJson);
   }
+  private loadConfig(): void {
+    const storageConfig: ConfigStore = JSON.parse(
+      localStorage.getItem(this.configName) ||
+      JSON.stringify({
+        items: []
+      })
+    );
+
+
+    if (this.electronService.isElectronApp) {
+      const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
+      storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
+    }
+
+    storageConfig.items = lodash.unionBy(
+      storageConfig.items,
+      Object.values(ConfigItemKeys),
+      _ => _.key
+    );
+
+    this.configStore = {
+      items: storageConfig.items.filter(
+        _ =>
+          _.type === ConfigItemType.All ||
+          _.type ===
+          (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
+      )
+    };
+    console.log(this.configStore);
+  }
 }
+

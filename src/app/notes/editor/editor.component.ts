@@ -51,10 +51,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   }
   @Input()
   set selectedNote(value: Note) {
-    console.log('note selected');
-    if (Note.isEqual(value, this.selectedNoteValue)) {
-      return;
+    if (value == null) {
+      console.log('value was null');
+      // return;
+    } else {
+      const note = new Note(value.id, value.name, value.book, value.content, null);
+      // note.content = 'bla';
+      value = note;
     }
+    // if (Note.isEqual(value, this.selectedNoteValue)) {
+    //   return;
+    // }
     this.selectedNoteValue = value;
     this.setContent();
   }
@@ -284,6 +291,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     const content = this.editor.getContent();
 
     if (content !== this.selectedNote.content) {
+      // const bla = Object.assign({}, this.selectedNote);
+      // bla.content = content;
       this.saveNote((note: Note) => (note.content = content));
     }
   }
@@ -353,7 +362,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addNote.emit();
   }
 
-  handleFileInput(files: FileList) {
+  handleFileInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
     this.selectedNote.attachments.push(...Array.from(files).map(this.convertToAttachment));
     this.changeNote.next(this.selectedNote);
   }

@@ -9,8 +9,8 @@ import { AddEditBookComponent } from './dialog/add-edit-book/add-edit-book.compo
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-    imports: [CommonModule, ReactiveFormsModule, MatDialogModule, BooksRoutingModule],
-    declarations: [BooksPageComponent, BooksListComponent, AddEditBookComponent, DeleteBookComponent],
-    exports: [BooksPageComponent, BooksListComponent]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, BooksRoutingModule],
+  declarations: [BooksPageComponent, BooksListComponent, AddEditBookComponent, DeleteBookComponent],
+  exports: [BooksPageComponent, BooksListComponent]
 })
 export class BooksModule { }

@@ -24,12 +24,16 @@ export interface MemoStore {
 }
 
 export function notes(state: Array<Note> = [], action: StoreActions.NoteActions) {
+  console.log('notes');
   switch (action.type) {
     case SET_NOTES:
+      console.log('set notes');
       return action.payload;
     case ADD_NOTE:
+      console.log('new note');
       return [...state, action.payload];
     case UPDATE_NOTE:
+      console.log('update note');
       return state.map(note => {
         if (note.id === action.payload.id && action.payload.modified > note.modified) {
           return new Note(
@@ -54,6 +58,7 @@ export function notes(state: Array<Note> = [], action: StoreActions.NoteActions)
         return note.id !== action.payload;
       });
     default:
+      console.log('state');
       return state;
   }
 }
@@ -83,6 +88,7 @@ export function selectedBook(state: Book = null, action: StoreActions.SelectBook
 export function books(state: Array<Book> = [], action: StoreActions.BookActions) {
   switch (action.type) {
     case SET_BOOKS:
+      console.log('set books');
       return action.payload;
     case ADD_BOOK:
       return [...state, action.payload];
@@ -90,11 +96,11 @@ export function books(state: Array<Book> = [], action: StoreActions.BookActions)
       return state.map(book => {
         return book.id === action.payload.id
           ? new Book(
-              action.payload.id,
-              action.payload.name,
-              action.payload.count,
-              action.payload.modified
-            )
+            action.payload.id,
+            action.payload.name,
+            action.payload.count,
+            action.payload.modified
+          )
           : book;
       });
     case ADD_OR_UPDATE_BOOK:
@@ -107,6 +113,7 @@ export function books(state: Array<Book> = [], action: StoreActions.BookActions)
         return book.id !== action.payload;
       });
     default:
+      console.log(`books state: ${action}`);
       return state;
   }
 }

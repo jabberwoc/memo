@@ -7,7 +7,9 @@ import { RemoteState } from '../authentication/remote-state';
 import { LoginResponse } from './model/LoginResponse';
 import { MemoUser } from './model/memo-user';
 import { ConfigService } from '../settings/config.service';
-PouchDB.plugin(PouchAuth).plugin(PouchAllDBs);
+PouchDB.plugin(PouchAuth);
+// .plugin(PouchAllDBs);
+require('pouchdb-all-dbs')(PouchDB);
 
 @Injectable()
 export class PouchDbService {
@@ -202,7 +204,9 @@ export class PouchDbService {
   }
 
   private GetAllUserDbs(): Promise<Array<string>> {
-    return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
+
+    // return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
+    return Promise.resolve(['userdb-6a6162626572776f636b']);
   }
 
   private openLocalDatabase(user: string = null, create: boolean = false): Promise<MemoUser> {
@@ -224,24 +228,55 @@ export class PouchDbService {
       return Promise.resolve(new MemoUser(user, true));
     }
 
+    // // find user database
+    // return this.GetAllUserDbs().then(dbs => {
+    //   const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
+    //   if (existingDb) {
+    //     this.cancelSync();
+    //     this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
+    //     console.log(
+    //       'opened existing user database ' +
+    //       this.USER_DB_PREFIX +
+    //       this.convertToHex(user) +
+    //       ' for user: ' +
+    //       user
+    //     );
+    //     this.databaseReset.next();
+    //     return new MemoUser(user, true);
+    //   }
+
+    //   return new MemoUser(user, false, 'No local login possible.');
+
     // find user database
-    return this.GetAllUserDbs().then(dbs => {
-      const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
-      if (existingDb) {
-        this.cancelSync();
-        this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
-        console.log(
-          'opened existing user database ' +
-          this.USER_DB_PREFIX +
-          this.convertToHex(user) +
-          ' for user: ' +
-          user
-        );
-        this.databaseReset.next();
-        return new MemoUser(user, true);
-      }
-      return new MemoUser(user, false, 'No local login possible.');
-    });
+    // const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
+    // if (existingDb) {
+
+    // try to connect to user database
+    this.cancelSync();
+    const db = new PouchDB(this.configService.getConfigValue('remoteUrl') + '/' + this.USER_DB_PREFIX + this.convertToHex(user), { skip_setup: true, auto_compaction: true });
+    // const db = new PouchDB('http://localhost:5984/i_dont_exist', { skip_setup: true, auto_compaction: true });
+    // db.info(
+    //   (err, info2) => {
+    //     console.log.bind(err);
+    //     console.log.bind(info2);
+    //   });
+    db.info().then(info => console.log(info)).catch(e => console.log(e));
+
+    // this.cancelSync();
+    // this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
+    // console.log(
+    //   'opened existing user database ' +
+    //   this.USER_DB_PREFIX +
+    //   this.convertToHex(user) +
+    //   ' for user: ' +
+    //   user
+    //         // );
+    //         // this.databaseReset.next();
+    //         return new MemoUser(user, true);
+
+    // return new MemoUser(user, false, 'No local login possible.');
+    // );
+    return Promise.resolve(new MemoUser(user, false, 'No local login possible.'));
   }
 
   private async openRemoteDatabase(username: string, password: string): Promise<MemoUser> {
@@ -268,7 +303,7 @@ export class PouchDbService {
     }
   }
 
-  public async getAttachment(docId: string, attachmentId: string): Promise<Blob | Buffer> {
+  public async getAttachment(docId: string, attachmentId: string): Promise<any> {
     return await this.localDatabase.getAttachment(docId, attachmentId);
   }
 

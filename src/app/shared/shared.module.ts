@@ -7,4 +7,4 @@ import { BusyComponent } from './busy/busy.component';
   declarations: [BusyComponent],
   exports: [BusyComponent]
 })
-export class SharedModule {}
+export class SharedModule { }
