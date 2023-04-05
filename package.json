@@ -1,6 +1,6 @@
 {
   "name": "memo",
-  "version": "0.6.1",
+  "version": "0.7.0-alpha",
   "description": "an app for taking notes",
   "license": "MIT",
   "main": "main.js",
@@ -58,9 +58,9 @@
     "dotenv": "^16.0.0",
     "electron-reload": "^1.5.0",
     "electron-settings": "^4.0.2",
+    "electron-store": "^8.1.0",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
-    "keytar": "^7.9.0",
     "lodash": "^4.17.21",
     "nano": "^10.1.2",
     "ngx-fs": "0.0.1",

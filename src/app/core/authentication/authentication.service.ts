@@ -14,7 +14,7 @@ import { switchMap, map, filter } from 'rxjs/operators';
 export class AuthenticationService {
   currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
-  private keytar: any;
+  private store: any;
   remoteState: Observable<RemoteState>;
   private isAliveSubject = new Subject<boolean>();
   get isAlive(): Observable<boolean> {
@@ -29,7 +29,8 @@ export class AuthenticationService {
     private router: Router
   ) {
     if (this.electronService.isElectronApp) {
-      this.keytar = this.electronService.remote.require('keytar');
+      const es = this.electronService.remote.require('electron-store');
+      this.store = new es();
     }
 
     this.syncChanges = this.pouchDbService.onChange;
@@ -97,13 +98,12 @@ export class AuthenticationService {
     if (!this.electronService.isElectronApp) {
       return;
     }
-    this.keytar.getPassword('memo', user).then(async password => {
-      if (password) {
-        this.login(user, password, true);
-      } else {
-        localStorage.setItem('auto-login', null);
-      }
-    });
+    const password = this.store.get(user);
+    if (password) {
+      this.login(user, password, true);
+    } else {
+      localStorage.setItem('auto-login', null);
+    }
   }
 
   public async login(
@@ -116,7 +116,7 @@ export class AuthenticationService {
       // syncing with remote
       if (autoLogin) {
         if (this.electronService.isElectronApp) {
-          this.keytar.setPassword('memo', username, password);
+          this.store.set(username, password);
         }
         localStorage.setItem('auto-login', username);
       } else {

@@ -4,8 +4,11 @@ const {
   ipcMain
 } = require('electron'),
   settings = require('electron-settings'),
-  path = require('path');
+  path = require('path'),
+  store = require('electron-store');
 require('dotenv').config();
+
+store.initRenderer();
 
 let win = null;
 

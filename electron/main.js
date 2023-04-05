@@ -4,14 +4,19 @@ const {
   ipcMain
 } = require('electron'),
   settings = require('electron-settings'),
-  path = require('path');
+  path = require('path'),
+  store = require('electron-store');
+// require('dotenv').config();
+
+store.initRenderer();
 
 let win = null;
 
 function createWindow() {
   require('./menu');
-  const windowSetting = getConfig().items.find(_ => _.key === 'nativeWindow');
-  const nativeWindow = windowSetting ? windowSetting.value : false;
+  // const windowSetting = getConfig().items.find(_ => _.key === 'nativeWindow');
+  // const nativeWindow = windowSetting ? windowSetting.value : false;
+  const nativeWindow = false;
 
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
@@ -20,7 +25,10 @@ function createWindow() {
     frame: nativeWindow,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
     webPreferences: {
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   });
 
@@ -76,7 +84,7 @@ function createWindow() {
 
 function getConfig() {
   const config =
-    settings.get('config') ||
+    settings.getSync('config') ||
     JSON.stringify({
       items: []
     });
@@ -102,7 +110,7 @@ app.on('activate', () => {
     createWindow();
   }
 });
-ipcMain.on('getConfig', (e, arg) => {
+ipcMain.handle('getConfig', (e, arg) => {
   e.returnValue = getConfig();
 });
 
