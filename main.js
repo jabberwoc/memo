@@ -14,9 +14,8 @@ let win = null;
 
 function createWindow() {
   require('./menu');
-  // const windowSetting = getConfig().items.find(_ => _.key === 'nativeWindow');
-  // const nativeWindow = windowSetting ? windowSetting.value : false;
-  const nativeWindow = false;
+  const windowSetting = getConfig().items.find(_ => _.key === 'nativeWindow');
+  const nativeWindow = windowSetting ? windowSetting.value : false;
 
   // Initialize the window to our specified dimensions
   win = new BrowserWindow({
