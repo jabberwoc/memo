@@ -31,11 +31,11 @@ function createWindow() {
     }
   });
 
-  const winBounds = settings.get('winBounds');
+  const winBounds = settings.getSync('winBounds');
   if (winBounds) {
     win.setBounds(winBounds);
   }
-  const winMaximized = settings.get('winMaximized');
+  const winMaximized = settings.getSync('winMaximized');
   if (winMaximized === true) {
     win.maximize();
   }
