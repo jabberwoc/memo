@@ -1,7 +1,8 @@
 const {
   app,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  safeStorage
 } = require('electron'),
   settings = require('electron-settings'),
   path = require('path'),
@@ -114,6 +115,7 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
 ipcMain.handle('getConfig', (e, arg) => {
   e.returnValue = getConfig();
 });
@@ -121,4 +123,37 @@ ipcMain.handle('getConfig', (e, arg) => {
 ipcMain.on('saveConfig', (e, arg) => {
   settings.set('config', JSON.stringify(arg));
   e.returnValue = true;
+});
+
+
+ipcMain.handle('saveAutoLogin', (e, arg) => {
+  console.log('saving auto login credentials')
+  const buffer = safeStorage.encryptString(JSON.stringify(arg));
+  settings.setSync('auto-login', buffer.toString('utf-8'));
+
+  // TODO remove?
+  e.returnValue = true;
+});
+
+ipcMain.handle('getAutoLogin', async (e, arg) => {
+  if (!arg) {
+    return
+  }
+
+  const value = await settings.get('auto-login')
+  if (!value) {
+    return
+  }
+
+  const decrypted = safeStorage.decryptString(Buffer.from(value, 'utf-8'));
+  const auth = JSON.parse(decrypted)
+
+  const username = auth['username']
+  const password = auth['password']
+
+  if (username === arg) {
+    return password
+  }
+  console.error('auto login failed: username mismatch for requested credentials')
+
 });

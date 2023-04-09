@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject, Subscription, timer, Subject, interval } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
 import { ElectronService } from 'ngx-electron';
@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
 import { switchMap, map, filter } from 'rxjs/operators';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationService implements OnInit {
   currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
-  private store: any;
+  // private store: any;
   remoteState: Observable<RemoteState>;
   private isAliveSubject = new Subject<boolean>();
   get isAlive(): Observable<boolean> {
@@ -28,10 +28,6 @@ export class AuthenticationService {
     private notifier: NotifierService,
     private router: Router
   ) {
-    if (this.electronService.isElectronApp) {
-      const es = this.electronService.remote.require('electron-store');
-      this.store = new es();
-    }
 
     this.syncChanges = this.pouchDbService.onChange;
     this.remoteState = this.pouchDbService.onStateChange;
@@ -46,6 +42,7 @@ export class AuthenticationService {
 
         // try auto login for previously logged in user
         // TODO retry count
+        console.log(currentUser.name);
         this.autoLogin(currentUser.name);
       }
     });
@@ -58,6 +55,9 @@ export class AuthenticationService {
 
     this.setupRemoteAliveCheck();
     this.setupUserChangedRouting();
+  }
+  ngOnInit(): void {
+    // TODO move auto login here
   }
 
   private setupRemoteAliveCheck(): void {
@@ -94,15 +94,16 @@ export class AuthenticationService {
     });
   }
 
-  private autoLogin(user: string) {
+  private async autoLogin(user: string) {
     if (!this.electronService.isElectronApp) {
       return;
     }
-    const password = this.store.get(user);
+
+    const password = await this.getPassword(user);
     if (password) {
-      this.login(user, password, true);
+      await this.login(user, password, true);
     } else {
-      localStorage.setItem('auto-login', null);
+      localStorage.removeItem('auto-login');
     }
   }
 
@@ -116,11 +117,12 @@ export class AuthenticationService {
       // syncing with remote
       if (autoLogin) {
         if (this.electronService.isElectronApp) {
-          this.store.set(username, password);
+          this.saveAuth(username, password);
+
         }
         localStorage.setItem('auto-login', username);
       } else {
-        localStorage.setItem('auto-login', null);
+        localStorage.removeItem('auto-login');
       }
       this.currentUser.next(response.remoteUser);
       const message = `${response.remoteUser.name} logged in successfully`;
@@ -152,4 +154,21 @@ export class AuthenticationService {
       return response;
     }
   }
+
+  saveAuth(username: string, password: string): void {
+    if (this.electronService.isElectronApp) {
+      this.electronService.ipcRenderer.invoke('saveAutoLogin', {
+        'username': username,
+        'password': password
+      });
+    }
+  }
+
+  async getPassword(username: string): Promise<string> {
+    if (this.electronService.isElectronApp) {
+      console.log('trying auto-login for user: ' + username);
+      return await this.electronService.ipcRenderer.invoke('getAutoLogin', username);
+    }
+  }
+
 }

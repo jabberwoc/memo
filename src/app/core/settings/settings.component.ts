@@ -74,12 +74,12 @@ export class SettingsComponent {
 
     this.http
       .get(this.getConfigValue(ConfigItemKeys.REMOTE_URL.key), { observe: 'response' })
-      .subscribe(
-        response => {
+      .subscribe({
+        next: response => {
           this.remoteUrlState = response.ok ? ConnectionState.OK : ConnectionState.ERROR;
         },
-        () => (this.remoteUrlState = ConnectionState.ERROR)
-      );
+        error: () => (this.remoteUrlState = ConnectionState.ERROR)
+      });
   }
 
   configItemExists(name: string): boolean {

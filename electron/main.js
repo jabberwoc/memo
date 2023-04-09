@@ -4,10 +4,10 @@ const {
   ipcMain
 } = require('electron'),
   settings = require('electron-settings'),
-  path = require('path'),
-  store = require('electron-store');
+  path = require('path');
+// store = require('electron-store');
 
-store.initRenderer();
+// store.initRenderer();
 
 let win = null;
 
@@ -112,7 +112,8 @@ ipcMain.handle('getConfig', (e, arg) => {
   e.returnValue = getConfig();
 });
 
-ipcMain.on('saveConfig', (e, arg) => {
+ipcMain.handle('saveConfig', (e, arg) => {
+  console.log('saving settings')
   settings.set('config', JSON.stringify(arg));
   e.returnValue = true;
 });
