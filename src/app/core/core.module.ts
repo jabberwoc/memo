@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoreRoutingModule } from './core-routing.module';
-import { NgxElectronModule } from 'ngx-electron';
-import { FsService, NgxFsModule } from 'ngx-fs';
 import { StoreModule } from '@ngrx/store';
 import { LoginComponent } from './authentication/login/login.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -25,15 +23,12 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
   imports: [
     CommonModule,
     CoreRoutingModule,
-    NgxElectronModule,
-    // NgxFsModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
     SharedModule,
-    // StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }),
     StoreModule.forRoot({ notes, selectedNoteId, books, selectedBook }, {
       runtimeChecks: {
         strictStateImmutability: false,
@@ -48,6 +43,6 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
   ],
   declarations: [LoginComponent, SettingsComponent, MenuComponent],
   exports: [RouterModule, MenuComponent],
-  providers: [DataService, PouchDbService, AuthenticationService, MenuService, FsService]
+  providers: [DataService, PouchDbService, AuthenticationService, MenuService]
 })
 export class CoreModule { }

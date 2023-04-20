@@ -6,9 +6,10 @@
     <li class="container">
       <div class="left">Import books</div>
       <div class="right">
-        <button class="btn-icon dark-themed" title="Import" (click)="import()">
+        <button class="btn-icon dark-themed" title="Import" (click)="openFile()">
           <span class="icon icon-download"></span>
         </button>
+        <input type="file" style="display: none" (change)="import($event)" />
       </div>
     </li>
     <li class="container">

@@ -1,13 +1,12 @@
 const {
   app,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  safeStorage
 } = require('electron'),
   settings = require('electron-settings'),
   path = require('path');
-// store = require('electron-store');
-
-// store.initRenderer();
+require('@electron/remote/main').initialize();
 
 let win = null;
 
@@ -23,9 +22,9 @@ function createWindow() {
     frame: nativeWindow,
     icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
     webPreferences: {
-      nativeWindowOpen: true,
       nodeIntegration: true,
       contextIsolation: false,
+      // TODO remove?
       enableRemoteModule: true
     }
   });
@@ -108,12 +107,55 @@ app.on('activate', () => {
     createWindow();
   }
 });
-ipcMain.handle('getConfig', (e, arg) => {
+
+app.on('browser-window-created', (_, window) => {
+  require("@electron/remote/main").enable(window.webContents)
+})
+
+ipcMain.on('getConfig', (e, arg) => {
   e.returnValue = getConfig();
 });
 
-ipcMain.handle('saveConfig', (e, arg) => {
-  console.log('saving settings')
+ipcMain.on('saveConfig', (e, arg) => {
   settings.set('config', JSON.stringify(arg));
   e.returnValue = true;
+});
+
+
+ipcMain.handle('saveAutoLogin', (e, arg) => {
+  console.log('saving auto login credentials')
+  const buffer = safeStorage.encryptString(JSON.stringify(arg));
+  settings.setSync('auto-login', buffer.toString('base64'));
+
+  // TODO remove?
+  e.returnValue = true;
+});
+
+ipcMain.handle('getAutoLogin', async (e, arg) => {
+  if (!safeStorage.isEncryptionAvailable() || !arg) {
+    return
+  }
+
+  const value = await settings.get('auto-login')
+  if (!value) {
+    return
+  }
+
+  const decrypted = safeStorage.decryptString(Buffer.from(value, 'base64'));
+  const auth = JSON.parse(decrypted)
+
+  const username = auth['username']
+  const password = auth['password']
+
+  if (username === arg) {
+    return password
+  }
+  console.error('auto login failed: username mismatch for requested credentials')
+
+});
+
+ipcMain.on('open-files-file-dialog', () => {
+  dialog.showOpenDialog({
+    properties: ['openFile', 'multiSelections']
+  })
 });

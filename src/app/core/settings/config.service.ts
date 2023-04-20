@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ConfigStore, ConfigItemType, ConfigItem, ConfigItemKeys } from './config-store';
-import { ElectronService } from 'ngx-electron';
 import { NGXLogger } from 'ngx-logger';
 import lodash from 'lodash';
+import { ElectronService } from '../../electron.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,7 @@ export class ConfigService {
   }
 
   public updateConfig(config: ConfigStore): void {
-    if (this.electronService.isElectronApp) {
+    if (this.electronService.isElectron) {
       this.electronService.ipcRenderer.sendSync('saveConfig', {
         items: config.items.filter(_ => _.type === ConfigItemType.Electron)
       });
@@ -75,7 +75,7 @@ export class ConfigService {
     );
 
 
-    if (this.electronService.isElectronApp) {
+    if (this.electronService.isElectron) {
       const electronConfig = this.electronService.ipcRenderer.sendSync('getConfig');
       storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
     }
@@ -91,7 +91,7 @@ export class ConfigService {
         _ =>
           _.type === ConfigItemType.All ||
           _.type ===
-          (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
+          (this.electronService.isElectron ? ConfigItemType.Electron : ConfigItemType.Browser)
       )
     };
     console.log(this.configStore);

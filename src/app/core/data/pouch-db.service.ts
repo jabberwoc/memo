@@ -135,6 +135,7 @@ export class PouchDbService {
       .logOut()
       .then(response => {
         if (response.ok) {
+          this.syncHandler.cancel();
           this.openLocalDatabase();
         }
         return response;
@@ -181,7 +182,7 @@ export class PouchDbService {
     });
     this.syncHandler.on('error', error => {
       console.error('Remote sync error: ' + JSON.stringify(error));
-      this.error.next(error);
+      // this.error.next(error);
     });
   }
 
@@ -203,11 +204,10 @@ export class PouchDbService {
     }
   }
 
-  private GetAllUserDbs(): Promise<Array<string>> {
+  // private GetAllUserDbs(): Promise<Array<string>> {
 
-    // return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
-    return Promise.resolve(['userdb-6a6162626572776f636b']);
-  }
+  //   return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
+  // }
 
   private openLocalDatabase(user: string = null, create: boolean = false): Promise<MemoUser> {
     if (!user) {
@@ -253,7 +253,10 @@ export class PouchDbService {
 
     // try to connect to user database
     this.cancelSync();
-    const db = new PouchDB(this.configService.getConfigValue('remoteUrl') + '/' + this.USER_DB_PREFIX + this.convertToHex(user), { skip_setup: true, auto_compaction: true });
+    const db = new PouchDB(this.configService.getConfigValue('remoteUrl') + '/' + this.USER_DB_PREFIX + this.convertToHex(user),
+      {
+        skip_setup: true, auto_compaction: true
+      });
     // const db = new PouchDB('http://localhost:5984/i_dont_exist', { skip_setup: true, auto_compaction: true });
     // db.info(
     //   (err, info2) => {
@@ -289,10 +292,11 @@ export class PouchDbService {
     try {
       const userDbName = 'userdb-' + this.convertToHex(username);
       this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
-        fetch(url, opts) {
-          opts.credentials = 'include';
-          return PouchDB.fetch(url, opts);
-        },
+        // fetch(url, opts) {
+        //   opts.credentials = 'include';
+        //   return PouchDB.fetch(url, opts);
+        // },
+        auth: { username, password },
         skip_setup: true
       });
 

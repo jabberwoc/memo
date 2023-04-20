@@ -1,7 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject, Subscription, timer, Subject, interval } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
-import { ElectronService } from 'ngx-electron';
 import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from './remote-state';
 import { NotifierService } from 'angular-notifier';
@@ -9,6 +8,7 @@ import { NGXLogger } from 'ngx-logger';
 import { LoginResponse } from '../data/model/LoginResponse';
 import { Router } from '@angular/router';
 import { switchMap, map, filter } from 'rxjs/operators';
+import { ElectronService } from '../../electron.service';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -95,7 +95,7 @@ export class AuthenticationService implements OnInit {
   }
 
   private async autoLogin(user: string) {
-    if (!this.electronService.isElectronApp) {
+    if (!this.electronService.isElectron) {
       return;
     }
 
@@ -116,7 +116,7 @@ export class AuthenticationService implements OnInit {
     if (response.remoteUser.isLoggedIn) {
       // syncing with remote
       if (autoLogin) {
-        if (this.electronService.isElectronApp) {
+        if (this.electronService.isElectron) {
           this.saveAuth(username, password);
 
         }
@@ -156,7 +156,7 @@ export class AuthenticationService implements OnInit {
   }
 
   saveAuth(username: string, password: string): void {
-    if (this.electronService.isElectronApp) {
+    if (this.electronService.isElectron) {
       this.electronService.ipcRenderer.invoke('saveAutoLogin', {
         'username': username,
         'password': password
@@ -165,7 +165,7 @@ export class AuthenticationService implements OnInit {
   }
 
   async getPassword(username: string): Promise<string> {
-    if (this.electronService.isElectronApp) {
+    if (this.electronService.isElectron) {
       console.log('trying auto-login for user: ' + username);
       return await this.electronService.ipcRenderer.invoke('getAutoLogin', username);
     }

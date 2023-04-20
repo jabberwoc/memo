@@ -1,6 +1,5 @@
-import {
-  remote
-} from 'electron';
+import "@electron/remote";
+
 
 (function handleWindowControls() {
   // When document has loaded, initialise

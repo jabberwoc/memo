@@ -9,6 +9,7 @@
   "main": "main.js",
   "private": true,
   "dependencies": {
+    "@electron/remote": "^2.0.9",
     "electron-settings": "^4.0.2",
     "electron-store": "^8.1.0"
   }

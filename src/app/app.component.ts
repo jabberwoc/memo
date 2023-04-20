@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ElectronService } from 'ngx-electron';
 import { ConfigService } from './core/settings/config.service';
+import { ElectronService } from './electron.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   public hasCustomWindow(): boolean {
-    return !this.useNativeWindow && this.electronService.isElectronApp;
+    return !this.useNativeWindow && this.electronService.isElectron;
   }
 
   public minimize(): void {

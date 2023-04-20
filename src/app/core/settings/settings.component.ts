@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FsService } from 'ngx-fs';
-import { ElectronService } from 'ngx-electron';
 import { DataService } from '../data/data.service';
 import { BookDto } from '../data/model/entities/book';
 import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
@@ -10,6 +8,7 @@ import { ConnectionState } from './connection-state';
 import { NGXLogger } from 'ngx-logger';
 import { ConfigStore, ConfigItemType, ConfigItemKeys } from './config-store';
 import { ConfigService } from './config.service';
+import { ElectronService } from '../../electron.service';
 
 @Component({
   selector: 'app-settings',
@@ -29,7 +28,7 @@ export class SettingsComponent {
     private dataService: DataService,
     private electronService: ElectronService,
     private configService: ConfigService,
-    private fsService: FsService,
+    // private fsService: FsService,
     private http: HttpClient,
     private logger: NGXLogger,
     private fb: FormBuilder
@@ -104,46 +103,63 @@ export class SettingsComponent {
       defaultPath: 'memo-export.json'
     });
 
-    (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
-      if (err) {
-        this.logger.error('error exporting memo data: ' + err);
-        return;
-      }
+    // TODO refactor
+    //
+    // (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
+    //   if (err) {
+    //     this.logger.error('error exporting memo data: ' + err);
+    //     return;
+    //   }
 
-      this.logger.debug('memo data exported successfully.');
-    });
+    //   this.logger.debug('memo data exported successfully.');
+    // });
   }
 
-  import(): void {
-    // open file
-    const filePath = this.electronService.remote.dialog.showOpenDialog({
-      title: 'Import data',
-      properties: ['openFile']
-    })[0];
+  openFile(): void {
+    console.log('import click');
+    document.querySelector('input').click();
 
-    (<any>this.fsService.fs).readFile(filePath, async (err, data) => {
-      if (err) {
-        throw err;
-      }
-      // parse json data
-      const memoData = JSON.parse(data);
+  }
 
-      // save books & notes
-      await Promise.all(
-        memoData.map(b =>
-          this.dataService.createBook(b).then(async result => {
-            if (result) {
-              b.notes.forEach(n => (n.book = result.id));
-              const notes = await this.dataService.createNotes(b.notes);
-              if (notes) {
-                this.logger.debug(`book: [${result.id}] imported with ${notes.length} notes`);
-                return result;
-              }
-            }
-          })
-        )
-      );
-      this.logger.debug('Import finished.');
-    });
+  import(e: any): void {
+    // // open file
+    // console.log('import click');
+    // document.querySelector('input').click();
+
+    console.log('open file:');
+    console.log(e);
+
+    // TODO refactor
+    //
+    // old
+    // const filePath = this.electronService.remote.dialog.showOpenDialog({
+    //   title: 'Import data',
+    //   properties: ['openFile']
+    // })[0];
+
+    // (<any>this.fsService.fs).readFile(filePath, async (err, data) => {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   // parse json data
+    //   const memoData = JSON.parse(data);
+
+    //   // save books & notes
+    //   await Promise.all(
+    //     memoData.map(b =>
+    //       this.dataService.createBook(b).then(async result => {
+    //         if (result) {
+    //           b.notes.forEach(n => (n.book = result.id));
+    //           const notes = await this.dataService.createNotes(b.notes);
+    //           if (notes) {
+    //             this.logger.debug(`book: [${result.id}] imported with ${notes.length} notes`);
+    //             return result;
+    //           }
+    //         }
+    //       })
+    //     )
+    //   );
+    //   this.logger.debug('Import finished.');
+    // });
   }
 }
