@@ -182,7 +182,7 @@ export class PouchDbService {
     });
     this.syncHandler.on('error', error => {
       console.error('Remote sync error: ' + JSON.stringify(error));
-      // this.error.next(error);
+      this.error.next(error);
     });
   }
 

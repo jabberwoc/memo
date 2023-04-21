@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../data/data.service';
 import { BookDto } from '../data/model/entities/book';
@@ -9,6 +9,7 @@ import { NGXLogger } from 'ngx-logger';
 import { ConfigStore, ConfigItemType, ConfigItemKeys } from './config-store';
 import { ConfigService } from './config.service';
 import { ElectronService } from '../../electron.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-settings',
@@ -23,12 +24,13 @@ export class SettingsComponent {
   connectionState = ConnectionState;
   configStore: ConfigStore;
 
+  @ViewChild('importElem') importElem: ElementRef;
+
   constructor(
     private router: Router,
     private dataService: DataService,
     private electronService: ElectronService,
     private configService: ConfigService,
-    // private fsService: FsService,
     private http: HttpClient,
     private logger: NGXLogger,
     private fb: FormBuilder
@@ -98,68 +100,80 @@ export class SettingsComponent {
     );
 
     const jsonExport = JSON.stringify(data);
-    const savePath = this.electronService.remote.dialog.showSaveDialog({
-      title: 'Export data',
-      defaultPath: 'memo-export.json'
-    });
+    let success = false;
+    if (this.electronService.isElectron) {
+      success = await this.electronService.ipcRenderer.invoke('export-data', jsonExport);
+    } else {
+      // save in browser
+      const blob = new Blob([jsonExport], { type: 'application/json' });
+      saveAs(blob, 'memo-export.json');
+    }
 
-    // TODO refactor
-    //
-    // (<any>this.fsService.fs).writeFile(savePath, jsonExport, err => {
-    //   if (err) {
-    //     this.logger.error('error exporting memo data: ' + err);
-    //     return;
-    //   }
-
-    //   this.logger.debug('memo data exported successfully.');
-    // });
+    if (success) {
+      this.logger.info('memo data exported successfully.');
+    }
   }
 
   openFile(): void {
-    console.log('import click');
-    document.querySelector('input').click();
+    this.importElem.nativeElement.click();
 
   }
 
-  import(e: any): void {
-    // // open file
-    // console.log('import click');
-    // document.querySelector('input').click();
-
-    console.log('open file:');
-    console.log(e);
-
-    // TODO refactor
-    //
-    // old
-    // const filePath = this.electronService.remote.dialog.showOpenDialog({
-    //   title: 'Import data',
-    //   properties: ['openFile']
-    // })[0];
-
-    // (<any>this.fsService.fs).readFile(filePath, async (err, data) => {
-    //   if (err) {
-    //     throw err;
-    //   }
-    //   // parse json data
-    //   const memoData = JSON.parse(data);
-
-    //   // save books & notes
-    //   await Promise.all(
-    //     memoData.map(b =>
-    //       this.dataService.createBook(b).then(async result => {
-    //         if (result) {
-    //           b.notes.forEach(n => (n.book = result.id));
-    //           const notes = await this.dataService.createNotes(b.notes);
-    //           if (notes) {
-    //             this.logger.debug(`book: [${result.id}] imported with ${notes.length} notes`);
-    //             return result;
-    //           }
-    //         }
-    //       })
-    //     )
-    //   );
-    //   this.logger.debug('Import finished.');
-    // });
+  async importInput(e): Promise<void> {
+    const file = e.target.files[0];
+    const memoData = await this.processFile(file);
+    if (memoData) {
+      await this.importData(JSON.parse(memoData));
+    }
   }
+
+  async import(): Promise<void> {
+
+    if (this.electronService.isElectron) {
+      const memoData = await this.electronService.ipcRenderer.invoke('import-data');
+      await this.importData(memoData);
+    } else {
+      // open via browser
+      this.openFile();
+    }
+  }
+
+  async processFile(file: Blob): Promise<string> {
+    console.log('file');
+    console.log(file);
+    const reader = new FileReader();
+
+    return new Promise((resolve, reject) => {
+
+      reader.onload = (fileEvent) => {
+        const fileContents = fileEvent.target.result as string;
+        resolve(fileContents);
+      };
+      reader.onerror = () => {
+        reject('oops, something went wrong with the file reader.');
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  async importData(memoData): Promise<void> {
+    // save books & notes
+    await Promise.all(
+      memoData.map(b =>
+        this.dataService.createBook(b).then(async result => {
+          if (result) {
+            b.notes.forEach(n => (n.book = result.id));
+            const notes = await this.dataService.createNotes(b.notes);
+            if (notes) {
+              this.logger.debug(`book: [${result.id}] imported with ${notes.length} notes`);
+              return result;
+            }
+          }
+        })
+      )
+    );
+    this.logger.debug('Import finished.');
+    // TODO notification
+  }
+
 }

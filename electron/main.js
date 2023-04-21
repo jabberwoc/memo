@@ -2,10 +2,12 @@ const {
   app,
   BrowserWindow,
   ipcMain,
+  dialog,
   safeStorage
 } = require('electron'),
   settings = require('electron-settings'),
-  path = require('path');
+  path = require('path')
+fs = require('fs/promises');
 require('@electron/remote/main').initialize();
 
 let win = null;
@@ -159,3 +161,41 @@ ipcMain.on('open-files-file-dialog', () => {
     properties: ['openFile', 'multiSelections']
   })
 });
+
+ipcMain.handle('export-data', async (e, jsonExport) => {
+  const dialogResult = await dialog.showSaveDialog({
+    title: 'Export data',
+    defaultPath: 'memo-export.json'
+  });
+
+  if (dialogResult.canceled || !dialogResult.filePath) {
+    return false;
+  }
+
+
+  return fs.writeFile(dialogResult.filePath, jsonExport, err => {
+    if (err) {
+      console.error('error exporting memo data: ' + err);
+      return false;
+    }
+
+    return true;
+  });
+})
+
+ipcMain.handle('import-data', async (e, args) => {
+  const dialogResult = await dialog.showOpenDialog({
+    title: 'Import data',
+    defaultPath: 'memo-export.json',
+    properties: ['openFile']
+  });
+
+  console.log(dialogResult)
+
+  if (dialogResult.canceled || !dialogResult.filePaths || !dialogResult.filePaths[0]) {
+    return false;
+  }
+
+  const data = await fs.readFile(dialogResult.filePaths[0], 'utf-8');
+  return JSON.parse(Buffer.from(data));
+})

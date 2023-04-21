@@ -6,7 +6,7 @@ import { BrowserWindow } from '@electron/remote';
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
-// import * as fs from 'fs';
+import * as fs from 'fs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   childProcess: typeof childProcess;
-  // fs: typeof fs;
+  fs: typeof fs;
   remote: any;
 
   constructor() {
@@ -24,7 +24,7 @@ export class ElectronService {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
 
-      // this.fs = window.require('fs');
+      this.fs = window.require('fs');
       this.remote = window.require('@electron/remote');
 
       this.childProcess = window.require('child_process');
