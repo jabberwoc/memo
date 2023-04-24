@@ -7,8 +7,8 @@ import { RemoteState } from '../authentication/remote-state';
 import { LoginResponse } from './model/LoginResponse';
 import { MemoUser } from './model/memo-user';
 import { ConfigService } from '../settings/config.service';
+import { NGXLogger } from 'ngx-logger';
 PouchDB.plugin(PouchAuth);
-// .plugin(PouchAllDBs);
 require('pouchdb-all-dbs')(PouchDB);
 
 @Injectable()
@@ -41,7 +41,7 @@ export class PouchDbService {
     return this.stateChange.asObservable();
   }
 
-  public constructor(private configService: ConfigService) {
+  public constructor(private configService: ConfigService, private logger: NGXLogger) {
     if (!this.isInstantiated) {
       this.setupDatabase();
     }
@@ -141,7 +141,7 @@ export class PouchDbService {
         return response;
       })
       .catch(error => {
-        console.log('logOut failed: ' + error);
+        this.logger.error('logout failed: ' + error);
         return Promise.reject('logOut failed');
       });
   }
@@ -163,25 +163,25 @@ export class PouchDbService {
     });
 
     this.syncHandler.on('change', change => {
-      console.log('Remote sync: changes detected.');
-      console.log(change);
+      this.logger.debug('Remote sync: changes detected.');
+      this.logger.debug(change);
       this.change.next(change);
     });
     this.syncHandler.on('paused', () => {
-      console.log('Remote sync: connection paused.');
+      this.logger.debug('Remote sync: connection paused.');
       this.stateChange.next(RemoteState.PAUSED);
     });
     this.syncHandler.on('active', () => {
-      console.log('Remote sync: connection resumed.');
+      this.logger.debug('Remote sync: connection resumed.');
       this.stateChange.next(RemoteState.ACTIVE);
     });
     this.syncHandler.on('complete', info => {
-      console.log('Remote sync: connection closed.');
-      console.log(info);
+      this.logger.debug('Remote sync: connection closed.');
+      this.logger.debug(info);
       this.stateChange.next(RemoteState.COMPLETED);
     });
     this.syncHandler.on('error', error => {
-      console.error('Remote sync error: ' + JSON.stringify(error));
+      this.logger.error('Remote sync error: ' + JSON.stringify(error));
       this.error.next(error);
     });
   }
@@ -204,11 +204,6 @@ export class PouchDbService {
     }
   }
 
-  // private GetAllUserDbs(): Promise<Array<string>> {
-
-  //   return PouchDB.allDbs().then(dbs => dbs.filter(db => db.startsWith(this.USER_DB_PREFIX)));
-  // }
-
   private openLocalDatabase(user: string = null, create: boolean = false): Promise<MemoUser> {
     if (!user) {
       this.cancelSync();
@@ -223,33 +218,10 @@ export class PouchDbService {
       this.localDatabase = new PouchDB(this.USER_DB_PREFIX + userHex, {
         auto_compaction: true
       });
-      console.log('opened user database ' + this.USER_DB_PREFIX + userHex + ' for user: ' + user);
+      this.logger.debug('opened user database ' + this.USER_DB_PREFIX + userHex + ' for user: ' + user);
       this.databaseReset.next();
       return Promise.resolve(new MemoUser(user, true));
     }
-
-    // // find user database
-    // return this.GetAllUserDbs().then(dbs => {
-    //   const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
-    //   if (existingDb) {
-    //     this.cancelSync();
-    //     this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
-    //     console.log(
-    //       'opened existing user database ' +
-    //       this.USER_DB_PREFIX +
-    //       this.convertToHex(user) +
-    //       ' for user: ' +
-    //       user
-    //     );
-    //     this.databaseReset.next();
-    //     return new MemoUser(user, true);
-    //   }
-
-    //   return new MemoUser(user, false, 'No local login possible.');
-
-    // find user database
-    // const existingDb = dbs.find(_ => _ === this.USER_DB_PREFIX + this.convertToHex(user));
-    // if (existingDb) {
 
     // try to connect to user database
     this.cancelSync();
@@ -257,33 +229,13 @@ export class PouchDbService {
       {
         skip_setup: true, auto_compaction: true
       });
-    // const db = new PouchDB('http://localhost:5984/i_dont_exist', { skip_setup: true, auto_compaction: true });
-    // db.info(
-    //   (err, info2) => {
-    //     console.log.bind(err);
-    //     console.log.bind(info2);
-    //   });
-    db.info().then(info => console.log(info)).catch(e => console.log(e));
 
-    // this.cancelSync();
-    // this.localDatabase = new PouchDB(existingDb, { auto_compaction: true });
-    // console.log(
-    //   'opened existing user database ' +
-    //   this.USER_DB_PREFIX +
-    //   this.convertToHex(user) +
-    //   ' for user: ' +
-    //   user
-    //         // );
-    //         // this.databaseReset.next();
-    //         return new MemoUser(user, true);
+    db.info().then(info => this.logger.info(info)).catch(e => this.logger.error(e));
 
-    // return new MemoUser(user, false, 'No local login possible.');
-    // );
     return Promise.resolve(new MemoUser(user, false, 'No local login possible.'));
   }
 
   private async openRemoteDatabase(username: string, password: string): Promise<MemoUser> {
-    // TODO get remoteUrl from settings service
     const remoteUrl = this.configService.getConfigValue('remoteUrl');
     if (!remoteUrl) {
       return new MemoUser(username, false, 'remoteUrl not set');
@@ -292,10 +244,6 @@ export class PouchDbService {
     try {
       const userDbName = 'userdb-' + this.convertToHex(username);
       this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
-        // fetch(url, opts) {
-        //   opts.credentials = 'include';
-        //   return PouchDB.fetch(url, opts);
-        // },
         auth: { username, password },
         skip_setup: true
       });
@@ -319,7 +267,7 @@ export class PouchDbService {
       const doc = await this.get(docId);
       return await this.localDatabase.removeAttachment(docId, attachmentId, doc._rev);
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       return Promise.reject();
     }
   }

@@ -20,6 +20,7 @@ import { BusyState } from '../../shared/busy/busy-state';
 import { Attachment } from '../../core/data/model/entities/attachment';
 import { MimeType } from './mime-type';
 import { AttachmentAction, AttachmentActionType } from '../type/attachment-action';
+import { NGXLogger } from 'ngx-logger';
 
 declare var tinymce: any;
 
@@ -74,7 +75,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private el: ElementRef,
     private renderer: Renderer2,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private logger: NGXLogger
   ) {
     this.createTitleForm();
     this.debouncer.pipe(debounceTime(300)).subscribe(change => {
@@ -334,7 +336,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       editorArea.parentElement.insertBefore(this.noteHeader.nativeElement, editorArea);
     } catch (_) {
-      console.log('error add editor title element');
+      this.logger.error('error on add editor title element');
     }
   }
 

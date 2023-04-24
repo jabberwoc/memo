@@ -139,8 +139,6 @@ export class SettingsComponent {
   }
 
   async processFile(file: Blob): Promise<string> {
-    console.log('file');
-    console.log(file);
     const reader = new FileReader();
 
     return new Promise((resolve, reject) => {

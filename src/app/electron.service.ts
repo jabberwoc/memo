@@ -7,6 +7,7 @@ import { BrowserWindow } from '@electron/remote';
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ElectronService {
   fs: typeof fs;
   remote: any;
 
-  constructor() {
+  constructor(private logger: NGXLogger) {
     // Conditional imports
     if (this.isElectron) {
       this.ipcRenderer = window.require('electron').ipcRenderer;
@@ -30,14 +31,14 @@ export class ElectronService {
       this.childProcess = window.require('child_process');
       this.childProcess.exec('node -v', (error, stdout, stderr) => {
         if (error) {
-          console.error(`error: ${error.message}`);
+          this.logger.error(`error: ${error.message}`);
           return;
         }
         if (stderr) {
-          console.error(`stderr: ${stderr}`);
+          this.logger.error(`stderr: ${stderr}`);
           return;
         }
-        console.log(`stdout:\n${stdout}`);
+        this.logger.error(`stdout:\n${stdout}`);
       });
 
       // Notes :

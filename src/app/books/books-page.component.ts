@@ -85,17 +85,16 @@ export class BooksPageComponent implements OnInit {
   updateBook(book: Book) {
     this.dataService.updateBook(book).then(ok => {
       if (ok) {
-        console.log('book updated: [' + book.id + '] ' + book.name);
+        this.logger.info('book updated: [' + book.id + '] ' + book.name);
         this.store.dispatch(new UpdateBookAction(book));
       } else {
-        console.log('error updating book: ' + ok);
+        this.logger.error('error updating book: ' + ok);
       }
     });
   }
 
   loadBooks(): void {
     this.dataService.getBooks().then(books => {
-      console.log(books);
       this.store.dispatch(new SetBooksAction(books));
     });
   }

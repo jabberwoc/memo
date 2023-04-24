@@ -4,6 +4,7 @@ import { AuthenticationService } from '../authentication.service';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { animate, style, trigger, transition } from '@angular/animations';
 import { Subject } from 'rxjs';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-login',
@@ -33,11 +34,12 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
+    private logger: NGXLogger,
     public dialogRef: MatDialogRef<LoginComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   cancel(): void {
     this.dialogRef.close();
@@ -62,7 +64,7 @@ export class LoginComponent implements OnInit {
         }
       })
       .catch(error => {
-        console.log(error);
+        this.logger.error(error);
         this.loading = false;
         this.error.next(error);
       });

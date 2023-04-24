@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Book } from '../../core/data/model/entities/book';
 import { Router } from '@angular/router';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-books-list',
@@ -25,7 +26,7 @@ export class BooksListComponent {
 
   selectedBook: Book;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private logger: NGXLogger) { }
 
   select(book: Book): void {
     this.selectedBook = book;
@@ -33,7 +34,7 @@ export class BooksListComponent {
   }
 
   open(book: Book): void {
-    console.log('opening book: ' + book.id + ', name: ' + book.name);
+    this.logger.debug('opening book: ' + book.id + ', name: ' + book.name);
     this.router.navigate(['notes', book.id]);
   }
 

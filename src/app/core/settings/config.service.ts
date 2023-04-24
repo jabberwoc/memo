@@ -15,31 +15,6 @@ export class ConfigService {
   constructor(private logger: NGXLogger, private electronService: ElectronService) {
 
     this.loadConfig();
-
-    // if (this.electronService.isElectronApp) {
-    //   const electronConfig = this.electronService.ipcRenderer.send('getConfig').then();
-    //   storageConfig.items = lodash.unionBy(electronConfig.items, storageConfig.items, _ => _.key);
-    // }
-
-    // storageConfig.items = lodash.unionBy(
-    //   storageConfig.items,
-    //   Object.values(ConfigItemKeys),
-    //   _ => _.key
-    // );
-
-    // this.configStore = {
-    //   items: storageConfig.items.filter(
-    //     _ =>
-    //       _.type === ConfigItemType.All ||
-    //       _.type ===
-    //         (this.electronService.isElectronApp ? ConfigItemType.Electron : ConfigItemType.Browser)
-    //   )
-    // };
-    // console.log(this.configStore);
-  }
-
-  public updateItem(item: ConfigItem): void {
-    // TODO
   }
 
   public updateConfig(config: ConfigStore): void {
@@ -94,7 +69,6 @@ export class ConfigService {
           (this.electronService.isElectron ? ConfigItemType.Electron : ConfigItemType.Browser)
       )
     };
-    console.log(this.configStore);
   }
 }
 

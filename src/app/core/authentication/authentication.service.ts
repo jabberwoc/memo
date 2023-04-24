@@ -42,7 +42,6 @@ export class AuthenticationService implements OnInit {
 
         // try auto login for previously logged in user
         // TODO retry count
-        console.log(currentUser.name);
         this.autoLogin(currentUser.name);
       }
     });
@@ -166,7 +165,7 @@ export class AuthenticationService implements OnInit {
 
   async getPassword(username: string): Promise<string> {
     if (this.electronService.isElectron) {
-      console.log('trying auto-login for user: ' + username);
+      this.logger.debug('trying auto-login for user: ' + username);
       return await this.electronService.ipcRenderer.invoke('getAutoLogin', username);
     }
   }

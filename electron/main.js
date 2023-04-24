@@ -190,8 +190,6 @@ ipcMain.handle('import-data', async (e, args) => {
     properties: ['openFile']
   });
 
-  console.log(dialogResult)
-
   if (dialogResult.canceled || !dialogResult.filePaths || !dialogResult.filePaths[0]) {
     return false;
   }

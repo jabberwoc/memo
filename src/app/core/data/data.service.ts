@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 import { MemoStore } from './store/memo-store';
 import { DeleteBookAction, DeleteNoteAction } from './store/actions';
 import { Attachment } from './model/entities/attachment';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable()
 export class DataService {
@@ -18,7 +19,9 @@ export class DataService {
   syncPull: Observable<any>;
   reset: Observable<void>;
 
-  constructor(private pouchDbService: PouchDbService, private store: Store<MemoStore>) {
+  constructor(private pouchDbService: PouchDbService,
+    private logger: NGXLogger,
+    private store: Store<MemoStore>) {
     // sync changes wth state
     this.syncPull = this.pouchDbService.onChange.pipe(
       filter(_ => _.direction === 'pull'),
@@ -31,8 +34,8 @@ export class DataService {
   private formatChange(change: any): any {
     if (!change.ok) {
       // TODO handle conflicts
-      console.log('pull changes has errors');
-      console.log(change.errors);
+      this.logger.error('pull changes has errors');
+      this.logger.error(change.errors);
       return false;
     }
 
@@ -93,13 +96,13 @@ export class DataService {
           .then(notes => Promise.all(notes.map(note => this.pouchDbService.remove(note.id))))
           .then(results => Promise.resolve(results.every(_ => _.ok)))
           .catch(err => {
-            console.log(err);
+            this.logger.error(err);
             return false;
           });
       }
       return result.ok;
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       return false;
     }
   }
@@ -156,7 +159,7 @@ export class DataService {
       );
       return notes;
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       return null;
     }
   }
@@ -185,7 +188,7 @@ export class DataService {
       const response = await this.pouchDbService.put(id, doc);
       return response ? true : false;
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       Promise.reject();
     }
   }
@@ -221,7 +224,7 @@ export class DataService {
       }
       return result.ok;
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       return false;
     }
   }
@@ -235,7 +238,7 @@ export class DataService {
   async getAttachment(note: Note, attachment: string): Promise<any> {
     const docId = this.noteUri({ note: note.id, book: note.book });
     return this.pouchDbService.getAttachment(docId, attachment).catch(err => {
-      console.log(err);
+      this.logger.error(err);
       return Promise.reject();
     });
   }
@@ -246,7 +249,7 @@ export class DataService {
       const result = await this.pouchDbService.removeAttachment(docId, attachmentId);
       return result.ok;
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
       return false;
     }
   }
