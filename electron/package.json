@@ -4,7 +4,7 @@
   "author": {
     "name": "Sebastian Stoecker"
   },
-  "version": "0.7.0-alpha4",
+  "version": "0.7.0-beta",
   "license": "MIT",
   "main": "main.js",
   "private": true,
