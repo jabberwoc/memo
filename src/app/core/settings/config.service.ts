@@ -38,7 +38,7 @@ export class ConfigService {
 
   private saveStorageConfig(config: ConfigStore) {
     const configJson = JSON.stringify(config);
-    this.logger.info(`saving config => ${configJson}`);
+    this.logger.debug(`saving config => ${configJson}`);
     localStorage.setItem(this.configName, configJson);
   }
   private loadConfig(): void {
