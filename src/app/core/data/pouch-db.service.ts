@@ -13,7 +13,7 @@ require('pouchdb-all-dbs')(PouchDB);
 
 @Injectable()
 export class PouchDbService {
-  private readonly USER_DB_PREFIX = 'memo-userdb-';
+  private readonly USER_DB_PREFIX = 'userdb-';
 
   private isInstantiated: boolean;
   private localDatabase: PouchDB.Database<{}>;
