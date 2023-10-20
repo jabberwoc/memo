@@ -90,7 +90,7 @@
     "electron-installer-windows": "^3.0.0",
     "electron-packager": "15.5.2",
     "jasmine": "^4.0.2",
-    "jasmine-core": "~4.0.1",
+    "jasmine-core": "~4.6.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.3.17",
     "karma-chrome-launcher": "~3.1.0",
