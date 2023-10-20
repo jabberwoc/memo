@@ -101,7 +101,7 @@
     "moment": "^2.29.1",
     "node-abi": "^3.8.0",
     "protractor": "~7.0.0",
-    "ts-node": "~10.7.0",
+    "ts-node": "~10.9.0",
     "tslint": "~6.1.0",
     "typescript": "4.5.2"
   },
