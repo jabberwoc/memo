@@ -7,9 +7,13 @@
     "declaration": false,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "target": "es2015",
-    "lib": ["es2018", "dom"],
-    "allowSyntheticDefaultImports": true
+    "target": "ES2022",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "strictTemplates": true,

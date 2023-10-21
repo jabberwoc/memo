@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../data/data.service';
 import { BookDto } from '../data/model/entities/book';
-import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConnectionState } from './connection-state';
 import { NGXLogger } from 'ngx-logger';
@@ -18,7 +18,7 @@ import { saveAs } from 'file-saver';
 })
 export class SettingsComponent {
   pageTitle = 'Settings';
-  configGroup: FormGroup;
+  configGroup: UntypedFormGroup;
 
   remoteUrlState = ConnectionState.NONE;
   connectionState = ConnectionState;
@@ -33,7 +33,7 @@ export class SettingsComponent {
     private configService: ConfigService,
     private http: HttpClient,
     private logger: NGXLogger,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.initConfigItems();
   }
@@ -41,7 +41,7 @@ export class SettingsComponent {
   private initConfigItems(): void {
     this.configStore = this.configService.getConfig();
     const formElements = this.configStore.items.reduce((obj, item) => {
-      obj[item.key] = new FormControl(item.value);
+      obj[item.key] = new UntypedFormControl(item.value);
       return obj;
     }, {});
     this.configGroup = this.fb.group(formElements);

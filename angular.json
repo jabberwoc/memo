@@ -38,7 +38,10 @@
             "optimization": false,
             "namedChunks": true,
             "allowedCommonJsDependencies": [
-              "cuid"
+              "cuid",
+              "moment",
+              "lodash",
+              "inherits"
             ]
           },
           "configurations": {
@@ -128,7 +131,6 @@
       }
     }
   },
-  "defaultProject": "memo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

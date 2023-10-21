@@ -5,7 +5,7 @@ import { NotesPageComponent } from './notes-page.component';
 import { NotesListComponent } from './notes-list/notes-list.component';
 import { EditorComponent } from './editor/editor.component';
 // import { EditorModule } from '@tinymce/tinymce-angular';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MomentModule } from 'ngx-moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNoteComponent } from './dialog/add-note/add-note.component';

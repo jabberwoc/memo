@@ -15,7 +15,7 @@ import {
 import { Note } from '../../core/data/model/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { BusyState } from '../../shared/busy/busy-state';
 import { Attachment } from '../../core/data/model/entities/attachment';
 import { MimeType } from './mime-type';
@@ -68,14 +68,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   toolbarVisible = false;
   editorHeight: number;
   debouncer: Subject<(note: Note) => void> = new Subject<(note: Note) => void>();
-  titleForm: FormGroup;
+  titleForm: UntypedFormGroup;
 
   constructor(
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
     private el: ElementRef,
     private renderer: Renderer2,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private logger: NGXLogger
   ) {
     this.createTitleForm();

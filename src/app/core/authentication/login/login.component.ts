@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { AuthenticationService } from '../authentication.service';
-import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
 import { animate, style, trigger, transition } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
@@ -18,10 +18,10 @@ import { NGXLogger } from 'ngx-logger';
   ]
 })
 export class LoginComponent implements OnInit {
-  loginForm = new FormGroup({
-    username: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    autoLogin: new FormControl(false)
+  loginForm = new UntypedFormGroup({
+    username: new UntypedFormControl('', [Validators.required]),
+    password: new UntypedFormControl('', [Validators.required]),
+    autoLogin: new UntypedFormControl(false)
   });
   loading = false;
   error = new Subject<string>();
