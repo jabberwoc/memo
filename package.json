@@ -88,7 +88,7 @@
     "electron": "^15.5.7",
     "electron-installer-dmg": "^3.0.0",
     "electron-installer-windows": "^3.0.0",
-    "electron-packager": "15.5.2",
+    "electron-packager": "17.1.2",
     "jasmine": "^4.0.2",
     "jasmine-core": "~4.6.0",
     "jasmine-spec-reporter": "~7.0.0",
