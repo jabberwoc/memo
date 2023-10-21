@@ -128,7 +128,6 @@
       }
     }
   },
-  "defaultProject": "memo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

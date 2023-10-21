@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DialogMode } from './dialog-mode';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-edit-book',
@@ -16,8 +16,8 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
   ]
 })
 export class AddEditBookComponent {
-  addEditForm = new FormGroup({
-    name: new FormControl('', [Validators.required])
+  addEditForm = new UntypedFormGroup({
+    name: new UntypedFormControl('', [Validators.required])
   });
   get name(): AbstractControl {
     return this.addEditForm.get('name');
