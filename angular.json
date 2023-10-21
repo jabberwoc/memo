@@ -38,7 +38,10 @@
             "optimization": false,
             "namedChunks": true,
             "allowedCommonJsDependencies": [
-              "cuid"
+              "cuid",
+              "moment",
+              "lodash",
+              "inherits"
             ]
           },
           "configurations": {
