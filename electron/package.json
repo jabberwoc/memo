@@ -4,12 +4,12 @@
   "author": {
     "name": "Sebastian Stoecker"
   },
-  "version": "0.8.0",
+  "version": "0.9.0",
   "license": "MIT",
   "main": "main.js",
   "private": true,
   "dependencies": {
-    "@electron/remote": "^2.0.9",
+    "@electron/remote": "^2.0.12",
     "electron-settings": "^4.0.2",
     "electron-store": "^8.1.0"
   }

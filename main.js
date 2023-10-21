@@ -130,7 +130,6 @@ ipcMain.on('saveConfig', (e, arg) => {
 
 
 ipcMain.handle('saveAutoLogin', (e, arg) => {
-  console.log('saving auto login credentials')
   const buffer = safeStorage.encryptString(JSON.stringify(arg));
   settings.setSync('auto-login', buffer.toString('base64'));
 
