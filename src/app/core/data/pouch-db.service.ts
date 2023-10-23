@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb-browser';
 import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { RemoteState } from '../authentication/remote-state';
 import { LoginResponse } from './model/LoginResponse';
