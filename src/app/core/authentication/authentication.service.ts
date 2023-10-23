@@ -63,8 +63,8 @@ export class AuthenticationService implements OnInit {
     this.currentUser
       .pipe(
         switchMap(user =>
-          interval(5000)
-            // timer(0, 5000)
+          // interval(5000)
+          timer(0, 5000)
             .pipe(
               map(_ => user),
               filter(_ => _ != null)
@@ -72,7 +72,7 @@ export class AuthenticationService implements OnInit {
         )
       )
       .subscribe(async _ =>
-        this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive(_.name))
+        this.isAliveSubject.next(await this.pouchDbService.isRemoteAlive())
       );
   }
 
@@ -144,14 +144,11 @@ export class AuthenticationService implements OnInit {
   }
 
   async logout() {
-    const response = await this.pouchDbService.logout();
-    if (response.ok) {
-      localStorage.setItem('auto-login', null);
-      this.currentUser.next(null);
-      this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
+    await this.pouchDbService.logout();
 
-      return response;
-    }
+    localStorage.setItem('auto-login', null);
+    this.currentUser.next(null);
+    this.logger.debug(`user ${this.currentUser.getValue()} successfully logged out.`);
   }
 
   saveAuth(username: string, password: string): void {

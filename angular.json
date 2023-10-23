@@ -40,8 +40,7 @@
             "allowedCommonJsDependencies": [
               "cuid",
               "moment",
-              "lodash",
-              "inherits"
+              "lodash"
             ]
           },
           "configurations": {

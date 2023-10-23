@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import PouchDB from 'pouchdb';
-import PouchAuth from 'pouchdb-authentication';
-import PouchAllDBs from 'pouchdb-all-dbs';
-import { Observable, Subject } from 'rxjs';
+import PouchDB from 'pouchdb-browser';
+import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { RemoteState } from '../authentication/remote-state';
 import { LoginResponse } from './model/LoginResponse';
 import { MemoUser } from './model/memo-user';
 import { ConfigService } from '../settings/config.service';
 import { NGXLogger } from 'ngx-logger';
-PouchDB.plugin(PouchAuth);
-require('pouchdb-all-dbs')(PouchDB);
+import { HttpClient } from '@angular/common/http';
+
+interface UpResponse {
+  status: string;
+}
 
 @Injectable()
 export class PouchDbService {
@@ -41,7 +42,7 @@ export class PouchDbService {
     return this.stateChange.asObservable();
   }
 
-  public constructor(private configService: ConfigService, private logger: NGXLogger) {
+  public constructor(private configService: ConfigService, private logger: NGXLogger, private http: HttpClient) {
     if (!this.isInstantiated) {
       this.setupDatabase();
     }
@@ -125,31 +126,29 @@ export class PouchDbService {
     }
   }
 
-  public logout(): Promise<PouchDB.Core.BasicResponse> {
+  public async logout(): Promise<void> {
     if (!this.remoteDatabase) {
       // not syncing
       return Promise.reject('not syncing');
     }
 
-    return this.remoteDatabase
-      .logOut()
-      .then(response => {
-        if (response.ok) {
-          this.syncHandler.cancel();
-          this.openLocalDatabase();
-        }
-        return response;
-      })
-      .catch(error => {
-        this.logger.error('logout failed: ' + error);
-        return Promise.reject('logOut failed');
-      });
+    await this.remoteDatabase.close()
+    this.remoteDatabase = null;
+    await this.openLocalDatabase();
   }
 
   public cancelSync(): void {
     if (this.syncHandler) {
       this.syncHandler.cancel();
     }
+  }
+
+  private async getHealth(): Promise<UpResponse> {
+
+    const remoteUrl = this.configService.getConfigValue('remoteUrl');
+
+    return await firstValueFrom(this.http.get<UpResponse>(
+      remoteUrl + '/_up'))
   }
 
   private sync(): void {
@@ -186,19 +185,14 @@ export class PouchDbService {
     });
   }
 
-  public async isRemoteAlive(user?: string): Promise<boolean> {
+  public async isRemoteAlive(): Promise<boolean> {
     try {
       if (!this.remoteDatabase) {
         return false;
       }
 
-      const _ = await this.remoteDatabase.getSession();
-      if (_.ok && _.userCtx) {
-        if (user) {
-          return _.userCtx.name === user;
-        }
-        return _.userCtx.name ? true : false;
-      }
+      const { status } = await this.getHealth();
+      return status == 'ok';
     } catch (_) {
       return false;
     }
@@ -241,18 +235,20 @@ export class PouchDbService {
       return new MemoUser(username, false, 'remoteUrl not set');
     }
 
-    try {
-      const userDbName = 'userdb-' + this.convertToHex(username);
-      this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
-        auth: { username, password },
-        skip_setup: true
-      });
+    const userDbName = 'userdb-' + this.convertToHex(username);
+    this.remoteDatabase = new PouchDB(remoteUrl + '/' + userDbName, {
+      auth: { username: username, password: password },
+      skip_setup: true
+    });
 
-      const response = await this.remoteDatabase.logIn(username, password);
-      return new MemoUser(response.name, response.ok);
-    } catch (err) {
-      return new MemoUser(username, false, err.message);
+    const info = await this.remoteDatabase.info()
+
+    // runtime type check
+    if (info.hasOwnProperty('error')) {
+      const err = <PouchDB.Core.Error>info;
+      return new MemoUser(username, false, err.reason);
     }
+    return new MemoUser(username, true);
   }
 
   public async getAttachment(docId: string, attachmentId: string): Promise<any> {
