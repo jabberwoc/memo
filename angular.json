@@ -40,7 +40,9 @@
             "allowedCommonJsDependencies": [
               "cuid",
               "moment",
-              "lodash"
+              "lodash",
+              "file-saver",
+              "docuri"
             ]
           },
           "configurations": {
