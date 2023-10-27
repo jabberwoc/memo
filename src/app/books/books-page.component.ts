@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DataService } from '../core/data/data.service';
 import { Book } from '../core/data/model/entities/book';
 import { DeleteBookComponent } from './dialog/delete-book/delete-book.component';

@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { throttleTime, combineLatest } from 'rxjs/operators';
 import { MenuService } from './menu.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../authentication/login/login.component';
 import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from '../authentication/remote-state';

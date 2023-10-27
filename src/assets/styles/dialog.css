@@ -4,7 +4,7 @@ app-add-note {
   flex-direction: column;
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   padding: 0 !important;
   background: transparent !important;
 }

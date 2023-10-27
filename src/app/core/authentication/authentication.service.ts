@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject, Subscription, timer, Subject, interval } from 'rxjs';
+import { Observable, BehaviorSubject, timer, Subject } from 'rxjs';
 import { PouchDbService } from '../data/pouch-db.service';
 import { MemoUser } from '../data/model/memo-user';
 import { RemoteState } from './remote-state';
@@ -11,7 +11,7 @@ import { switchMap, map, filter } from 'rxjs/operators';
 import { ElectronService } from '../../electron.service';
 
 @Injectable()
-export class AuthenticationService implements OnInit {
+export class AuthenticationService {
   currentUser = new BehaviorSubject<MemoUser>(null);
   syncChanges: Observable<any>;
   // private store: any;
@@ -55,9 +55,7 @@ export class AuthenticationService implements OnInit {
     this.setupRemoteAliveCheck();
     this.setupUserChangedRouting();
   }
-  ngOnInit(): void {
-    // TODO move auto login here
-  }
+
 
   private setupRemoteAliveCheck(): void {
     this.currentUser

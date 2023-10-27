@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   EventEmitter,
   Output,
@@ -14,7 +13,7 @@ import { Note } from '../../core/data/model/entities/note';
   styleUrls: ['./notes-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotesListComponent implements OnInit {
+export class NotesListComponent {
   @Input()
   bookTitle: string;
 
@@ -28,9 +27,8 @@ export class NotesListComponent implements OnInit {
   @Output()
   deleteNote = new EventEmitter<Note>();
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
 
   select(id: string): void {
     this.selectNote.next(id);

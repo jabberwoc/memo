@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../authentication.service';
 import { UntypedFormControl, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
 import { animate, style, trigger, transition } from '@angular/animations';
@@ -17,7 +17,7 @@ import { NGXLogger } from 'ngx-logger';
     ])
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
     password: new UntypedFormControl('', [Validators.required]),
@@ -38,8 +38,6 @@ export class LoginComponent implements OnInit {
     public dialogRef: MatDialogRef<LoginComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
-
-  ngOnInit() { }
 
   cancel(): void {
     this.dialogRef.close();
