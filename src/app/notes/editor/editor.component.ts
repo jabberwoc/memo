@@ -272,14 +272,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.addEditorTitle();
 
     setTimeout(() => {
-      this.zone(() => {
-        this.editorReady = true;
-        this.busyState = BusyState.INACTIVE;
-      });
-
       this.setContent();
       this.cdr.detectChanges();
     }, 0);
+
+    this.zone(() => {
+      this.editorReady = true;
+      this.busyState = BusyState.INACTIVE;
+    });
   }
 
   editorOnChange(): void {

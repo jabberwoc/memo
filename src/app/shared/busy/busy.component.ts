@@ -23,6 +23,8 @@ export class BusyComponent {
   @Input()
   fadeOut = false;
   @Input()
+  bgColor = 'transparent';
+  @Input()
   busyState: BusyState = BusyState.INACTIVE;
 
   get isBusy(): boolean {
@@ -45,5 +47,5 @@ export class BusyComponent {
     }
   }
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) { }
 }

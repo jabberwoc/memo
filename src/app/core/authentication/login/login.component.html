@@ -8,26 +8,62 @@
         {{ error | async }}
       </small>
       <div class="form-group">
-        <small [@growIn] class="error" *ngIf="username.invalid && (username.dirty || username.touched)">
+        <small
+          [@growIn]
+          class="error"
+          *ngIf="username.invalid && (username.dirty || username.touched)"
+        >
           Username required
         </small>
-        <input type="text" class="form-control" name="username" placeholder="username" formControlName="username" />
+        <input
+          type="text"
+          class="form-control"
+          name="username"
+          placeholder="username"
+          formControlName="username"
+        />
       </div>
       <div class="form-group">
-        <small [@growIn] class="error" *ngIf="password.invalid && (password.dirty || password.touched)">
+        <small
+          [@growIn]
+          class="error"
+          *ngIf="password.invalid && (password.dirty || password.touched)"
+        >
           Password required
         </small>
-        <input type="password" class="form-control" name="password" placeholder="password" formControlName="password" />
+        <input
+          type="password"
+          class="form-control"
+          name="password"
+          placeholder="password"
+          formControlName="password"
+        />
       </div>
-      <label class="checkbox">Remember me
-        <input type="checkbox" id="autoLogin" name="autoLogin" value="autoLogin" formControlName="autoLogin">
+      <label class="checkbox"
+        >Remember me
+        <input
+          type="checkbox"
+          id="autoLogin"
+          name="autoLogin"
+          value="autoLogin"
+          formControlName="autoLogin"
+        />
         <span class="checkmark"></span>
       </label>
     </div>
 
     <div class="dialog-buttons">
-      <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()" tabindex="3">Cancel</button>
-      <button type="submit" [disabled]="loginForm.invalid" class="btn btn-plain btn-ok btn-right" #loginButton>Login</button>
+      <button class="btn btn-plain btn-cancel btn-left" (click)="cancel()" tabindex="3">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="btn btn-plain btn-ok btn-right"
+        #loginButton
+      >
+        Login
+      </button>
     </div>
     <app-busy [isBusy]="loading" [overlay]="true"></app-busy>
   </form>
