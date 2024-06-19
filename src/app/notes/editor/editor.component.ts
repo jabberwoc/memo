@@ -124,7 +124,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
       relative_urls: false,
       document_base_url: '.',
-      skin_url: 'assets/tinymce/skins/lightgray',
+      // skin_url: 'assets/tinymce/skins/lightgray',
+      skin: 'oxide',
       content_css: 'assets/styles/editor.css',
 
       statusbar: false,
@@ -135,14 +136,15 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       plugins: [
         'advlist autolink lists link image charmap hr anchor pagebreak',
         'searchreplace wordcount visualblocks visualchars fullscreen',
-        'insertdatetime nonbreaking save contextmenu',
-        'paste textcolor colorpicker textpattern imagetools codesample code noneditable table'
+        'insertdatetime nonbreaking save contextmenu paste textcolor'
+        , 'colorpicker textpattern imagetools codesample code noneditable table print'
       ],
       toolbar:
         'undo redo | styleselect | forecolor backcolor | fontselect | fontsizeselect | ' +
         'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | ' +
         'bullist numlist outdent indent | link image print attachment | table codesample | ' +
         'fullscreen code',
+      fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt',
       image_advtab: true,
       image_title: true,
       link_context_toolbar: true,
@@ -221,14 +223,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       title.remove();
     });
 
-    editor.addButton('print', {
+    editor.ui.registry.addButton('print', {
       title: 'Print',
       cmd: 'mcePrint'
     });
 
     editor.addShortcut('Meta+P', '', 'mcePrint');
 
-    editor.addMenuItem('print', {
+    editor.ui.registry.addMenuItem('print', {
       text: 'Print',
       cmd: 'mcePrint',
       icon: 'print',
@@ -332,11 +334,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   addEditorTitle(): void {
     try {
-      const editorArea = this.el.nativeElement.querySelector('.mce-edit-area');
+      const editorArea = this.el.nativeElement.querySelector('.tox-edit-area');
 
       editorArea.parentElement.insertBefore(this.noteHeader.nativeElement, editorArea);
-    } catch (_) {
-      this.logger.error('error on add editor title element');
+    } catch (e) {
+      this.logger.error('error on add editor title element', e);
     }
   }
 
