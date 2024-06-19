@@ -1,73 +1,70 @@
 @import 'scrollbar.css';
 /* editor toolbar */
 
-.mce-tinymce {
+.tox-tinymce {
   border: 0 !important;
 }
 
-.mce-panel {
+.tox-panel {
   background-color: white !important;
   border-color: #ddd !important;
 }
 
-.mce-btn {
+.tox-btn {
   background-color: white !important;
 }
 
-.mce-btn button {
-  color: #444 !important;
-  padding: 2px 4px !important;
-}
-
-.mce-btn.mce-active button {
+.tox-btn.tox-active button {
   background: slategray !important;
 }
 
-.mce-container::before {
+.tox-container::before {
   box-shadow: none !important;
 }
 
-.mce-listbox button {
+.tox-listbox button {
   padding-right: 20px !important;
 }
 
-.mce-txt {
-  font-size: 12px !important;
+body {
+  font-size: 11pt;
 }
 
-.mce-menubtn.mce-fixed-width span {
+.tox-menubtn.tox-fixed-width span {
   width: auto !important;
 }
 
-.mce-primary button {
+.tox-primary button {
   color: white !important;
 }
 
-.mce-btn.mce-primary {
+.tox-btn.tox-primary {
   background-color: lightslategray !important;
 }
 
-.mce-toolbar .mce-ico {
+.tox-toolbar .tox-ico {
   color: #444;
 }
 
-.mce-edit-area {
+.tox-edit-area {
   border-top: 0 !important;
 }
 
-.mce-tinymce:not(.mce-floatpanel),
-.mce-stack-layout,
-.mce-edit-area {
+#note-header {
+  background: white;
+}
+
+.tox-sidebar-wrap {
   display: flex !important;
   flex-direction: column !important;
   flex: 1 !important;
 }
 
-.mce-tinymce iframe {
+.tox-tinymce iframe {
   flex: 1 !important;
 }
 
-.mce-tinymce:not(.mce-floatpanel) {
+.tox-tinymce:not(.tox-floatpanel) {
   min-height: 100%;
 }
 
@@ -84,10 +81,10 @@ a:hover {
   color: #00f;
 }
 
-table.mce-item-table,
-.mce-item-table td,
-.mce-item-table th,
-.mce-item-table caption {
+table.tox-item-table,
+.tox-item-table td,
+.tox-item-table th,
+.tox-item-table caption {
   border: none;
 }
 
@@ -101,7 +98,7 @@ ul.todo-list input[type='checkbox'] {
   vertical-align: middle;
 }
 
-i.mce-i-todoList:before {
+i.tox-i-todoList:before {
   content: '\f046';
   font-family: FontAwesome;
 }
@@ -110,12 +107,12 @@ i.mce-i-todoList:before {
   border: 0;
 }
 
-.mce-i-attachment {
+.tox-i-attachment {
   position: relative;
   text-align: center;
 }
 
-.mce-i-attachment:before {
+.tox-i-attachment:before {
   content: '\f0c6';
   font-family: 'FontAwesome';
   display: inline-block;
