@@ -42,7 +42,7 @@
     "@angular/material": "^16.2.10",
     "@angular/platform-browser": "^16.2.11",
     "@angular/platform-browser-dynamic": "^16.2.11",
-    "@angular/platform-server": "^16.2.11",
+    "@angular/platform-server": "^18.0.0",
     "@angular/router": "^16.2.11",
     "@electron/remote": "^2.0.9",
     "@ngrx/store": "^16.3.0",
