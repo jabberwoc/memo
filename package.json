@@ -89,7 +89,7 @@
     "@types/node": "^14.18.42",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
-    "electron": "^27.0.2",
+    "electron": "^39.0.0",
     "electron-installer-dmg": "^4.0.0",
     "electron-installer-windows": "^3.0.0",
     "electron-packager": "17.1.2",
